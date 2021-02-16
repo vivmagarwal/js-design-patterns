@@ -237,9 +237,9 @@ gulp.task('linksInject', async function (done) {
             if (splittedString.length > 1 && splittedString[2]) {
               let titledString = splittedString[2].replace(/-/g, ' ');
               titledString = titledString.charAt(0).toUpperCase() + titledString.slice(1)
-              return '<li><a href="' + filepath + '">' + titledString + '</a></li>';
+              return '<li><a href="' + filepath.substring(1) + '">' + titledString + '</a></li>';
             } else {
-              return '<li><a href="' + filepath + '">' + filepath + '</a></li>';
+              return '<li><a href="' + filepath.substring(1) + '">' + filepath + '</a></li>';
             }
         }
         // Use the default transform as fallback:
