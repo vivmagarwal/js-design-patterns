@@ -1,4 +1,5 @@
-# An HTML SCSS and JAVASCIPT Playground for developers.
+## Online Ebook: [Online Javascript Patterns EBook](https://vivmagarwal.github.io/js-design-patterns/)
+### How to use this Playground on your local.
 
 I prefer this against online platforms for four main reasons :
 1. Its easier to use browsers dev tools to debug things

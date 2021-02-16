@@ -1,1 +1,1 @@
-##### More information here. 
+## What is a design pattern?
