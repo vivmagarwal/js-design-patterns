@@ -9,7 +9,3 @@ The Undo/Redo operation in a text editor
 ## Applicability
 The **Memento** pattern is used in Undo and Redo operations in most of the software.
 
-## uml: sequence diagram
-Here I will embed PlantUML markup to generate a sequence diagram.
-
-I can include as many plantuml segments as I want in my Markdown, and the diagrams can be of any type supported by PlantUML.
