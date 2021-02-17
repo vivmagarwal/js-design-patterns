@@ -6,6 +6,7 @@ The **strategy pattern**:
 - defines a family of alogrithms
 - the individiual strategy implementation encapsulates each algorithm 
 - individual strategies are interchangeable as they implement a uniform interface that context understands
+- context is a class with uses strategy
 - the context is a compositor allowing us to compose a flavour of implementation as needed
 - a common naming convention for strategies is using the word `behaviour` for strategies
 
@@ -26,6 +27,11 @@ A dynamic pricing would use the strategy pattern because the algorithm you use t
 ## Example 3
 
 Different SuperHero classes can be generated using differnt default SuperPowers like Fly, WeaveWeb, RunSuperFast, Fights, NoPowerRunAway etc. At run time they can changeSuperPowers() based on their levels of energy and health.
+
+## Example
+
+Bank changes calculation strategy can be different based on the type of account and the amount of the transaction.
+
 
 ## Example 4
 

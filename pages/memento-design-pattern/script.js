@@ -1,0 +1,1 @@
+console.log('memento-design-pattern works!!');

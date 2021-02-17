@@ -275,6 +275,30 @@ gulp.task('twig:readme', function () {
     .pipe(gulp.dest(path.join(__dirname, 'pages', page)));
 });
 
+gulp.task('twig:classdiagram', function () {
+  if (!page) {
+    throw new Error('Incorrect page name!');
+  }
+
+  return gulp.src('./_templates/classdiagram.twig')
+    // Stay live and reload on error
+    .pipe(plumber({
+      handleError: function (err) {
+        console.log(err);
+        this.emit('end');
+      }
+    }))
+    .pipe(data({ title: page, withstyle: withstyle }))
+    .pipe(twig({
+      extname: '.duml'
+    }))
+    .on('error', function (err) {
+      process.stderr.write(err.message + '\n');
+      this.emit('end');
+    })
+    .pipe(gulp.dest(path.join(__dirname, 'pages', page)));
+});
+
 gulp.task('readmeInject',  function (done) {
   gulp.src('./index.html')
     .pipe(inject(gulp.src(['./introduction.md'], { allowEmpty: true }), {
@@ -408,7 +432,7 @@ gulp.task('readmeInject:pages', function (done) {
 //   done();
 // });
 
-gulp.task('generate', gulp.series(gulp.parallel('twig:html', 'twig:scss', 'twig:script', 'twig:readme'), 'linksInject'));
+gulp.task('generate', gulp.series(gulp.parallel('twig:html', 'twig:scss', 'twig:script', 'twig:readme', 'twig:classdiagram'), 'linksInject'));
 
 gulp.task('clone-page', function () {
   if (!clonefrom) {

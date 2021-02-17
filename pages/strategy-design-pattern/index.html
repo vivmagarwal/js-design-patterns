@@ -30,6 +30,7 @@
 <li>defines a family of alogrithms</li>
 <li>the individiual strategy implementation encapsulates each algorithm </li>
 <li>individual strategies are interchangeable as they implement a uniform interface that context understands</li>
+<li>context is a class with uses strategy</li>
 <li>the context is a compositor allowing us to compose a flavour of implementation as needed</li>
 <li>a common naming convention for strategies is using the word <code>behaviour</code> for strategies</li>
 </ul>
@@ -45,6 +46,8 @@
 <p>A dynamic pricing would use the strategy pattern because the algorithm you use to generate the price could vary based on the time of the day, percentage of seats already sold etc. There would be a getPrice method &amp; which strategy it runs is none my concern. Basically, the price calculation behaviour is changing at the runtime. </p>
 <h2 id="example-3">Example 3</h2>
 <p>Different SuperHero classes can be generated using differnt default SuperPowers like Fly, WeaveWeb, RunSuperFast, Fights, NoPowerRunAway etc. At run time they can changeSuperPowers() based on their levels of energy and health.</p>
+<h2 id="example">Example</h2>
+<p>Bank changes calculation strategy can be different based on the type of account and the amount of the transaction.</p>
 <h2 id="example-4">Example 4</h2>
 <p>In a gaming app, soldier get a default attackingPower. At the runtime they can change their attackingStrategy based on the level they are on, energy and health. Some needs refill, some need repair; the repair and refill strategies can be different too;</p>
 <h3 id="client">Client</h3>
