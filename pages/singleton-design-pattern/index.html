@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>memento-design-pattern</title>
+    <title>singleton-design-pattern</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../../preview.css">
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
@@ -23,12 +23,11 @@
 
       <div class="injected-readme">
       <!-- inject:readme:md -->
-      <h1 id="memento-design-pattern">Memento Design Pattern</h1>
-<p><strong>Memento</strong> literally means rememberance, memorial or token. <strong>Memento</strong> design pattern is used to <strong>restore</strong> the state of an object to its <strong>previous state</strong>. The <strong>Memento</strong> captures an object&#39;s internal state so that the object can later be restored to that state.</p>
-<h2 id="example">Example</h2>
-<p>The Undo/Redo operation in a text editor</p>
-<h2 id="applicability">Applicability</h2>
-<p>The <strong>Memento</strong> pattern is used in Undo and Redo operations in most of the software.</p>
+      <h1 id="singleton-design-pattern">Singleton Design Pattern</h1>
+<p>Singletons are objects that can only have a single instance, with a single point of access. Singletons are useful for maintaining a central state, where all clients need to access and operate on a common resource.</p>
+<p>Node&#39;s module system caches the module the moment it is accessed using a require statement for the very first time. Thereafter the same instance is reffered to everywhere. No matter how many times you impoert this module accross your application, it will access the same cached and common instance. So the Node&#39;s module system offers a rudimentary implementation if a singleton.</p>
+<p>However, this behaviour is dependent on the filename consistency. Difference in capitalization in filenames will result in multiple cached instances.</p>
+<p>When working with classes, instantiating a class before exporting it out of a module will result in a singleton.</p>
 
       <!-- endinject -->
       </div>

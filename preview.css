@@ -6,3 +6,13 @@
 a {
   text-decoration: none;
 }
+
+blockquote {
+  position: relative;
+  padding-left: 1rem;
+  border-left: 0.4rem solid #1EAEDB;
+  font-size: 1.6rem;
+  line-height: 1.5em;
+  font-weight: 100;
+  margin-left: 1rem;
+}

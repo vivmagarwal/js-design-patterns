@@ -1,0 +1,1 @@
+console.log('factory-design-pattern works!!');
