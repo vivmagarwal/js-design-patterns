@@ -1,0 +1,1 @@
+console.log('asynchronous-design-patterns works!!');

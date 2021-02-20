@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>callback-design-pattern</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+      </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="callback-design-pattern">Callback Design Pattern</h1>
+<p>Traditionally the callbacks were the only way of acheiving asyncronicity in javascipt. The modern patterns like Promises / Async await relies on callbacks, so its important to understand them.</p>
+<p>A Callback is simply a function that is invoked after something else happens and it is acheived by passing a function to another function as an argument in Javascript. The function that we pass to an other function, is called back after something else happens. </p>
+<h3 id="problems-with-javascript-callbacks">Problems with Javascript Callbacks</h3>
+<ul>
+<li>Bunch of nested callbacks becomes very <strong>difficult to work with</strong> and are popularly called a callback hell.</li>
+<li>Nested callbacks are <strong>difficult to reason about</strong>.</li>
+<li>We <strong>turn the control of our program</strong> to something else.</li>
+</ul>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
