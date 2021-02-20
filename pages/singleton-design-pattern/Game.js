@@ -1,4 +1,6 @@
-const ScoreBoard = require('./Scoreboard');
+// const ScoreBoard = require('./Scoreboard');
+import { Scoreboard as ScoreBoard } from './Scoreboard.js'
+
 const Scores = new ScoreBoard(); // separate instance in player and separate in game, so it doesnot behave like a singleton.
 
 class Game {
@@ -13,4 +15,6 @@ class Game {
   }
 }
 
-module.exports = Game;
+export { Game };
+
+// module.exports = Game;

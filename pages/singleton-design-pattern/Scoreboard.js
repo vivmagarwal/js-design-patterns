@@ -30,7 +30,9 @@ class Scoreboard {
   }
 }
 
-module.exports = Scoreboard;
+// module.exports = Scoreboard;
+export { Scoreboard };
+
 
 // Solution: Bascially if we create an instance of the Scoreboard and then expoert it, the instance will be cached and it will behave like a singleton.
 // consequent access to the module will be accessing the same instance.

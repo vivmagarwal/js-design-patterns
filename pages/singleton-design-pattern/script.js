@@ -1,9 +1,11 @@
 console.log('singleton-design-pattern works!!');
-// please make sure that you run it in the node environment with npm run watch:node pages/singleton-design-pattern/script.js
 
 // Example 1.
-const cashRegister2 = require('./CashRegister');
-const cashRegister1 = require('./CashRegister');
+// const cashRegister2 = require('./CashRegister');
+// const cashRegister1 = require('./CashRegister');
+
+import {CashResister as cashRegister1} from './CashRegister.js'
+import {CashResister as cashRegister2} from './CashRegister.js'
 
 
 cashRegister1.addMoney(10);
@@ -13,8 +15,11 @@ cashRegister2.addMoney(50);
 cashRegister1.total(); // 80
 
 // Example 2.
-const Game = require('./Game');
-const Player = require('./Player');
+// const Game = require('./Game');
+// const Player = require('./Player');
+
+import { Game } from './Game.js';
+import { Player } from './Player.js';
 
 const John = new Player('John');
 const Mike = new Player('Mike');

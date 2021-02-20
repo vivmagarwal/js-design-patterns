@@ -19,4 +19,6 @@ const CashResister = {
   }
 }
 
-module.exports = CashResister; // CashRegister is exposed to the world.
+// module.exports = CashResister; // CashRegister is exposed to the world.
+
+export { CashResister };

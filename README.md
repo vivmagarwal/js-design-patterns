@@ -44,3 +44,12 @@ it will automatically get a name. In case you want to specify a name, please use
 
 ### Rebuild Index of pages in the index HTML file.
 `npm run rebuildindex` or `npm run ri`
+
+### ES Modules vs CommonJS Modules
+We use ES Modules in this project. Please use the ES module syntax to import export modules. Example:
+```
+export { Scoreboard };
+```
+```
+import { Scoreboard as ScoreBoard } from './Scoreboard.js'
+```

@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "web-pack": "webpack --config webpack.config.js",
     "watch": "gulp watch",
-    "watch:node": "nodemon localhost 5656",
+    "watch:node": "nodemon --experimental-modules",
     "gp:nostyle": "gulp generate --page",
     "generate:page": "gulp generate --page",
     "generate:styledpage": "gulp generate --withstyle --page",
