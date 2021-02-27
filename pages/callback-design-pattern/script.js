@@ -77,6 +77,36 @@ let processOnlyEBooksAsync = function (data, callback) {
 
 processOnlyEBooksAsync(booksList, function (obj) {
   console.log(obj.title);
-})
+});
+
+// Synchronous callback function example.
+function processUserInput(first_name, last_name, callback) {
+  // form an introduction text with first_name and last_name. 
+  var intro_text = 'Hi, I am ' + first_name + ' ' + last_name + '.';
+  // execute the callback function with our intro_text
+  callback(intro_text);
+}
+
+processUserInput(
+  'John',
+  'Doe',
+  function (intro) {
+    console.log(intro)
+  }
+);
+
+// Asynchronous callback function example.
+let processUserInputAsync = function (first_name, last_name, callback) {
+  setTimeout(function () {
+    // form an introduction text with first_name and last_name. 
+    var intro_text = 'Hi, I am ' + first_name + ' ' + last_name + '.';
+    // execute the callback function with our intro_text
+    callback(intro_text);
+  }, 2000)
+}
+
+processUserInputAsync('James','Bond', function (intro) {
+  console.log(intro);
+});
 
 console.log('*** This is the last line of the code. ***');

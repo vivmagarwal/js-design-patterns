@@ -6,12 +6,13 @@ const gulp = require("gulp"),
   autoprefixer = require('gulp-autoprefixer'),
   browserSync = require('browser-sync').create(),
   { argv } = require('yargs');
-  kc = require('kebab-case'),
+kc = require('kebab-case'),
   inject = require('gulp-inject'),
   plumber = require('gulp-plumber'),
   data = require('gulp-data'),
   twig = require('gulp-twig'),
   path = require('path'),
+  hljs = require('highlight.js'),
   marked = require('marked'),
   fs = require('fs');
 
@@ -65,7 +66,7 @@ gulp.task('reload', async function reload() {
     server: {
       baseDir: "./"
     }
-  }, function() {
+  }, function () {
     browserSync.reload();
   });
 });
@@ -232,15 +233,15 @@ gulp.task('linksInject', async function (done) {
     .pipe(inject(
       gulp.src(['./pages/**/*.html'], { read: false }), {
       transform: function (filepath) {
-          if (filepath.slice(-5) === '.html') {
-            let splittedString = filepath.split('/');
-            if (splittedString.length > 1 && splittedString[2]) {
-              let titledString = splittedString[2].replace(/-/g, ' ');
-              titledString = titledString.charAt(0).toUpperCase() + titledString.slice(1)
-              return '<li><a href="' + filepath.substring(1) + '">' + titledString + '</a></li>';
-            } else {
-              return '<li><a href="' + filepath.substring(1) + '">' + filepath + '</a></li>';
-            }
+        if (filepath.slice(-5) === '.html') {
+          let splittedString = filepath.split('/');
+          if (splittedString.length > 1 && splittedString[2]) {
+            let titledString = splittedString[2].replace(/-/g, ' ');
+            titledString = titledString.charAt(0).toUpperCase() + titledString.slice(1)
+            return '<li><a href="' + filepath.substring(1) + '">' + titledString + '</a></li>';
+          } else {
+            return '<li><a href="' + filepath.substring(1) + '">' + filepath + '</a></li>';
+          }
         }
         // Use the default transform as fallback:
         return inject.transform.apply(inject.transform, arguments);
@@ -299,12 +300,16 @@ gulp.task('twig:classdiagram', function () {
     .pipe(gulp.dest(path.join(__dirname, 'pages', page)));
 });
 
-gulp.task('readmeInject',  function (done) {
+gulp.task('readmeInject', function (done) {
   gulp.src('./index.html')
     .pipe(inject(gulp.src(['./introduction.md'], { allowEmpty: true }), {
       starttag: '<!-- inject:readme:md -->',
       transform: function (filepath, file) {
-        return marked(file.contents.toString());
+        return marked(file.contents.toString(), {
+          highlight: function (code, lang) {
+            return hljs.highlight(lang, code).value;
+          }
+        });
       }
     }))
     .pipe(gulp.dest('./'));
@@ -330,7 +335,11 @@ gulp.task('readmeInject:pages', function (done) {
           gulp.src([`./pages/${_page}/readme.md`], { allowEmpty: true }), {
           starttag: '<!-- inject:readme:md -->',
           transform: function (filepath, file) {
-            return marked(file.contents.toString());
+            return marked(file.contents.toString(), {
+              highlight: function (code, lang) {
+                return hljs.highlight(lang, code).value;
+              }
+            });
           },
           relative: false,
           ignorePath: './node_modules',
