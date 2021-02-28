@@ -38,15 +38,11 @@
 <li>Each statement in a synchronous code is executed one after the other</li>
 <li>Each statement has to wait for the previous one to finish executing</li>
 </ul>
-<pre><code class="language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">ourSyncFunction</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our first sync statement.&#x27;</span>);
+<pre><code class="language-js">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our first sync statement.&#x27;</span>);
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our second sync statement.&#x27;</span>);
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our third sync statement.&#x27;</span>);
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our fourth sync statement.&#x27;</span>);
   <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our fifth sync statement.&#x27;</span>);
-}
-
-ourSyncFunction();
 </code></pre>
 <p>The statements above will execute in <strong>order</strong>, outputting: </p>
 <pre><code class="language-bash">Our first sync statement.
@@ -56,8 +52,48 @@ Our fourth sync statement.
 Our fifth sync statement. 
 </code></pre>
 <p>That’s because it’s written <strong>synchronously</strong>.</p>
-<h3 id="the-event-loop">The event loop</h3>
-<p>The purpose of the event loop is to make sure that all the code is handled. JavaScript has a single threaded environment, we can only execute one piece of code at a time. But the event loop makes it possible to achieve asynchronicity because we&#39;re able to set code aside such as a callback that was created by set timeout, set that aside and then the event loop will check for that and make sure that it gets taken care of when it&#39;s time to execute that.</p>
+<h3 id="asynchronous-code">Asynchronous code</h3>
+<p>Asynchronous code takes statements outside of the main program flow, allowing the code after it to be executed immediately without waiting. What if our code contains a code that cant be executed immediately. For example an API request, where we have to send a request and wait for a response? to stimulate this action, we are going to use <code>setTimeout</code>. </p>
+<p><strong>for example:</strong></p>
+<pre><code class="language-js"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 1st sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 2nd sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 3rd sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 4th sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 5th sync statement.&#x27;</span>);
+
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 6th sync statement.&#x27;</span>)}, <span class="hljs-number">3000</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 7th sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 8th sync statement.&#x27;</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Our 9th sync statement.&#x27;</span>);
+</code></pre>
+<h3 id="async-examples">Async Examples</h3>
+<ul>
+<li><p>setTimeout() : Execute a specified block of code once after a specified time has elapsed.</p>
+</li>
+<li><p>setInterval() : Execute a specified block of code repeatedly with a fixed time delay between each call.</p>
+</li>
+<li><p>requestAnimationFrame() : The modern version of setInterval(). Executes a specified block of code before the browser next repaints the display, allowing an animation to be run at a suitable framerate regardless of the environment it is being run in.</p>
+</li>
+</ul>
+<ul>
+<li><p>addEventListener()</p>
+</li>
+<li><p>fetch()</p>
+</li>
+</ul>
+<h3 id="set-timeout">Set timeout</h3>
+<p><code>setTimeout</code> allows us to run a function asyncronously after an interval of time. It is not a part of javascript sprecification. But most environments like browsers &amp; node.js support it.</p>
+<h3 id="call-stack--event-loop-callback-queue">call stack,  event loop, callback queue</h3>
+<p><img src="2021-02-27-20-12-28.png" alt="V8 Webapis callbackqueue"></p>
+<p>credit: <a href="https://www.youtube.com/watch?v=8aGhZQkoFbQ">Philip Roberts</a></p>
+<p><strong>the call stack</strong></p>
+<p>The <strong>callstack</strong> is basically a datastructure that records where in the program we are. So if we execute a function, we put something on the stack &amp; if we return from a function, we pop off something from the top of the stack. This is applicable for all our <strong>syncronous</strong> code.</p>
+<p>The <strong>taskqueue</strong> keeps a queue of all the ready to execute asynchronous callbacks.</p>
+<p>The <strong>eventloop</strong>&#39;s job is to look at the <strong>callstack</strong> and look at the <strong>taskqueue</strong>. if the stack is empty, it takes the <em>first</em> thing on the <strong>taskqueue</strong> and pushed it on to the <strong>callstack</strong>, which effectively runs it.</p>
+<p>We se a lot of <code>setTimeout(fn, 0);</code>. The purpose of it is to basically defer the execution of the callback function until the <strong>callstack</strong> clears. </p>
+<p>The <strong>renderqueue</strong> is almost like a <strong>taskqueue</strong>. The browser would like to repaint the screen, for example, every 16.6ms (60 frames/second). But its constrained by what you&#39;re doing in javascript. So, it can&#39;t actually do a render if there&#39;s a call in the <strong>callstack</strong>. The <strong>renderqueue</strong> has to wait till the callstack is clear. The difference is that the render is given a higher priority than your callback. Every 16.6ms it&#39;s going to queue a render, wait till the stack is clear, before it can actually do that render.  </p>
+<p>The purpose of the event loop is to make sure that all the code is handled. JavaScript has a single threaded environment, we can only execute one piece of code at a time. But the event loop makes it possible to achieve asynchronicity because we&#39;re able to set code aside such as a callback that was created by (web or c++ api) set timeout, set that aside and then the event loop will check for that and make sure that it gets taken care of when it&#39;s time to execute that. </p>
 <h3 id="callbacks">Callbacks</h3>
 <p>Traditionally the callbacks were the only way of acheiving asyncronicity in javascipt. The modern patterns like Promises / Async await relies on callbacks, so its important to understand them.</p>
 <p>A Callback is simply a function that is invoked after something else happens and it is acheived by passing a function to another function as an argument in Javascript. The function that we pass to an other function, is called back after something else happens. </p>
