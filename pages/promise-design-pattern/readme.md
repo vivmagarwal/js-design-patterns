@@ -6,7 +6,7 @@ Promises provides a powerful async pattern in Javascript. Lots and losts of API'
 - This Object (Promise) represents the eventual completing (or failure) of an Async Operation.
 - When the opration completes, the Promise provides a resulting value.
 
-This is how we construct a promise:
+This is how we construct a promise (Promise *producing* code):
 ```js
 let promise = new Promise(function(resolve, reject){
   // executor : do something here...
@@ -21,7 +21,7 @@ The `promise` object returned by the `new Promise` constructor has these interna
 - `state` initially set to `pending`, then changes to either `fulfilled` or `rejected`. The `state` changes to `fulfilled` when `resolved` is called or it changes to `rejected` when `reject` is called.
 - `result` is initially `undefined`, then it changes to `value` when `resolve(value)` is called or it changes to `error` when `reject(error)` is called.
 
-The properties `state` and `result` of the Promise object are internal. We can't directly access them, we can use the methods `.then()` / `.catch()` / `.finally()` for that. These are called consumer functions in the world of Promise.
+The properties `state` and `result` of the Promise object are internal. We can't directly access them, we can use the methods `.then()` / `.catch()` / `.finally()` for that. These are called *consumer functions* in the world of Promise.
 
 ### then
 

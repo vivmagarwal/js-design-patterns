@@ -59,8 +59,6 @@ console.log('Our 9th sync statement.');
 - addEventListener()
 
 - fetch()
- 
-
 
 ### Set timeout
 

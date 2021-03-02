@@ -6,9 +6,11 @@ A Callback is simply a function that is invoked after something else happens and
 
 ### Problems with Javascript Callbacks
 
-- Bunch of nested callbacks becomes very **difficult to work with** and are popularly called a callback hell.
-- Nested callbacks are **difficult to reason about**.
-- We **turn the control of our program** to something else.
+- Bunch of nested callbacks becomes very **difficult to work with** and are popularly called a callback hell
+- Nested callbacks are **difficult to reason about**
+- We **turn the control of our program** to something else
+
+A few callbacks seem harmless to me, but once your project requirements start to swell, you will quickly find yourself piling layers of nested callbacks. It quickly becomes unmanageable. 
 
 **MDN Definition:**
 A Callback function is a function passed into another function as an argument, which is then invoked inside the outer function to complete some kind of routine or action.

@@ -1,14 +1,25 @@
-console.log('asynchronous-design-patterns works!!');
+function syncFunction1 (){
+  console.log(1);
+}
 
+function asyncFunction2() {
+  setTimeout(function () {
+    // aTimeConsumingProcess();
+    console.log('async: ' + 2);  
+  },0);
+}
 
-console.log('Our 1st sync statement.');
-console.log('Our 2nd sync statement.');
-console.log('Our 3rd sync statement.');
-console.log('Our 4th sync statement.');
-console.log('Our 5th sync statement.');
+function syncFunction2 (){
+  console.log(2);
+}
 
-setTimeout(function () {console.log('Our 6th sync statement.')}, 3000);
+function syncFunction3 (){
+  console.log(3);
+}
 
-console.log('Our 7th sync statement.');
-console.log('Our 8th sync statement.');
-console.log('Our 9th sync statement.');
+// eventloop / taskqueue
+
+syncFunction1();
+asyncFunction2();
+syncFunction2();
+syncFunction3();

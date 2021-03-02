@@ -35,7 +35,7 @@
 <li>This Object (Promise) represents the eventual completing (or failure) of an Async Operation.</li>
 <li>When the opration completes, the Promise provides a resulting value.</li>
 </ul>
-<p>This is how we construct a promise:</p>
+<p>This is how we construct a promise (Promise <em>producing</em> code):</p>
 <pre><code class="language-js"><span class="hljs-keyword">let</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">resolve, reject</span>)</span>{
   <span class="hljs-comment">// executor : do something here...</span>
 })
@@ -50,7 +50,7 @@
 <li><code>state</code> initially set to <code>pending</code>, then changes to either <code>fulfilled</code> or <code>rejected</code>. The <code>state</code> changes to <code>fulfilled</code> when <code>resolved</code> is called or it changes to <code>rejected</code> when <code>reject</code> is called.</li>
 <li><code>result</code> is initially <code>undefined</code>, then it changes to <code>value</code> when <code>resolve(value)</code> is called or it changes to <code>error</code> when <code>reject(error)</code> is called.</li>
 </ul>
-<p>The properties <code>state</code> and <code>result</code> of the Promise object are internal. We can&#39;t directly access them, we can use the methods <code>.then()</code> / <code>.catch()</code> / <code>.finally()</code> for that. These are called consumer functions in the world of Promise.</p>
+<p>The properties <code>state</code> and <code>result</code> of the Promise object are internal. We can&#39;t directly access them, we can use the methods <code>.then()</code> / <code>.catch()</code> / <code>.finally()</code> for that. These are called <em>consumer functions</em> in the world of Promise.</p>
 <h3 id="then">then</h3>
 <p>The most important, fundamental one is <code>.then</code>.</p>
 <p>The syntax is:</p>
