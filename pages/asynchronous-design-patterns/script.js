@@ -17,7 +17,7 @@ function syncFunction3 (){
   console.log(3);
 }
 
-// eventloop / taskqueue
+// Please consider exploring: callstack / eventloop / taskqueue
 
 syncFunction1();
 asyncFunction2();
