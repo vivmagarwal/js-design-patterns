@@ -154,11 +154,43 @@ We can use an IIFE to do that:
 })();
 ```
 
+## Example with Promise.all
+```js
+let blog_posts = [
+  'https://jsonplaceholder.typicode.com/posts/1',
+  'https://jsonplaceholder.typicode.com/posts/2',
+  'https://jsonplaceholder.typicode.com/posts/3'
+];
+
+let blog_posts_promise_objects = blog_posts.map((post) => fetch(post));
+
+(async function () {
+  let responses = await Promise.all(blog_posts_promise_objects);
+  console.log(responses);
+})();
+```
+
+## Async on object methods
+Just use the `async` keyword before the object method:
+```js
+let user_obj = {
+  first_name: 'John',
+  last_name: 'Doe',
+  async get_todo() {
+    let response = await fetch(`https://jsonplaceholder.typicode.com/todos/1`);
+    let obj = await response.json();
+    console.log(obj);
+  }
+}
+
+user_obj.get_todo();
+```
+## Performace considerations
+
+Keep async functions small or we may end up blocking the execution of code that need not be blocked. Remeber, async/await pattern allows us to use async code. It does not cause your code to become asynchronous.
+
 ## Summary
 
 The `async` keyword before a function has two effects:
 - Makes it always return a promise.
 - Allows `await` to be used in it.
-
-
-

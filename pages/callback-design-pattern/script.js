@@ -29,40 +29,40 @@ console.log(calculate(2, 5, (a, b) => a + b));
 console.log(calculate(2, 5, (a, b) => a * b));
 
 // ================================================================== //
-
 // Asynchronous callback function example.
-let processUserInputAsync = function (first_name, last_name, callback) {
-  setTimeout(function () {
-    // form an introduction text with first_name and last_name. 
-    var intro_text = 'Hi, I am ' + first_name + ' ' + last_name + '.';
-    // execute the callback function with our intro_text
-    callback(intro_text);
-  }, 2000)
-}
+
+// let processUserInputAsync = function (first_name, last_name, callback) {
+//   setTimeout(function () {
+//     // form an introduction text with first_name and last_name. 
+//     var intro_text = 'Hi, I am ' + first_name + ' ' + last_name + '.';
+//     // execute the callback function with our intro_text
+//     callback(intro_text);
+//   }, 2000)
+// }
 
 // ================================================================= //
-function getPost(postNumber, cb) {
-  fetch(`https://jsonplaceholder.typicode.com/posts/${postNumber}`)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      cb(data);
-  })
-}
+// function getPost(postNumber, cb) {
+//   fetch(`https://jsonplaceholder.typicode.com/posts/${postNumber}`)
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .then((data) => {
+//       cb(data);
+//   })
+// }
 
-getPost(2, (data) => {
-  console.log(data.title);
-});
+// getPost(2, (data) => {
+//   console.log(data.title);
+// });
 
 // fetch('https://jsonplaceholder.typicode.com/posts/3')
 //   .then((response) => response.json())
 //   .then((data) => console.log(data.title));
 
 
-processUserInputAsync('James', 'Bond', function (intro) {
-  console.log(intro);
-});
+// processUserInputAsync('James', 'Bond', function (intro) {
+//   console.log(intro);
+// });
 
 // ================================================================== //
 

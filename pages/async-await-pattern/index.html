@@ -139,6 +139,36 @@ moviePlanets(<span class="hljs-number">1</span>);
   <span class="hljs-built_in">console</span>.log(obj);
 })();
 </code></pre>
+<h2 id="example-with-promiseall">Example with Promise.all</h2>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> blog_posts = [
+  <span class="hljs-string">&#x27;https://jsonplaceholder.typicode.com/posts/1&#x27;</span>,
+  <span class="hljs-string">&#x27;https://jsonplaceholder.typicode.com/posts/2&#x27;</span>,
+  <span class="hljs-string">&#x27;https://jsonplaceholder.typicode.com/posts/3&#x27;</span>
+];
+
+<span class="hljs-keyword">let</span> blog_posts_promise_objects = blog_posts.map(<span class="hljs-function">(<span class="hljs-params">post</span>) =&gt;</span> fetch(post));
+
+(<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> responses = <span class="hljs-keyword">await</span> <span class="hljs-built_in">Promise</span>.all(blog_posts_promise_objects);
+  <span class="hljs-built_in">console</span>.log(responses);
+})();
+</code></pre>
+<h2 id="async-on-object-methods">Async on object methods</h2>
+<p>Just use the <code>async</code> keyword before the object method:</p>
+<pre><code class="language-js"><span class="hljs-keyword">let</span> user_obj = {
+  <span class="hljs-attr">first_name</span>: <span class="hljs-string">&#x27;John&#x27;</span>,
+  <span class="hljs-attr">last_name</span>: <span class="hljs-string">&#x27;Doe&#x27;</span>,
+  <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">get_todo</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">let</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">`https://jsonplaceholder.typicode.com/todos/1`</span>);
+    <span class="hljs-keyword">let</span> obj = <span class="hljs-keyword">await</span> response.json();
+    <span class="hljs-built_in">console</span>.log(obj);
+  }
+}
+
+user_obj.get_todo();
+</code></pre>
+<h2 id="performace-considerations">Performace considerations</h2>
+<p>Keep async functions small or we may end up blocking the execution of code that need not be blocked. Remeber, async/await pattern allows us to use async code. It does not cause your code to become asynchronous.</p>
 <h2 id="summary">Summary</h2>
 <p>The <code>async</code> keyword before a function has two effects:</p>
 <ul>
