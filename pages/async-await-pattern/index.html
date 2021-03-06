@@ -167,6 +167,19 @@ moviePlanets(<span class="hljs-number">1</span>);
 
 user_obj.get_todo();
 </code></pre>
+<h2 id="async-on-es6-class-methods">Async on ES6 class methods</h2>
+<p>Just use the keyword <code>async</code> before the class method:</p>
+<pre><code class="language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Todos</span> </span>{
+  <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-title">get_todo</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">let</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">`https://jsonplaceholder.typicode.com/todos/1`</span>);
+    <span class="hljs-keyword">let</span> obj = <span class="hljs-keyword">await</span> response.json();
+    <span class="hljs-built_in">console</span>.log(obj);
+  }
+}
+
+<span class="hljs-keyword">var</span> myTodo = <span class="hljs-keyword">new</span> Todos();
+myTodo.get_todo();
+</code></pre>
 <h2 id="performace-considerations">Performace considerations</h2>
 <p>Keep async functions small or we may end up blocking the execution of code that need not be blocked. Remeber, async/await pattern allows us to use async code. It does not cause your code to become asynchronous.</p>
 <h2 id="summary">Summary</h2>

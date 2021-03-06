@@ -185,6 +185,20 @@ let user_obj = {
 
 user_obj.get_todo();
 ```
+## Async on ES6 class methods
+Just use the keyword `async` before the class method:
+```js
+class Todos {
+  async get_todo() {
+    let response = await fetch(`https://jsonplaceholder.typicode.com/todos/1`);
+    let obj = await response.json();
+    console.log(obj);
+  }
+}
+
+var myTodo = new Todos();
+myTodo.get_todo();
+```
 ## Performace considerations
 
 Keep async functions small or we may end up blocking the execution of code that need not be blocked. Remeber, async/await pattern allows us to use async code. It does not cause your code to become asynchronous.

@@ -101,3 +101,18 @@ console.log('async-await-pattern works!!');
 // }
 
 // user_obj.get_todo();
+
+// ===================================================== //
+
+// class Todos {
+//   async get_todo() {
+//     let response = await fetch(`https://jsonplaceholder.typicode.com/todos/1`);
+//     let obj = await response.json();
+//     console.log(obj);
+//   }
+// }
+
+// var myTodo = new Todos();
+// myTodo.get_todo();
+
+// ===================================================== //
