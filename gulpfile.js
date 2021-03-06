@@ -204,6 +204,18 @@ gulp.task('twig:scss', function () {
     .pipe(gulp.dest(path.join(__dirname, 'pages', page)));
 });
 
+gulp.task('twig:css', function () {
+  if (!page) {
+    throw new Error('Incorrect page name!');
+  }
+
+  try {
+    fs.writeFileSync(path.join(__dirname, 'pages', page, 'style.css'));  
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 gulp.task('twig:script', function () {
   if (!page) {
     throw new Error('Incorrect page name!');
@@ -441,7 +453,7 @@ gulp.task('readmeInject:pages', function (done) {
 //   done();
 // });
 
-gulp.task('generate', gulp.series(gulp.parallel('twig:html', 'twig:scss', 'twig:script', 'twig:readme', 'twig:classdiagram'), 'linksInject'));
+gulp.task('generate', gulp.series(gulp.parallel('twig:html', 'twig:scss', 'twig:css', 'twig:script', 'twig:readme', 'twig:classdiagram'), 'linksInject'));
 
 gulp.task('clone-page', function () {
   if (!clonefrom) {
