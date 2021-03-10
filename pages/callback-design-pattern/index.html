@@ -29,58 +29,48 @@
         class="injected-readme">
         <!-- inject:readme:md -->
         <h1 id="callback-design-pattern">Callback Design Pattern</h1>
-        <p>Traditionally the callbacks were the only way of acheiving asyncronicity in javascipt. The modern patterns like Promises / Async await relies on callbacks, so its important to understand them.</p>
-        <p>A Callback is simply a function that is invoked after something else happens and it is acheived by passing a function to another function as an argument in Javascript. The function that we pass to an other function, is called back after something else happens.
-        </p>
-        <h3 id="problems-with-javascript-callbacks">Problems with Javascript Callbacks</h3>
-        <ul>
-          <li>Bunch of nested callbacks becomes very
-            <strong>difficult to work with</strong>
-            and are popularly called a callback hell.</li>
-          <li>Nested callbacks are
-            <strong>difficult to reason about</strong>.</li>
-          <li>We
-            <strong>turn the control of our program</strong>
-            to something else.</li>
-        </ul>
-        <p>
-          <strong>MDN Definition:</strong>
-          A Callback function is a function passed into another function as an argument, which is then invoked inside the outer function to complete some kind of routine or action.</p>
-        <p>If a callback function is executed immediately, its called a
-          <strong>synchronous</strong>
-          callback. However, callbacks are often used to continue code execution after an asynchronous operation has completed, these are called
-          <strong>asynchronous</strong>
-          callbacks.</p>
-        <h3 id="synchronous-callback-function-example">synchronous callback function example</h3>
-        <pre><code>function processUserInput(first_name, last_name, callback) {
-  // form an introduction text with first_name and last_name. 
-  var intro_text = &#39;Hi, I am &#39; + first_name + &#39; &#39; + last_name + &#39;.&#39;;
-  // execute the callback function with our intro_text
+<p>Traditionally the callbacks were the only way of acheiving asyncronicity in javascipt. The modern patterns like Promises / Async await relies on callbacks, so its important to understand them.</p>
+<p>A Callback is simply a function that is invoked after something else happens and it is acheived by passing a function to another function as an argument in Javascript. The function that we pass to an other function, is called back after something else happens. </p>
+<h3 id="problems-with-javascript-callbacks">Problems with Javascript Callbacks</h3>
+<ul>
+<li>Bunch of nested callbacks becomes very <strong>difficult to work with</strong> and are popularly called a callback hell</li>
+<li>Nested callbacks are <strong>difficult to reason about</strong></li>
+<li>We <strong>turn the control of our program</strong> to something else</li>
+</ul>
+<p>A few callbacks seem harmless to me, but once your project requirements start to swell, you will quickly find yourself piling layers of nested callbacks. It quickly becomes unmanageable. </p>
+<p><strong>MDN Definition:</strong>
+A Callback function is a function passed into another function as an argument, which is then invoked inside the outer function to complete some kind of routine or action.</p>
+<p>If a callback function is executed immediately, its called a <strong>synchronous</strong> callback. However, callbacks are often used to continue code execution after an asynchronous operation has completed, these are called <strong>asynchronous</strong> callbacks.</p>
+<h3 id="synchronous-callback-function-example">synchronous callback function example</h3>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">processUserInput</span>(<span class="hljs-params">first_name, last_name, callback</span>) </span>{
+  <span class="hljs-comment">// form an introduction text with first_name and last_name. </span>
+  <span class="hljs-keyword">var</span> intro_text = <span class="hljs-string">&#x27;Hi, I am &#x27;</span> + first_name + <span class="hljs-string">&#x27; &#x27;</span> + last_name + <span class="hljs-string">&#x27;.&#x27;</span>;
+  <span class="hljs-comment">// execute the callback function with our intro_text</span>
   callback(intro_text);
 }
 
-// What we do with the intro is very flexible; as a third argument we can pass in function and we have an unlimited flexibilty of what we can do with the processed information.
+<span class="hljs-comment">// What we do with the intro is very flexible; as a third argument we can pass in function and we have an unlimited flexibilty of what we can do with the processed information.</span>
 processUserInput(
-  &#39;John&#39;,
-  &#39;Doe&#39;,
-  function (intro) {
-    console.log(intro)
+  <span class="hljs-string">&#x27;John&#x27;</span>,
+  <span class="hljs-string">&#x27;Doe&#x27;</span>,
+  <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">intro</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(intro)
   }
 );
 </code></pre>
-        <h3 id="asyncronous-callback-function-example">asyncronous callback function example</h3>
-        <pre><code>let processUserInputAsync = function (first_name, last_name, callback) {
-  setTimeout(function () {
-    // form an introduction text with first_name and last_name. 
-    var intro_text = &#39;Hi, I am &#39; + first_name + &#39; &#39; + last_name + &#39;.&#39;;
-    // execute the callback function with our intro_text
+<h3 id="asyncronous-callback-function-example">asyncronous callback function example</h3>
+<pre><code><span class="hljs-keyword">let</span> processUserInputAsync = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">first_name, last_name, callback</span>) </span>{
+  <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">// form an introduction text with first_name and last_name. </span>
+    <span class="hljs-keyword">var</span> intro_text = <span class="hljs-string">&#x27;Hi, I am &#x27;</span> + first_name + <span class="hljs-string">&#x27; &#x27;</span> + last_name + <span class="hljs-string">&#x27;.&#x27;</span>;
+    <span class="hljs-comment">// execute the callback function with our intro_text</span>
     callback(intro_text);
-  }, 2000)
+  }, <span class="hljs-number">2000</span>)
 }
 
-// What we do with the processed information is very flexible; as a third argument we can pass in function and we have an unlimited flexibilty of what we can do with the processed information. 
-processUserInputAsync(&#39;James&#39;,&#39;Bond&#39;, function (intro) {
-  console.log(intro);
+<span class="hljs-comment">// What we do with the processed information is very flexible; as a third argument we can pass in function and we have an unlimited flexibilty of what we can do with the processed information. </span>
+processUserInputAsync(<span class="hljs-string">&#x27;James&#x27;</span>,<span class="hljs-string">&#x27;Bond&#x27;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">intro</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(intro);
 });
 </code></pre>
 

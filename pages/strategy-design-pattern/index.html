@@ -28,83 +28,57 @@
         class="injected-readme">
         <!-- inject:readme:md -->
         <h1 id="strategy-design-pattern">Strategy Design Pattern</h1>
-        <p>The
-          <strong>strategy pattern</strong>
-          is a
-          <em>behavorial</em>
-          software design pattern that enables an algorithm&#39;s behavior to be selected at runtime.
-        </p>
-        <p>The
-          <strong>strategy pattern</strong>:</p>
-        <ul>
-          <li>defines a family of alogrithms</li>
-          <li>the individiual strategy implementation encapsulates each algorithm
-          </li>
-          <li>individual strategies are interchangeable as they implement a uniform interface that context understands</li>
-          <li>context is a class with uses strategy</li>
-          <li>the context is a compositor allowing us to compose a flavour of implementation as needed</li>
-          <li>a common naming convention for strategies is using the word
-            <code>behaviour</code>
-            for strategies</li>
-        </ul>
-        <p>The
-          <strong>strategy pattern</strong>
-          promotes open/closed principle by using compsition over inheritance.</p>
-        <h2 id="example-1">Example 1</h2>
-        <p>A custom sorter is a classic example of the implementation of the
-          <strong>strategy pattern</strong>:</p>
-        <ul>
-          <li>we have a sort()
-            <strong>context</strong>
-          </li>
-          <li>we have different sorting
-            <strong>strategies</strong>
-            <code>bubble sort</code>
-            /
-            <code>quick sort</code>
-            /
-            <code>insertion sort</code>
-            or
-            <code>merge sort</code>
-          </li>
-          <li>some sorts are quicker based on the number of records. Depending on the number of records, context can select the sorting strategy. Our class is just calling sort, but the behavour of sort is dynamically changing.
-          </li>
-        </ul>
-        <h2 id="example-2">Example 2</h2>
-        <p>A dynamic pricing would use the strategy pattern because the algorithm you use to generate the price could vary based on the time of the day, percentage of seats already sold etc. There would be a getPrice method &amp; which strategy it runs is none my concern. Basically, the price calculation behaviour is changing at the runtime.
-        </p>
-        <h2 id="example-3">Example 3</h2>
-        <p>Different SuperHero classes can be generated using differnt default SuperPowers like Fly, WeaveWeb, RunSuperFast, Fights, NoPowerRunAway etc. At run time they can changeSuperPowers() based on their levels of energy and health.</p>
-        <h2 id="example">Example</h2>
-        <p>Bank changes calculation strategy can be different based on the type of account and the amount of the transaction.</p>
-        <h2 id="example-4">Example 4</h2>
-        <p>In a gaming app, soldier get a default attackingPower. At the runtime they can change their attackingStrategy based on the level they are on, energy and health. Some needs refill, some need repair; the repair and refill strategies can be different too;</p>
-        <h3 id="client">Client</h3>
-        <pre><code>.
+<p>The <strong>strategy pattern</strong> is a <em>behavorial</em> software design pattern that enables an algorithm&#39;s behavior to be selected at runtime. </p>
+<p>The <strong>strategy pattern</strong>:</p>
+<ul>
+<li>defines a family of alogrithms</li>
+<li>the individiual strategy implementation encapsulates each algorithm </li>
+<li>individual strategies are interchangeable as they implement a uniform interface that context understands</li>
+<li>context is a class with uses strategy</li>
+<li>the context is a compositor allowing us to compose a flavour of implementation as needed</li>
+<li>a common naming convention for strategies is using the word <code>behaviour</code> for strategies</li>
+</ul>
+<p>The <strong>strategy pattern</strong> promotes open/closed principle by using compsition over inheritance.</p>
+<h2 id="example-1">Example 1</h2>
+<p>A custom sorter is a classic example of the implementation of the <strong>strategy pattern</strong>:</p>
+<ul>
+<li>we have a sort() <strong>context</strong></li>
+<li>we have different sorting <strong>strategies</strong> <code>bubble sort</code> / <code>quick sort</code> / <code>insertion sort</code> or <code>merge sort</code></li>
+<li>some sorts are quicker based on the number of records. Depending on the number of records, context can select the sorting strategy. Our class is just calling sort, but the behavour of sort is dynamically changing. </li>
+</ul>
+<h2 id="example-2">Example 2</h2>
+<p>A dynamic pricing would use the strategy pattern because the algorithm you use to generate the price could vary based on the time of the day, percentage of seats already sold etc. There would be a getPrice method &amp; which strategy it runs is none my concern. Basically, the price calculation behaviour is changing at the runtime. </p>
+<h2 id="example-3">Example 3</h2>
+<p>Different SuperHero classes can be generated using differnt default SuperPowers like Fly, WeaveWeb, RunSuperFast, Fights, NoPowerRunAway etc. At run time they can changeSuperPowers() based on their levels of energy and health.</p>
+<h2 id="example">Example</h2>
+<p>Bank changes calculation strategy can be different based on the type of account and the amount of the transaction.</p>
+<h2 id="example-4">Example 4</h2>
+<p>In a gaming app, soldier get a default attackingPower. At the runtime they can change their attackingStrategy based on the level they are on, energy and health. Some needs refill, some need repair; the repair and refill strategies can be different too;</p>
+<h3 id="client">Client</h3>
+<pre><code>.
 └── ISoldier { attack(); gather(); refillable rf; repairable rp }
     ├── Archer {} implements ISoldier
     ├── Spearman {} implements ISoldier
     ├── Gunman {} implements ISoldier
     └── Robot {} implements ISoldier
 </code></pre>
-        <h3 id="strategies-or-behviours">Strategies or Behviours</h3>
-        <pre><code>.
+<h3 id="strategies-or-behviours">Strategies or Behviours</h3>
+<pre><code>.
 └── IRefillableBehaviour { refill(); }
-    ├── WeponRefillBehaviour { refill(){...};}
-    ├── TimeRefillBehaviour { refill(){...};}
-    └── NoRefillBehaviour { refill(){...};}
+    ├── WeponRefillBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
+    ├── TimeRefillBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
+    └── NoRefillBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
 </code></pre>
-        <pre><code>.
+<pre><code>.
 └── IRepairable {}
-    ├── InternalRepairBehaviour { refill(){...};}
-    ├── ExternalRepairBehaviour { refill(){...};}
-    └── NoRepairBehaviour { refill(){...};}
+    ├── InternalRepairBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
+    ├── ExternalRepairBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
+    └── NoRepairBehaviour { <span class="hljs-function"><span class="hljs-title">refill</span>(<span class="hljs-params"></span>)</span>{...};}
 </code></pre>
-        <p>As we are programming to Inteface or Supertype, so behaviours can be changed at runtime. At run time I can choose from the family of algorithms. 
-          A robot can be created with a combination of an instance of, for example, TimeRefillBehaviour &amp; ExternalRepariBehaviour
-          A gunman can be created with a combination of  an instance of, for example, WeponRefillBehaviour &amp; NoRepairBehaviour
-        </p>
-        <p>Its a very loosely coupled an flexible system. The behaviours can change independently of the client that is consuming them. Behaviours can be seamlessly interchanged as they are encaplulated in a family of algorithms. At one time GunMan can use WeponRefillBehaviour, at onother time it can use TimeRefillBehaviour &amp; later it can use NoRefillBehaviour. Because all three of these behaviour are a family of behaviour that implements the same interface. Our client Gunman, neednot worry about the internal implementation of any of those as long as they adhere to the interface that the client understands.</p>
+<p>As we are programming to Inteface or Supertype, so behaviours can be changed at runtime. At run time I can choose from the family of algorithms. 
+A robot can be created with a combination of an instance of, for example, TimeRefillBehaviour &amp; ExternalRepariBehaviour
+A gunman can be created with a combination of  an instance of, for example, WeponRefillBehaviour &amp; NoRepairBehaviour </p>
+<p>Its a very loosely coupled an flexible system. The behaviours can change independently of the client that is consuming them. Behaviours can be seamlessly interchanged as they are encaplulated in a family of algorithms. At one time GunMan can use WeponRefillBehaviour, at onother time it can use TimeRefillBehaviour &amp; later it can use NoRefillBehaviour. Because all three of these behaviour are a family of behaviour that implements the same interface. Our client Gunman, neednot worry about the internal implementation of any of those as long as they adhere to the interface that the client understands.</p>
 
         <!-- endinject -->
       </div>

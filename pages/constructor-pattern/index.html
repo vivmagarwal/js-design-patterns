@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>constructor-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+  </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="constructor-pattern">Constructor Pattern</h1>
+<p>In object-oriented terminology, a constructor is a special method used to initialize a new object and allocate memory for it. In Javascript as almost everthing is an object, we are most often interested in object constructors.</p>
+<p>Common ways to create new objects in Javascript</p>
+<h2 id="1-creating-object-with-object-literals">1 Creating object with object literals</h2>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> new_object_one = {};
+</code></pre>
+<h2 id="2-creating-object-with-objectcreate-method">2 Creating object with Object.create() Method</h2>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> new_object_two = <span class="hljs-built_in">Object</span>.create(<span class="hljs-built_in">Object</span>.prototype);
+</code></pre>
+<h2 id="3-creating-object-with-a-constructor">3 Creating object with a constructor</h2>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> new_object_three = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Object</span>();
+</code></pre>
+<h2 id="4-creating-object-using-es6-classes">4 Creating object using es6 classes</h2>
+<pre><code class="language-js"><span class="hljs-keyword">var</span> new_object_four = <span class="hljs-keyword">new</span> <span class="hljs-class"><span class="hljs-keyword">class</span> </span>{ };
+</code></pre>
+<p>All of the above ways have created new empty objects for us. We can check them by logging them to the console.</p>
+<pre><code><span class="hljs-built_in">console</span>.log(new_object_one);
+<span class="hljs-built_in">console</span>.log(new_object_two);
+<span class="hljs-built_in">console</span>.log(new_object_three);
+<span class="hljs-built_in">console</span>.log(new_object_four);
+</code></pre>
+<p>result</p>
+<pre><code class="language-bash">{}
+{}
+{}
+{}
+</code></pre>
+<h2 id="assigning-keyvalues-to-an-object">Assigning key:values to an object</h2>
+<h2 id="1-dot-syntax">1. Dot syntax</h2>
+<p>Set property</p>
+<pre><code>new_object_one.key_one = <span class="hljs-string">&quot;Hello World!&quot;</span>;
+</code></pre>
+<p>Get value</p>
+<pre><code><span class="hljs-keyword">var</span> value = new_object_one.key_one;
+</code></pre>
+<h2 id="2-square-braket-syntax">2. Square braket syntax</h2>
+<p>Set property</p>
+<pre><code>new_object_one[<span class="hljs-string">&#x27;key_two&#x27;</span>] = <span class="hljs-string">&quot;Welcome to JS Patterns.&quot;</span>
+</code></pre>
+<p>Get value</p>
+<pre><code><span class="hljs-keyword">var</span> value_two = new_object_one[<span class="hljs-string">&#x27;key_two&#x27;</span>];
+</code></pre>
+<h2 id="3-objectdefineproperty">3. Object.defineProperty</h2>
+<p>Set properties</p>
+<pre><code><span class="hljs-built_in">Object</span>.defineProperty(new_object_one, <span class="hljs-string">&quot;key_three&quot;</span>, {
+  <span class="hljs-attr">value</span>: <span class="hljs-string">&#x27;I just defied a property&#x27;</span>,
+  <span class="hljs-attr">writable</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,
+});
+</code></pre>
+<p>We often create a helper function to make it simpler</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">defineProp</span>(<span class="hljs-params">obj, key, value</span>) </span>{
+  <span class="hljs-keyword">var</span> config = {
+    <span class="hljs-attr">value</span>: value,
+    <span class="hljs-attr">writable</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>
+  };
+  <span class="hljs-built_in">Object</span>.defineProperty( obj, key, config );
+}
+</code></pre>
+<p>Usage</p>
+<pre><code>defineProp(new_object_one, <span class="hljs-string">&quot;key_four&quot;</span>, <span class="hljs-string">&quot;I just used my helper function to define property&quot;</span>)
+</code></pre>
+<p>We can console log the <code>new_object_one</code> to check if the properties are propertly set.</p>
+<pre><code><span class="hljs-built_in">console</span>.log(new_object_one);
+</code></pre>
+<p>Result</p>
+<pre><code class="language-bash">{
+  key_four: <span class="hljs-string">&quot;I just used my helper function to define property&quot;</span>
+  key_one: <span class="hljs-string">&quot;Hello World!&quot;</span>
+  key_seven: <span class="hljs-string">&quot;I can define multiple properties!! Wow!!.&quot;</span>
+  key_six: <span class="hljs-string">&quot;I can define multiple properties.&quot;</span>
+  key_three: <span class="hljs-string">&quot;I just defied a property&quot;</span>
+  key_two: <span class="hljs-string">&quot;Welcome to JS Patterns.&quot;</span>
+}
+</code></pre>
+<h2 id="basic-constructors">Basic constructors</h2>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Account</span>(<span class="hljs-params">type, balance, year</span>) </span>{
+  <span class="hljs-built_in">this</span>.type = type;
+  <span class="hljs-built_in">this</span>.balance = balance;
+  <span class="hljs-built_in">this</span>.year = year;
+
+  <span class="hljs-built_in">this</span>.getInfo = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">this</span>.type}</span> account opened in the year <span class="hljs-subst">${<span class="hljs-built_in">this</span>.year}</span> has a balance of Rs. <span class="hljs-subst">${<span class="hljs-built_in">this</span>.balance}</span>`</span>;
+  }
+}
+</code></pre>
+<p><strong>Usage:</strong></p>
+<p>Creating new instances:</p>
+<pre><code><span class="hljs-keyword">var</span> account_one = <span class="hljs-keyword">new</span> Account(<span class="hljs-string">&quot;savings&quot;</span>, <span class="hljs-number">1000</span>, <span class="hljs-number">2020</span>);
+<span class="hljs-keyword">var</span> account_two = <span class="hljs-keyword">new</span> Account(<span class="hljs-string">&quot;corporate&quot;</span>, -<span class="hljs-number">1000000</span>, <span class="hljs-number">2021</span>);
+</code></pre>
+<pre><code><span class="hljs-built_in">console</span>.log(account_one.getInfo());
+<span class="hljs-built_in">console</span>.log(account_two.getInfo());
+</code></pre>
+<h2 id="constructor-with-prototypes">Constructor with Prototypes</h2>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">EfficientAccount</span>(<span class="hljs-params">type, balance, year</span>) </span>{
+  <span class="hljs-built_in">this</span>.type = type;
+  <span class="hljs-built_in">this</span>.balance = balance;
+  <span class="hljs-built_in">this</span>.year = year;
+}
+</code></pre>
+<p>In this way on every object creation this method will not be redefined. If it is explicitly refined in for an object then that will be used else javascript will find it in the prototype chain. IMO this approach is much more suitable for inheritance. A single instance of getInfo() will now be shared between all EfficientAccount objects.</p>
+<pre><code>EfficientAccount.prototype.getInfo = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-string">`Efficient <span class="hljs-subst">${<span class="hljs-built_in">this</span>.type}</span> account opened in the year <span class="hljs-subst">${<span class="hljs-built_in">this</span>.year}</span> has a balance of Rs. <span class="hljs-subst">${<span class="hljs-built_in">this</span>.balance}</span>`</span>;
+}
+</code></pre>
+<p>usage:</p>
+<pre><code><span class="hljs-keyword">var</span> efficient_accunt_one = <span class="hljs-keyword">new</span> EfficientAccount(<span class="hljs-string">&quot;savings&quot;</span>, <span class="hljs-number">1000</span>, <span class="hljs-number">1999</span>);
+<span class="hljs-keyword">var</span> efficient_account_two = <span class="hljs-keyword">new</span> EfficientAccount(<span class="hljs-string">&quot;premium&quot;</span>, <span class="hljs-number">1000000</span>, <span class="hljs-number">2020</span>);
+</code></pre>
+<pre><code><span class="hljs-built_in">console</span>.log(efficient_accunt_one.getInfo());
+<span class="hljs-built_in">console</span>.log(efficient_account_two.getInfo());
+</code></pre>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>

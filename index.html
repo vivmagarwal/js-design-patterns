@@ -27,11 +27,14 @@
           <li><a href="pages/asynchronous-design-patterns/index.html">Asynchronous design patterns</a></li>
           <li><a href="pages/builder-design-pattern/index.html">Builder design pattern</a></li>
           <li><a href="pages/callback-design-pattern/index.html">Callback design pattern</a></li>
-          <li><a href="pages/memento-design-pattern/index.html">Memento design pattern</a></li>
           <li><a href="pages/factory-design-pattern/index.html">Factory design pattern</a></li>
+          <li><a href="pages/constructor-pattern/index.html">Constructor pattern</a></li>
+          <li><a href="pages/memento-design-pattern/index.html">Memento design pattern</a></li>
+          <li><a href="pages/module-pattern/index.html">Module pattern</a></li>
           <li><a href="pages/promise-design-pattern/index.html">Promise design pattern</a></li>
-          <li><a href="pages/strategy-design-pattern/index.html">Strategy design pattern</a></li>
+          <li><a href="pages/revealing-module-pattern/index.html">Revealing module pattern</a></li>
           <li><a href="pages/singleton-design-pattern/index.html">Singleton design pattern</a></li>
+          <li><a href="pages/strategy-design-pattern/index.html">Strategy design pattern</a></li>
           <!-- endinject -->
         </ul>
 
@@ -48,6 +51,167 @@
 <li>A design pattern helps us identify a problem and presents a tested solution</li>
 <li>A design pattern must be reusable and must produce a reliable outcome</li>
 </ul>
+<p>Design patterns can be broken down into a number of different categories:</p>
+<h2 id="creational-design-patterns">Creational Design Patterns</h2>
+<p>Creational design patterns focus on handling <strong>object creation</strong> mechanisms where objects are created in a manner suitalbe for the situation we&#39;re working in. </p>
+<p>Some of the patterns that fall under this category are: </p>
+<ul>
+<li>Constructor</li>
+<li>Factory</li>
+<li>Abstract</li>
+<li>Prototype</li>
+<li>Singleton</li>
+<li>Builder</li>
+</ul>
+<h2 id="structural-design-patterns">Structural Design Patterns</h2>
+<p>Structural patterns are concerned with <strong>object composition</strong> and typically identify simple ways to realize <strong>relationships between objects</strong>. They help ensure that when one part of the system changes, the entire structure of the system doesnot need to change.</p>
+<p>Patterns that fall under this category include: Decorator, Facade, Flyweight, Adapter and Proxy</p>
+<h2 id="behavorial-deising-patterns">Behavorial Deising Patterns</h2>
+<p>Behavorial patterns focus on improving or streamlining the <strong>communication between objects</strong> in a system.</p>
+<p>Some behavorial patterns include: Iterator, Mediator, Observer &amp; Visitor.</p>
+<h2 id="es6-classes">ES6 Classes</h2>
+<p>ES6 Classes are syntatical sugar over Javascript&#39;s prototype based inheritance model. Here&#39;s how we can use Javascript&#39;s constructor function as classes.</p>
+<pre><code class="language-js">
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Account</span>(<span class="hljs-params">type</span>) </span>{
+  <span class="hljs-built_in">this</span>.type = type;
+  <span class="hljs-built_in">this</span>.balance = <span class="hljs-number">0</span>;
+  <span class="hljs-built_in">this</span>.openingYear = <span class="hljs-number">2000</span>;
+
+  <span class="hljs-built_in">this</span>.getInfo = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> (
+      <span class="hljs-string">`
+      Account Type : <span class="hljs-subst">${<span class="hljs-built_in">this</span>.type}</span>,
+      Balance : <span class="hljs-subst">${<span class="hljs-built_in">this</span>.balance}</span>,
+      Opening Year : <span class="hljs-subst">${<span class="hljs-built_in">this</span>.openingYear}</span>
+      `</span>
+    );
+  }
+}
+
+<span class="hljs-comment">// Usage</span>
+
+<span class="hljs-keyword">var</span> myAccount = <span class="hljs-keyword">new</span> Account(<span class="hljs-string">&quot;Savings&quot;</span>);
+myAccount.balance = <span class="hljs-number">500</span>;
+myAccount.openingYear = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getFullYear();
+<span class="hljs-built_in">console</span>.log(myAccount.getInfo());
+</code></pre>
+<h2 id="table-of-design-pattern">Table of Design pattern</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Creational</strong></th>
+<th>Based on the concept of creating an object</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Factory method</td>
+<td>This makes an instance of several derived classes based on interfaced data or events. Factory method provides an interface for creating objects in a superclass, but allows subclass to alter the type of objects that will be created.</td>
+</tr>
+<tr>
+<td>Abstract Factory</td>
+<td>Creates an instance of several families of classes without detailing concrete classes</td>
+</tr>
+<tr>
+<td>Builder</td>
+<td>Separates object construction from its representation, always creates the same type of object</td>
+</tr>
+<tr>
+<td>Prototype</td>
+<td>A fully initialized instance used for copying or cloning</td>
+</tr>
+<tr>
+<td>Singleton</td>
+<td>A class with only a single instance with global access points</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Structural</strong></th>
+<th>Based on the idea of building blocks of objects</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Adapter</td>
+<td>Match interfaces of different classes there for classes can work together despite incompatible interfaces</td>
+</tr>
+<tr>
+<td>Bridge</td>
+<td>Separates an object&#39;s interface from it&#39;s implementation so the two can vary independently</td>
+</tr>
+<tr>
+<td>Composite</td>
+<td>A structure of simple and composite objects which makes the total object more than just the sum of its parts</td>
+</tr>
+<tr>
+<td>Decorator</td>
+<td>Dynamically add alternate processing to objects</td>
+</tr>
+<tr>
+<td>Facade</td>
+<td>A single class that hides the complexity of an entire subsustem.</td>
+</tr>
+<tr>
+<td>Flyweight</td>
+<td>A fine grained instance used for efficient sharing of information that is contained elsewhere.</td>
+</tr>
+<tr>
+<td>Proxy</td>
+<td>A placeholder object representing the true object</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th><strong>Behavorial</strong></th>
+<th>Based on the way objects play and work together</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Interpreter</td>
+<td>A way to include language elements in an application to match the grammar of the intended language</td>
+</tr>
+<tr>
+<td>Template method</td>
+<td>Creates the shell of a method of an algorithm in a method, then defer the exact steps to a subclass</td>
+</tr>
+<tr>
+<td>Chain of responsibility</td>
+<td>A way of passing a request between a chain of objects to find the object that can handle the request</td>
+</tr>
+<tr>
+<td>Command</td>
+<td>Encapsulate a command request as an object to enable, logging and/or queuing of requests, and provides error-handling for unhandled requests.</td>
+</tr>
+<tr>
+<td>Iterator</td>
+<td>Sequentially access the elements of a collection without knowing the inner workings of the collection</td>
+</tr>
+<tr>
+<td>Mediator</td>
+<td>Defines simplified communication between classes to prevent a group of classes from referring explicitly to each other</td>
+</tr>
+<tr>
+<td>Momento</td>
+<td>Capture an object&#39;s internal state to be able to restore it later</td>
+</tr>
+<tr>
+<td>Observer</td>
+<td>A way of notifying change to a number of classes to ensure consistency between the classes</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Alter an objects behaviour when the state changes</td>
+</tr>
+<tr>
+<td>Strategy</td>
+<td>Encapsulate an algorithm inside a class separating the selection from the implementation</td>
+</tr>
+<tr>
+<td>Visitor</td>
+<td>Adds a new operation to a class without changing the class</td>
+</tr>
+</tbody></table>
 
         <!-- endinject -->
         </div>
