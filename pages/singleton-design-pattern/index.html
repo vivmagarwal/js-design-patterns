@@ -29,9 +29,111 @@
         <!-- inject:readme:md -->
         <h1 id="singleton-design-pattern">Singleton Design Pattern</h1>
 <p>Singletons are objects that can only have a single instance, with a single point of access. Singletons are useful for maintaining a central state, where all clients need to access and operate on a common resource.</p>
+<p>Classically, the Singleton pattern can be implemented by creating a class with a method that creates a new instance if the class if one doesn&#39;t exist. In the event of an instance already existing, it simply returns a refernce to that object.</p>
+<p>In Singletons, we basically delay initialization, generally because they require some information that may not be available during initialization time.</p>
 <p>Node&#39;s module system caches the module the moment it is accessed using a require statement for the very first time. Thereafter the same instance is reffered to everywhere. No matter how many times you impoert this module accross your application, it will access the same cached and common instance. So the Node&#39;s module system offers a rudimentary implementation if a singleton.</p>
 <p>However, this behaviour is dependent on the filename consistency. Difference in capitalization in filenames will result in multiple cached instances.</p>
 <p>When working with classes, instantiating a class before exporting it out of a module will result in a singleton.</p>
+<h2 id="problem">Problem</h2>
+<ul>
+<li>Ensure that a class has just a single instance</li>
+<li>Provide a global access point to that instance</li>
+</ul>
+<h2 id="implementation-logic">Implementation Logic</h2>
+<p>The Singleton class declares the static method <code>getInstance</code> that returns the same instance of it&#39;s own class. The Singleton&#39;s constructor should be hidden from the client code. Calling the <code>getInstance</code> method should be the only way of getting the Singleton object.</p>
+<h2 id="step-by-step">Step by step</h2>
+<ol>
+<li>Add a private static field to the class for storing the singleton instance.</li>
+<li>Declare a public static creation method for getting the singleton instance.</li>
+<li>Implement lazy initialization inside the static method. It should create a new object on it&#39;s first call and put it into the static field. The method should always return that instance on all subsequent calls.</li>
+<li>Make the constructor of the class private. The static method of the class will still be able to call the constructor, but not the other objects.</li>
+<li>Go over the client code and replace all direct calls to singleton&#39;s constructor with calls to its static creation method.</li>
+</ol>
+<h2 id="pseudocode">Pseudocode</h2>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Database</span> </span>{
+  private <span class="hljs-keyword">static</span> field instance: Database
+  private <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span>{...}
+  public <span class="hljs-keyword">static</span> method <span class="hljs-function"><span class="hljs-title">getInstance</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">if</span> (Database.instance === <span class="hljs-literal">null</span>) {
+      Database.instance = <span class="hljs-keyword">new</span> Database()
+    }
+    retrun Database.instance  
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Application</span>
+  <span class="hljs-title">method</span> <span class="hljs-title">main</span>() </span>{
+    Database db = Database.getInstance();
+  }
+</code></pre>
+<h2 id="pros">Pros</h2>
+<ul>
+<li>We can be sure that a class has only one instance</li>
+<li>We can gain a global access point to that instance</li>
+<li>The singleton object is initialized only when it&#39;s requested for the first time</li>
+</ul>
+<h2 id="cons">Cons</h2>
+<ul>
+<li>Violates the single responsibility principle</li>
+<li>May be difficult to unit test the client code of the Singleton because may test frameworks rely on inheritance when producing mock objects.</li>
+<li>Whilst the Singleton has valid uses, often when we find ourselves needing it in JavaScript, its a sign that we may need to re-evaluate our design</li>
+<li>Singletons are often an indication that modules in a subsystem are either tightly couples or that logic is overly spread across multiple parts of a codebase.</li>
+<li>Singletons can increase tight coupling.</li>
+</ul>
+<h2 id="classical-js-implementation-of-a-singleton">Classical JS implementation of a singleton</h2>
+<pre><code><span class="hljs-keyword">var</span> myDatabase = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> instance;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span> (<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">var</span> privateConnectionNumber = <span class="hljs-built_in">Math</span>.random();
+
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">connection_number</span>: privateConnectionNumber,
+    }
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">getInstance</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>)</span>{
+      <span class="hljs-keyword">if</span> (!instance) {
+        instance = init();
+      }
+
+      <span class="hljs-keyword">return</span> instance;
+    }
+  }
+})();
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code><span class="hljs-keyword">var</span> db1 = <span class="hljs-built_in">console</span>.log(myDatabase.getInstance());
+<span class="hljs-keyword">var</span> db2 = <span class="hljs-built_in">console</span>.log(myDatabase.getInstance());
+</code></pre>
+<p>Both the db&#39;s will print the same connection_number as they have just one instance. Another way to check if they are both pointing to the same obect:</p>
+<pre><code><span class="hljs-built_in">console</span>.log(db1 === db2);
+</code></pre>
+<h2 id="example-using-a-constructor-function">Example using a constructor function</h2>
+<pre><code><span class="hljs-keyword">var</span> myScoreBoard = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> instance;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Singleton</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">this</span>.gameNumber = <span class="hljs-built_in">Math</span>.random();
+  }
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">getInstance</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">if</span> (!instance) {
+        instance = <span class="hljs-keyword">new</span> Singleton();
+      }
+      <span class="hljs-keyword">return</span> instance;
+    }
+  }
+})();
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code><span class="hljs-keyword">var</span> sb1 = <span class="hljs-built_in">console</span>.log(myScoreBoard.getInstance());
+<span class="hljs-keyword">var</span> sb2 = <span class="hljs-built_in">console</span>.log(myScoreBoard.getInstance());
+
+<span class="hljs-built_in">console</span>.log(sb1 === sb2);
+</code></pre>
 
         <!-- endinject -->
       </div>

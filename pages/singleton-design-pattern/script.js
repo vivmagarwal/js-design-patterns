@@ -4,8 +4,8 @@ console.log('singleton-design-pattern works!!');
 // const cashRegister2 = require('./CashRegister');
 // const cashRegister1 = require('./CashRegister');
 
-import {CashResister as cashRegister1} from './CashRegister.js'
-import {CashResister as cashRegister2} from './CashRegister.js'
+import { CashResister as cashRegister1 } from './CashRegister.js'
+import { CashResister as cashRegister2 } from './CashRegister.js'
 
 
 cashRegister1.addMoney(10);
@@ -35,3 +35,56 @@ Mike.wins(20);
 
 console.log(Poker.scores());
 console.log(Poker.getWinner());
+
+// ===================================================== //
+// A classic singleton implementation
+
+var myDatabase = (function () {
+  var instance;
+
+  function init() {
+    var privateConnectionNumber = Math.random();
+
+    return {
+      connection_number: privateConnectionNumber,
+    }
+  }
+
+  return {
+    getInstance: function () {
+      if (!instance) {
+        instance = init();
+      }
+
+      return instance;
+    }
+  }
+})();
+
+var db1 = console.log(myDatabase.getInstance());
+var db2 = console.log(myDatabase.getInstance());
+
+// ===================================================== //
+// using constructor function
+
+var myScoreBoard = (function () {
+  var instance;
+
+  function Singleton() {
+    this.gameNumber = Math.random();
+  }
+
+  return {
+    getInstance: function () {
+      if (!instance) {
+        instance = new Singleton();
+      }
+      return instance;
+    }
+  }
+})();
+
+var sb1 = console.log(myScoreBoard.getInstance());
+var sb2 = console.log(myScoreBoard.getInstance());
+
+console.log(sb1 === sb2);

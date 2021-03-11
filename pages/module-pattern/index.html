@@ -25,6 +25,180 @@
       <div class="injected-readme">
       <!-- inject:readme:md -->
       <h1 id="module-pattern">Module Pattern</h1>
+<p>Modules help in keeping the units of code for a project separate and organized. In Javascript, there are several options for implementing modules:</p>
+<ul>
+<li>The Module Pattern</li>
+<li>Object literal notation</li>
+<li>AMD modules</li>
+<li>CommonJS modules</li>
+<li>EcmaScript modules </li>
+</ul>
+<h2 id="object-literals">Object Literals</h2>
+<p>Using object literals can assist in encapsulating and organizig your code.</p>
+<pre><code><span class="hljs-keyword">var</span> myAccount = {
+
+  <span class="hljs-comment">// property</span>
+  <span class="hljs-attr">accountHolerName</span>: <span class="hljs-string">&quot;John Deo&quot;</span>,
+
+  <span class="hljs-comment">// property</span>
+  <span class="hljs-attr">balance</span>: <span class="hljs-number">5000</span>,
+
+  <span class="hljs-comment">// property</span>
+  <span class="hljs-attr">accountSettings</span>: {
+    <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Doe&#x27;</span>,
+    <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;English&#x27;</span>,
+    <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;Rs.&#x27;</span>
+  },
+
+  <span class="hljs-comment">// method</span>
+  <span class="hljs-attr">getAccountInfo</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">this</span>.accountHolerName}</span>&#x27;s balance is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.accountSettings.default_currency}</span> <span class="hljs-subst">${<span class="hljs-built_in">this</span>.balance}</span> and he speaks <span class="hljs-subst">${<span class="hljs-built_in">this</span>.accountSettings.default_language}</span>. <span class="hljs-subst">${<span class="hljs-built_in">this</span>.accountHolerName}</span> has to keep a minimum balace of <span class="hljs-subst">${<span class="hljs-built_in">this</span>.accountSettings.minimum_balance}</span>.`</span>);
+  },
+
+  <span class="hljs-comment">// method</span>
+  <span class="hljs-attr">updateAccountSettings</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">new_settings</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> new_settings === <span class="hljs-string">&quot;object&quot;</span>) {
+      <span class="hljs-built_in">this</span>.accountSettings = new_settings;
+    }
+  }
+}
+</code></pre>
+<p>Usage:</p>
+<pre><code>myAccount.getAccountInfo();
+
+myAccount.updateAccountSettings({
+  <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">2000</span>,
+  <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Doe&#x27;</span>,
+  <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;French&#x27;</span>,
+  <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;$&#x27;</span>
+})
+
+<span class="hljs-comment">// Is there somthing called privacy? Shouldn&#x27;t there be a way to make it private?</span>
+myAccount.accountHolerName = <span class="hljs-string">&quot;James Bond&quot;</span>;
+
+myAccount.getAccountInfo();
+</code></pre>
+<h2 id="the-module-pattern">The Module Pattern</h2>
+<p>In Javascript, the Module pattern is used to emulate the concept of classes in such a way that we&#39;re able to include both public/private methods and variables inside a single object, thus sheilding particular parts from the global scope. With this pattern only a public API is returned, keeping evertying else within the closure private.</p>
+<p>Module pattern assigns an iife to a variable. that iife returns an object with properties and methods that we want to make available outsite the iife.</p>
+<pre><code><span class="hljs-keyword">var</span> myAccountModule = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> accountHolerName = <span class="hljs-string">&quot;John Doe&quot;</span>;
+  <span class="hljs-keyword">var</span> balance = <span class="hljs-number">5000</span>;
+  <span class="hljs-keyword">var</span> accountSettings = {
+    <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Doe&#x27;</span>,
+    <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;English&#x27;</span>,
+    <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;Rs.&#x27;</span>
+  };
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">getAccountInfo</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${accountHolerName}</span>&#x27;s balance is <span class="hljs-subst">${accountSettings.default_currency}</span> <span class="hljs-subst">${balance}</span> and he speaks <span class="hljs-subst">${accountSettings.default_language}</span>. <span class="hljs-subst">${accountHolerName}</span> has to keep a minimum balace of <span class="hljs-subst">${accountSettings.minimum_balance}</span>.`</span>);
+    },
+
+    <span class="hljs-attr">updateAccountSettings</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">new_settings</span>) </span>{
+      <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> new_settings === <span class="hljs-string">&quot;object&quot;</span>) {
+        accountSettings = new_settings;
+      }
+    },
+
+    <span class="hljs-attr">updateName</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">new_name</span>) </span>{
+      accountHolerName = new_name;
+    }
+  };
+})();
+</code></pre>
+<p>Usage:</p>
+<pre><code>myAccountModule.getAccountInfo();
+myAccountModule.updateName(<span class="hljs-string">&quot;James Bondy&quot;</span>)
+myAccountModule.updateAccountSettings({
+  <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">3000</span>,
+  <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">1000</span>,
+  <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Bond&#x27;</span>,
+  <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;Chinese&#x27;</span>,
+  <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;#&#x27;</span>
+});
+myAccountModule.getAccountInfo();
+</code></pre>
+<p>Here, other parts of the code are unable to directly access internal properties like <code>accountHolderName</code> , <code>balance</code> or <code>accountSettings</code>. They are fully sheilded from our global scope, so, it acts just like a private variable would. Methods like <code>getAccountInfo</code>, <code>updateName</code>, <code>updateAccountSettings</code> are effectively namespaced inside <code>myAccountModule</code>.</p>
+<h2 id="advantages-of-module-pattern">Advantages of Module Pattern</h2>
+<ul>
+<li><p>supports private properties and methods</p>
+</li>
+<li><p>supports API for outside world which can easily interact with private properties and methods</p>
+<h2 id="disadvantages-of-module-pattern">Disadvantages of Module Pattern</h2>
+</li>
+<li><p>We access both public and private memebers differently. When we wish to change visibility, we actually have to make changes to each place the memeber was used</p>
+</li>
+<li><p>We cant access private memebers in methods that are added to the object at a later point.</p>
+</li>
+<li><p>Inability to create automated unit tests for private members</p>
+</li>
+<li><p>Inability to patch private members when hotfix is required, instead, one must override all public methods which interact with buggy private members.</p>
+</li>
+<li><p>Inablility to extend private members easily</p>
+</li>
+<li><p>Switching between functions and object literals for private and public methods</p>
+</li>
+</ul>
+<h2 id="the-revealing-module-pattern">The Revealing Module Pattern</h2>
+<p>The revealing module pattern is a slightly improved version of the module pattern. In the revealing module pattern we simply define all of our functions and variables in the private scope and return an anonymous object with pointers to the private functionality we wish to <strong>reveal</strong> as public.</p>
+<p><strong>Example:</strong></p>
+<pre><code><span class="hljs-keyword">var</span> myAccountRevealingModule = (<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">var</span> accountHolerName = <span class="hljs-string">&quot;John Doe&quot;</span>;
+  <span class="hljs-keyword">var</span> balance = <span class="hljs-number">5000</span>;
+
+  <span class="hljs-keyword">var</span> accountSettings = {
+    <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Doe&#x27;</span>,
+    <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;English&#x27;</span>,
+    <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;Rs.&#x27;</span>
+  };
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getAccountInfo</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${accountHolerName}</span>&#x27;s balance is <span class="hljs-subst">${accountSettings.default_currency}</span> <span class="hljs-subst">${balance}</span> and he speaks <span class="hljs-subst">${accountSettings.default_language}</span>. <span class="hljs-subst">${accountHolerName}</span> has to keep a minimum balace of <span class="hljs-subst">${accountSettings.minimum_balance}</span>.`</span>);
+  };
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateAccountSettings</span>(<span class="hljs-params">new_settings</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> new_settings === <span class="hljs-string">&quot;object&quot;</span>) {
+      accountSettings = new_settings;
+    }
+  };
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">updateName</span>(<span class="hljs-params">new_name</span>) </span>{
+    accountHolerName = new_name;
+  };
+
+  <span class="hljs-comment">// we are returning object with pointers to private members. All the logic remains outside of the return object.</span>
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">getAccountInfo</span>: getAccountInfo,
+    <span class="hljs-attr">updateAccountSettings</span>: getAccountInfo,
+    <span class="hljs-attr">updateName</span>: updateName,
+  };
+})();
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code>myAccountRevealingModule.getAccountInfo();
+myAccountRevealingModule.updateName(<span class="hljs-string">&quot;James Bondy&quot;</span>)
+myAccountRevealingModule.updateAccountSettings({
+  <span class="hljs-attr">minimum_balance</span>: <span class="hljs-number">3000</span>,
+  <span class="hljs-attr">credit_limit</span>: <span class="hljs-number">1000</span>,
+  <span class="hljs-attr">nominee</span>: <span class="hljs-string">&#x27;Jane Bond&#x27;</span>,
+  <span class="hljs-attr">default_language</span>: <span class="hljs-string">&#x27;Chinese&#x27;</span>,
+  <span class="hljs-attr">default_currency</span>: <span class="hljs-string">&#x27;#&#x27;</span>
+});
+myAccountRevealingModule.getAccountInfo();
+</code></pre>
+<p>Its a common practice in the revealing module pattern to name the private members with more specific naming scheme that uses the  words <code>private</code> or <code>public</code> and then expose a more consumer friendly name. for example in the above example the function <code>getAccountInfo()</code> can be named <code>publicGetAccountInfo()</code> and in the return oject we can use a better name like <code>getInfo: publicGetAccountInfo</code>. Also, the private member <code>balance</code> can be named <code>_balance</code> or <code>privateBalance</code>.</p>
+<h2 id="advantages">Advantages</h2>
+<p>This pattern allows the syntax of our scripts to be more consistent. It also makes it more clear at the end of the module, which of our functions and variables may be accessed publicly.</p>
+<h2 id="disadvantages">Disadvantages</h2>
+<p>Inside the IIFE private members may access the public members. If we are trying to patch the public members from outside, it wont work. Basically we can override a public member from outside. This is because the private function will continue to refer to the implementation inside the IIFE. Same no-patch rule applies to Public members which refer to the private member.</p>
 
       <!-- endinject -->
       </div>

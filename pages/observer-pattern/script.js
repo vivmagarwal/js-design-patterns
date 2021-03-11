@@ -1,0 +1,1 @@
+console.log('observer-pattern works!!');

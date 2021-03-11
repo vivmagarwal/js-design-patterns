@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>observer-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+  </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="observer-pattern">Observer Pattern</h1>
+<p>Synonyms: Event-Subscriber, Listener</p>
+<p><strong>Observer</strong> is a behavorial design pattern that lets us define a subscription mechanism to notify multiple objects about any event that happen to the object they are observing.</p>
+<h2 id="problem">Problem</h2>
+<p>let&#39;s say I am very interested in a particular youtube channel and I would like to watch their next video. One approach could be I checking the channel every hour to check a new video&#39;s release. But you see the probem in this approach. Most of my checks are going to be pointless &amp; a waste of time. </p>
+<p>Another option could be that youtube could send tons of emails to all the customers each time a new video becomes available. it will upset cusomers who are not interested in new videos, right!!.</p>
+<h2 id="solution">Solution</h2>
+<p>The current youtube channel subscription system is a reasonalble solution where any number of customers can subscribe to a channel and only the customer who have subscribed and opted in for notification shall be notified on new video release.</p>
+<h2 id="implementation-logic">Implementation logic</h2>
+<p>subject/publisher : The object that has some interesting state and is also going to notify other objects about the changes to its state. This mechanism consists of an array field for storing a list of references to subscriber objects and several public methods which allow adding/removing subscribers.</p>
+<p>subscribers : Other objects that wnat to track the changes to the publisher.</p>
+<p>Whenever the event happens to the publisher, it invokes a specific notification method in the subsciber object.</p>
+<p>That&#39;s why:</p>
+<ul>
+<li>All subscribers implement the same interface</li>
+<li>The publisher communicated with them only via that interface. This interface should declare the notification method along with a set of parameters that publisher can use to pass some contextual data along with notification.</li>
+</ul>
+<h2 id="step-by-step-implementation">Step by step implementation</h2>
+<ol>
+<li><p>Create a <strong>Publisher</strong> class that issues events. the Publisher may contain </p>
+<ul>
+<li>a <code>mainState</code> that changes</li>
+<li>an array field <code>subscribers</code> : Subscriber[] </li>
+<li>a method to <code>subscribe(s: Subscriber)</code></li>
+<li>a method to <code>unsubscribe(s: Subscriber)</code></li>
+<li>a method to <code>notifySubscribers()</code></li>
+</ul>
+</li>
+<li><p>The <strong>Subscriber</strong> interface declares the notificaiton interface called <code>update()</code>. The method may have several parameters that let the publisher pass some event detail along with the <code>update()</code>.</p>
+</li>
+<li><p>When a new event happens, the <strong>publisher</strong> goes over the subscibers list and calles the notification method <code>update()</code> declared in the subscriber interface of each subscriber object.</p>
+</li>
+<li><p><strong>Concrete Subscribers</strong> perform some actions in response to notifications issued by the publisher. All of these classes must implement the same interface so the publisher isn&#39;t coupled to concreate classes.</p>
+</li>
+<li><p>Subscribers may need some contextual information to handle the update correctly. For this reason, publishers often pass some context data as arguments of the notification method. The publisher can pass itself as an argument. letting subscriber fetch any required data directly.</p>
+</li>
+<li><p>The <strong>Client</strong> creates publisher and subscriber objects separately and then registers subscribers for publisher updates.</p>
+</li>
+</ol>
+<h2 id="pseudocode">Pseudocode</h2>
+<p><strong>Publisher base class:</strong></p>
+<pre><code>class EventManager
+  private field listerens: hash map of event types and listeners
+
+  method subscribe(eventType, listener) {
+    listeners.add(eventType, listener)
+  }
+
+  method unsubscribe(eventType, listener) {
+    listeners.add(eventType, listener)
+  }
+
+  method notify(eventType, data) {
+    foreach listener in listerns of eventtype {
+      listener.update(data)
+    }
+  }
+</code></pre>
+<p><strong>Concrete Publisher:</strong></p>
+<pre><code>class YoutubeChannel
+  public field events: EventManager
+
+  constructror()
+    this.events = new EventManager()
+
+  method publishNewVideo()
+    events.notify(&quot;new_video&quot;, video_name) 
+</code></pre>
+<p><strong>Subscriber Interface:</strong></p>
+<pre><code>Interface EventListener
+  method update(message)
+</code></pre>
+<p><strong>Concrete Subscriber class:</strong></p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YoutubeAccount</span> <span class="hljs-title">implements</span> <span class="hljs-title">EventListener</span>
+  <span class="hljs-title">method</span> <span class="hljs-title">update</span>(<span class="hljs-title">message</span>)
+    <span class="hljs-title">alert</span>(<span class="hljs-title">message</span>)
+</span>
+</code></pre>
+<p><strong>Usage:</strong></p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">App</span>
+  <span class="hljs-title">ytc_1</span> </span>= <span class="hljs-keyword">new</span> YoutubeChannel()
+  ytc_2 = <span class="hljs-keyword">new</span> YoutubeChannel()
+  yta_1 = <span class="hljs-keyword">new</span> YouttubeAccount()
+  yta_2 = <span class="hljs-keyword">new</span> YouttubeAccount()
+  yta_3 = <span class="hljs-keyword">new</span> YouttubeAccount()
+
+  ytc_1.events.subscribe(<span class="hljs-string">&quot;new_video&quot;</span>, yta_1)
+  ytc_1.events.subscribe(<span class="hljs-string">&quot;new_video&quot;</span>, yta_2)
+  ytc_2.events.subscribe(<span class="hljs-string">&quot;new_video&quot;</span>, yta_3)
+</code></pre>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
