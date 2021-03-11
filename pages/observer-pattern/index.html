@@ -24,9 +24,17 @@
 
       <div class="injected-readme">
       <!-- inject:readme:md -->
-      <h1 id="observer-pattern">Observer Pattern</h1>
+      <h1 id="observer--pubsub-pattern">Observer &amp; PubSub Pattern</h1>
 <p>Synonyms: Event-Subscriber, Listener</p>
-<p><strong>Observer</strong> is a behavorial design pattern that lets us define a subscription mechanism to notify multiple objects about any event that happen to the object they are observing.</p>
+<p><strong>Observer</strong> is a behavorial design pattern that lets us define a subscription mechanism to notify multiple objects about any event that happen to the object they are observing. </p>
+<ul>
+<li>The observer pattern involves an observable object and multiple observers that are notified when the observable changes state</li>
+<li>In Node.js it can be implemented using the EventEmitter interface<ul>
+<li>We use an emitter to emit events, which can be intercepted using listeners</li>
+<li>Multiple event listeners are executed in the order they were registered</li>
+</ul>
+</li>
+</ul>
 <h2 id="problem">Problem</h2>
 <p>let&#39;s say I am very interested in a particular youtube channel and I would like to watch their next video. One approach could be I checking the channel every hour to check a new video&#39;s release. But you see the probem in this approach. Most of my checks are going to be pointless &amp; a waste of time. </p>
 <p>Another option could be that youtube could send tons of emails to all the customers each time a new video becomes available. it will upset cusomers who are not interested in new videos, right!!.</p>
@@ -41,7 +49,7 @@
 <li>All subscribers implement the same interface</li>
 <li>The publisher communicated with them only via that interface. This interface should declare the notification method along with a set of parameters that publisher can use to pass some contextual data along with notification.</li>
 </ul>
-<h2 id="step-by-step-implementation">Step by step implementation</h2>
+<h2 id="step-by-step-implementation-in-a-classical-way">Step by step implementation in a Classical way</h2>
 <ol>
 <li><p>Create a <strong>Publisher</strong> class that issues events. the Publisher may contain </p>
 <ul>
@@ -63,7 +71,7 @@
 <li><p>The <strong>Client</strong> creates publisher and subscriber objects separately and then registers subscribers for publisher updates.</p>
 </li>
 </ol>
-<h2 id="pseudocode">Pseudocode</h2>
+<h2 id="classical-pseudocode">Classical Pseudocode</h2>
 <p><strong>Publisher base class:</strong></p>
 <pre><code>class EventManager
   private field listerens: hash map of event types and listeners
@@ -114,11 +122,372 @@
   ytc_1.events.subscribe(<span class="hljs-string">&quot;new_video&quot;</span>, yta_2)
   ytc_2.events.subscribe(<span class="hljs-string">&quot;new_video&quot;</span>, yta_3)
 </code></pre>
+<h2 id="pros">Pros</h2>
+<ul>
+<li>Open/Closed Principle: We can introduce new subscriber classes without having to change the publishers code.</li>
+<li>We can establish relations between objects at runtime</li>
+</ul>
+<h2 id="cons">Cons</h2>
+<ul>
+<li>Subscribers are notifies in random order</li>
+</ul>
+<h2 id="example-1-using-es6-class">Example 1. Using ES6 Class</h2>
+<pre><code><span class="hljs-comment">// subscriber</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name</span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">update</span>(<span class="hljs-params">msg</span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`NOTIFICATION ::: <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>, <span class="hljs-subst">${msg}</span>.`</span>);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// subject/publisher</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YoutubeChannel</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">channelName</span>)</span> {
+    <span class="hljs-built_in">this</span>.channelName = channelName;
+    <span class="hljs-built_in">this</span>.subscribers = [];
+    <span class="hljs-built_in">this</span>.videos = [];
+  }
+
+  <span class="hljs-function"><span class="hljs-title">subscribe</span>(<span class="hljs-params">user</span>)</span> {
+    <span class="hljs-built_in">this</span>.subscribers.push(user);
+    user.update(<span class="hljs-string">`You are successfully subscribed to <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>)
+  }
+
+  <span class="hljs-function"><span class="hljs-title">unsubscribe</span>(<span class="hljs-params">user</span>)</span> {
+    <span class="hljs-keyword">let</span> userIndex = <span class="hljs-built_in">this</span>.subscribers.indexOf(user, <span class="hljs-number">0</span>);
+    <span class="hljs-built_in">this</span>.subscribers.splice(userIndex, <span class="hljs-number">1</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">postVideo</span>(<span class="hljs-params">videoTitle</span>)</span> {
+    <span class="hljs-built_in">this</span>.videos.push(videoTitle);
+    <span class="hljs-built_in">this</span>.notify(<span class="hljs-string">`New Video - <span class="hljs-subst">${videoTitle}</span> - posted on <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">notify</span>(<span class="hljs-params">msg</span>)</span> {
+    <span class="hljs-built_in">this</span>.subscribers.forEach(<span class="hljs-function">(<span class="hljs-params">subscriber</span>) =&gt;</span> {
+      subscriber.update(msg);
+    })
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// usage: client or main app</span>
+<span class="hljs-keyword">let</span> u1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;John&quot;</span>);
+<span class="hljs-keyword">let</span> u2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;Mike&quot;</span>);
+
+<span class="hljs-keyword">let</span> channel1 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 1&quot;</span>);
+<span class="hljs-keyword">let</span> channel2 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 2&quot;</span>);
+
+channel1.subscribe(u1);
+channel1.subscribe(u2);
+channel2.subscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-1&quot;</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel2.postVideo(<span class="hljs-string">&quot;C2 Video-1&quot;</span>);
+
+channel1.unsubscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-2&quot;</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+</code></pre>
+<p><strong>Result:</strong></p>
+<pre><code class="language-bash">NOTIFICATION ::: John, You are successfully subscribed to Youtube channel 1.
+NOTIFICATION ::: Mike, You are successfully subscribed to Youtube channel 1.
+NOTIFICATION ::: Mike, You are successfully subscribed to Youtube channel 2.
+---------------------------------------
+NOTIFICATION ::: John, New Video - C1 Video-1 - posted on Youtube channel 1.
+NOTIFICATION ::: Mike, New Video - C1 Video-1 - posted on Youtube channel 1.
+---------------------------------------
+NOTIFICATION ::: Mike, New Video - C2 Video-1 - posted on Youtube channel 2.
+---------------------------------------
+NOTIFICATION ::: John, New Video - C1 Video-2 - posted on Youtube channel 1.
+</code></pre>
+<h2 id="example-2--same-example-using-prototypal-inheritance-">Example 2 : Same example using prototypal inheritance :)</h2>
+<pre><code><span class="hljs-comment">// subject / publisher</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">YoutubeChannel</span>(<span class="hljs-params">channelName</span>) </span>{
+  <span class="hljs-built_in">this</span>.channelName = channelName;
+  <span class="hljs-built_in">this</span>.subscribers = [];
+  <span class="hljs-built_in">this</span>.videos = [];
+}
+
+YoutubeChannel.prototype.subscribe = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
+  <span class="hljs-built_in">this</span>.subscribers.push(user);
+  user.update(<span class="hljs-string">`You are successfully subscribed to <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>)
+};
+
+YoutubeChannel.prototype.unsubscribe = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
+  <span class="hljs-keyword">let</span> userIndex = <span class="hljs-built_in">this</span>.subscribers.indexOf(user, <span class="hljs-number">0</span>);
+  <span class="hljs-built_in">this</span>.subscribers.splice(userIndex, <span class="hljs-number">1</span>);
+};
+
+YoutubeChannel.prototype.postVideo = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">videoTitle</span>) </span>{
+  <span class="hljs-built_in">this</span>.videos.push(videoTitle);
+  <span class="hljs-built_in">this</span>.notify(<span class="hljs-string">`New Video - <span class="hljs-subst">${videoTitle}</span> - posted on <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>);
+}
+
+YoutubeChannel.prototype.notify = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg</span>) </span>{
+  <span class="hljs-built_in">this</span>.subscribers.forEach(<span class="hljs-function">(<span class="hljs-params">subscriber</span>) =&gt;</span> {
+    subscriber.update(msg);
+  })
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// subscriber</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">User</span>(<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">this</span>.name = name;
+};
+
+User.prototype.update = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">msg</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`NOTIFICATION ::: <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>, <span class="hljs-subst">${msg}</span>.`</span>);
+};
+</code></pre>
+<pre><code><span class="hljs-comment">// usage: client or main app</span>
+<span class="hljs-keyword">let</span> u1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;John&quot;</span>);
+<span class="hljs-keyword">let</span> u2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;Mike&quot;</span>);
+
+<span class="hljs-keyword">let</span> channel1 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 1&quot;</span>);
+<span class="hljs-keyword">let</span> channel2 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 2&quot;</span>);
+
+channel1.subscribe(u1);
+channel1.subscribe(u2);
+channel2.subscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-1&quot;</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel2.postVideo(<span class="hljs-string">&quot;C2 Video-1&quot;</span>);
+
+channel1.unsubscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-2&quot;</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+</code></pre>
+<p>Results are same as of example 1. I like this approach because it is a bit closer to how JS actually works under the hood.</p>
+<h2 id="example-3-using-nodes-eventemitter">Example 3: Using Node&#39;s EventEmitter</h2>
+<pre><code><span class="hljs-keyword">import</span> { EventEmitter } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;events&quot;</span>
+<span class="hljs-keyword">let</span> eventEmitter = <span class="hljs-keyword">new</span> EventEmitter();
+</code></pre>
+<pre><code><span class="hljs-comment">// subscriber</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name</span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+    eventEmitter.on(<span class="hljs-string">&quot;new-video&quot;</span>, <span class="hljs-function">(<span class="hljs-params">{ message, subscribers }</span>) =&gt;</span> {
+      <span class="hljs-keyword">if</span> (subscribers.includes(<span class="hljs-built_in">this</span>)) {
+        <span class="hljs-built_in">this</span>.update(message);
+      }
+    })
+  }
+
+  <span class="hljs-function"><span class="hljs-title">update</span>(<span class="hljs-params">msg</span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`NOTIFICATION ::: <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>, <span class="hljs-subst">${msg}</span>.`</span>);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// subject/publisher</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YoutubeChannel</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">channelName</span>)</span> {
+    <span class="hljs-built_in">this</span>.channelName = channelName;
+    <span class="hljs-built_in">this</span>.subscribers = [];
+    <span class="hljs-built_in">this</span>.videos = [];
+  }
+
+  <span class="hljs-function"><span class="hljs-title">subscribe</span>(<span class="hljs-params">user</span>)</span> {
+    <span class="hljs-built_in">this</span>.subscribers.push(user);
+    user.update(<span class="hljs-string">`You are successfully subscribed to <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>)
+  }
+
+  <span class="hljs-function"><span class="hljs-title">unsubscribe</span>(<span class="hljs-params">user</span>)</span> {
+    <span class="hljs-keyword">let</span> userIndex = <span class="hljs-built_in">this</span>.subscribers.indexOf(user, <span class="hljs-number">0</span>);
+    <span class="hljs-built_in">this</span>.subscribers.splice(userIndex, <span class="hljs-number">1</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">postVideo</span>(<span class="hljs-params">videoTitle</span>)</span> {
+    <span class="hljs-built_in">this</span>.videos.push(videoTitle);
+    <span class="hljs-built_in">this</span>.notify(<span class="hljs-string">`New Video - <span class="hljs-subst">${videoTitle}</span> - posted on <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">notify</span>(<span class="hljs-params">msg</span>)</span> {
+    eventEmitter.emit(<span class="hljs-string">&quot;new-video&quot;</span>, {
+      <span class="hljs-attr">message</span>: msg,
+      <span class="hljs-attr">subscribers</span>: <span class="hljs-built_in">this</span>.subscribers
+    })
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// usage: client or main app</span>
+<span class="hljs-keyword">let</span> u1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;John&quot;</span>);
+<span class="hljs-keyword">let</span> u2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;Mike&quot;</span>);
+
+<span class="hljs-keyword">let</span> channel1 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 1&quot;</span>);
+<span class="hljs-keyword">let</span> channel2 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 2&quot;</span>);
+
+channel1.subscribe(u1);
+channel1.subscribe(u2);
+channel2.subscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-1&quot;</span>);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel2.postVideo(<span class="hljs-string">&quot;C2 Video-1&quot;</span>);
+
+channel1.unsubscribe(u2);
+
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;---------------------------------------&#x27;</span>);
+
+channel1.postVideo(<span class="hljs-string">&quot;C1 Video-2&quot;</span>);
+</code></pre>
+<p>So, the changes are:</p>
+<ul>
+<li>in the <code>notify</code> method of the publisher we are emiting an event with some payload</li>
+<li>in the <code>constructor</code> of the subscriber we listen to the event and invoke the <code>update</code> method. Awesome!!</li>
+</ul>
+<h2 id="publishsubscribe-pattern">Publish/Subscribe Pattern</h2>
+<ul>
+<li>Similar in conept to the observer pattern</li>
+<li>Messages are generated by a publisher an can be categorized by topic</li>
+<li>Subscribers can receive messages as per topic discussion</li>
+<li>A <strong>message-broker</strong> (topic/event channel) facilitates transport of messages between the publisher and the subscribers. Publisher sends message to a message-broker and the message-broker distributes it to the subscribers</li>
+<li>Brokers such as Rabbit MQ and ActiveMQ Apollo are popular in the enterprise world</li>
+<li>Useful when working with Microservices and Serverless architectures</li>
+<li>Message deliverability may suffer if the broker goes down, is misconfigured or crashes</li>
+<li>This differs from the Observer pattern as it allows any subscriber implementing an appropriate event handler to register for and receive topic notifications broadcasted by the publisher</li>
+<li>The general idea here is the promotion of loose coupling. Rather than single objects calling on the methods of other objets directly, they instead subscribe to a specific activity of anohter object and are notified when it occurs</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Observer Pattern</th>
+<th>Pub/Sub Pattern</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>The recipient knows the sender and vice-versa</td>
+<td>The sender and the recipient are unknown to each other</td>
+</tr>
+<tr>
+<td>Direct communication</td>
+<td>An Intermediary handles the communication</td>
+</tr>
+</tbody></table>
+<p>Publisher/Subscriber (PubSub) is a messaging pattern where senders of messages, called publishers, do not program the message to be sent directly to specific receivers, called subscribers, but instead, characterize message into classes (topics), without knowledge of which subscribers, if any, there may be.</p>
+<p>Similarly, subscribers, express interest in one or more classes(topics), and only receive messages that are of interest, without knowlege of the publisher.</p>
+<p>A simple yet very good example for us could be, the same YoutubeChannel / User case but, Users subscribe to a topic and not a channel. This sounds like a very good candidate for PubSub pattern.</p>
+<h2 id="pubsub-example">PubSub Example:</h2>
+<p>Very Simple PubSub broker object implementation. In this implementation the <code>events</code> object basically contains all events mapped to an array of all the callback functions associated with that event. In real life we would be most probably using one of the time tested pubSub libraries for example : <a href="https://github.com/mroderick/PubSubJS">https://github.com/mroderick/PubSubJS</a> </p>
+<pre><code><span class="hljs-keyword">var</span> pubsub = {
+  <span class="hljs-attr">events</span>: {},
+
+  <span class="hljs-attr">subscribe</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">eventName, fn</span>) </span>{
+    <span class="hljs-built_in">this</span>.events[eventName] = <span class="hljs-built_in">this</span>.events[eventName] || [];
+    <span class="hljs-built_in">this</span>.events[eventName].push(fn);
+  },
+
+  <span class="hljs-attr">unsubscribe</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">eventName, fn</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.events[eventName]) {
+      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-built_in">this</span>.events[eventName].length; i++) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.events[eventName][i] === fn) {
+          <span class="hljs-built_in">this</span>.events[eventName].splice(i, <span class="hljs-number">1</span>);
+          <span class="hljs-keyword">break</span>;
+        }
+      };
+    }
+  },
+
+  <span class="hljs-attr">publish</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">eventName, data</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.events[eventName]) {
+      <span class="hljs-built_in">this</span>.events[eventName].forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">fn</span>) </span>{
+        fn(data);
+      });
+    }
+  }
+};
+</code></pre>
+<pre><code><span class="hljs-comment">// subscriber - completely decoupled with publishers</span>
+<span class="hljs-comment">// subscribers just needs to subscribe (on) to a topic.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">User</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name</span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">subscribeToTopic</span>(<span class="hljs-params">topicName</span>)</span> {
+    pubsub.subscribe(<span class="hljs-string">`new_video__<span class="hljs-subst">${topicName}</span>`</span>, <span class="hljs-function">(<span class="hljs-params">{ message }</span>) =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Notification to <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span> :::`</span>, message);
+    });
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// publisher - completely decoupled with subscribers</span>
+<span class="hljs-comment">// publisher&#x27;s responsibility is just to publish (emit).</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">YoutubeChannel</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">channelName</span>)</span> {
+    <span class="hljs-built_in">this</span>.channelName = channelName;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">postVideo</span>(<span class="hljs-params">videoTitle, topic</span>)</span> {
+    <span class="hljs-keyword">let</span> msg = <span class="hljs-string">`New <span class="hljs-subst">${videoTitle}</span> of topic <span class="hljs-subst">${topic}</span> published on <span class="hljs-subst">${<span class="hljs-built_in">this</span>.channelName}</span>`</span>;
+    pubsub.publish(<span class="hljs-string">`new_video__<span class="hljs-subst">${topic}</span>`</span>, { <span class="hljs-attr">message</span>:msg});
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Main app - Usage:</span>
+<span class="hljs-keyword">let</span> u1 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;John&quot;</span>);
+<span class="hljs-keyword">let</span> u2 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;Mike&quot;</span>);
+<span class="hljs-keyword">let</span> u3 = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&quot;Nita&quot;</span>);
+
+<span class="hljs-keyword">let</span> channel1 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 1&quot;</span>);
+<span class="hljs-keyword">let</span> channel2 = <span class="hljs-keyword">new</span> YoutubeChannel(<span class="hljs-string">&quot;Youtube channel 2&quot;</span>);
+
+u1.subscribeToTopic(<span class="hljs-string">&#x27;topic_one&#x27;</span>);
+u3.subscribeToTopic(<span class="hljs-string">&#x27;topic_one&#x27;</span>);
+
+u1.subscribeToTopic(<span class="hljs-string">&#x27;topic_two&#x27;</span>);
+u2.subscribeToTopic(<span class="hljs-string">&#x27;topic_two&#x27;</span>);
+u3.subscribeToTopic(<span class="hljs-string">&#x27;topic_two&#x27;</span>);
+
+u3.subscribeToTopic(<span class="hljs-string">&#x27;topic_three&#x27;</span>);
+
+
+channel2.postVideo(<span class="hljs-string">&#x27;video title one&#x27;</span>, <span class="hljs-string">&#x27;topic_three&#x27;</span>);
+channel2.postVideo(<span class="hljs-string">&#x27;video title two&#x27;</span>, <span class="hljs-string">&#x27;topic_two&#x27;</span>);
+</code></pre>
+<p>Result:</p>
+<pre><code class="language-bash">Notification to Nita ::: New video title one of topic topic_three published on Youtube channel 2
+Notification to John ::: New video title two of topic topic_two published on Youtube channel 2
+Notification to Mike ::: New video title two of topic topic_two published on Youtube channel 2
+Notification to Nita ::: New video title two of topic topic_two published on Youtube channel 2
+</code></pre>
+<p>PubSub pattern is very useful in decoupling a user interface. For example, submission of a simple survey form which takes in your name, age &amp; rating, may publish (or emit or trigger) different events with data for example</p>
+<ul>
+<li>new_user event with user details</li>
+<li>rating event with data</li>
+</ul>
+<p>It&#39;s upto the subscriber(s) of those topis (or events) to handle them in whatever way they want. The subscriber can either append it to a list, or fetch some new data and publish an another event with data. Again it&#39;s upto the subscriber&#39;s of that event to handle it their way. It&#39;s not uncommon to see that a subscriber publishes an another event in the callback.</p>
+<p>PubSub results in a very loosely coupled applicaiton. It&#39;s left upto subscribers to decide now to use the knowledge of these events or the data returned. The benifit of this is that, if we wanted, we could have 10 different subscribers, utilizing the data retured, in different ways, but as fas as the publisher is concerned, it doesn&#39;t care. It&#39;s sole duty is to trigger an event and pass data on to whoever wants to use it. This separation of concerns can make the overall design of our code a little cleaner.</p>
+<p>The Observer and the Publisher/Subscriber patterns are easier at the same time very powerful and useful pattern.</p>
 
       <!-- endinject -->
       </div>
 
     </div>
+
     <script type="module" defer src="script.js"></script>
   </body>
 </html>
