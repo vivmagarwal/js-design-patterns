@@ -62,6 +62,11 @@ nita.send('Hello Everyone!!');
 // We also need a feature where users may register to a chatroom & chat with each other.
 // ===================================================== //
 
+/**
+ * For youtubechannel *--* topics *--* subscribers scenario the pub/sub patterns looks a good choice
+ * For user *--* user *--* user scenario, the mediator pattern looks a reasonable choice where multiple colleagues needs to communicate with each other. 
+ */
+
 // Just practicing observer | pubsub & mediator
 
 // pubsub - to make it flexible we can make it a constructor function and an object will we used.
@@ -131,7 +136,7 @@ User.prototype.send = function (message, to) {
   chatroom.send(message, this, to);
 }
 
-User.prototype.receive = function (message, from){
+User.prototype.receive = function (message, from) {
   console.log(`${from.name} to ${this.name} ::: ${message}`);
 }
 
@@ -161,5 +166,3 @@ chatroom.register(u1);
 chatroom.register(u2);
 
 u1.send('Hello Mike', u2);
-
-
