@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>mediator-pattern</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+  </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div
+        class="injected-readme">
+        <!-- inject:readme:md -->
+        <h1 id="mediator-pattern">Mediator Pattern</h1>
+<p><strong>Mediator</strong> is a behavorial design pattern that lets you reduce chaotic dependencies between objects. The pattern restricts direct communications between the objects and forces them to collaborate only via a mediator object.</p>
+<p>It allows a <strong>mediator</strong> (a central authority) to act as the coordinator between different objects, instead of objects referring directly to each other. </p>
+<h2 id="problem">Problem</h2>
+<p>When you have multiple objects that are communicating directly with each other, you&#39;re essentially working around a many-to-many relationship which may become a nightmare when debugging.</p>
+<h2 id="solution">Solution</h2>
+<p>Introducing a mediator object will help reduce this issue by introducing a one to many flow between objects. Other notable benifits include reducing dependencies between objects, much lighter errors, increased code maintainability and readability.</p>
+<h2 id="real-world-analogy">Real-world Analogy</h2>
+<p>Pilots of aircraft that apprach or depart the airport dont communicate directly with each other. Instead they speak to an air traffic controller, who sits in a tall tower somewhere near the airstrip. The tower doesn&#39;t need to control the whole flight. It exists only to enforce constraints in the terminal area because the number of involved actors there might be overwhelming to a pilot.</p>
+<h2 id="when-to-use">When to use</h2>
+<ul>
+<li>If your system has multiple parts that need to communicate</li>
+<li>To avoid tight coupling of objects in a system with a lot objects</li>
+<li>To improve code readablity</li>
+<li>To make code easier to maintain</li>
+<li>If communication between objects becomes complex and hinders the reusability of code.</li>
+</ul>
+<h2 id="simple-example">Simple example</h2>
+<pre><code><span class="hljs-comment">// Colleagues</span>
+<span class="hljs-keyword">const</span> User = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">name</span>) </span>{
+  <span class="hljs-built_in">this</span>.name = name;
+  <span class="hljs-built_in">this</span>.chatroom = <span class="hljs-literal">null</span>;
+};
+
+User.prototype = {
+  <span class="hljs-attr">send</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message, to</span>) </span>{
+    <span class="hljs-built_in">this</span>.chatroom.send(message, <span class="hljs-built_in">this</span>, to);
+  },
+  <span class="hljs-attr">receive</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">message, <span class="hljs-keyword">from</span></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">from</span>.name}</span> to <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>: <span class="hljs-subst">${message}</span>`</span>);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Mediator</span>
+<span class="hljs-keyword">const</span> Chatroom = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> users = {};
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">register</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">user</span>) </span>{
+      users[user.name] = user;
+      user.chatroom = <span class="hljs-built_in">this</span>;
+    },
+    <span class="hljs-attr">send</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>  (<span class="hljs-params">message, <span class="hljs-keyword">from</span>, to</span>)</span>{
+      <span class="hljs-keyword">if</span> (to) {
+        to.receive(message, <span class="hljs-keyword">from</span>);
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> users) {
+          <span class="hljs-keyword">if</span> (users[key] !== <span class="hljs-keyword">from</span>) {
+            users[key].receive(message, <span class="hljs-keyword">from</span>);
+          } 
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Usage</span>
+<span class="hljs-keyword">const</span> john = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&#x27;John&#x27;</span>);
+<span class="hljs-keyword">const</span> adam = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&#x27;Adam&#x27;</span>);
+<span class="hljs-keyword">const</span> nita = <span class="hljs-keyword">new</span> User(<span class="hljs-string">&#x27;Nita&#x27;</span>);
+
+<span class="hljs-keyword">const</span> chatroom = <span class="hljs-keyword">new</span> Chatroom();
+
+chatroom.register(john);
+chatroom.register(adam);
+chatroom.register(nita);
+
+john.send(<span class="hljs-string">&#x27;Hello Nita&#x27;</span>, adam);
+adam.send(<span class="hljs-string">&#x27;Hello Nita!&#x27;</span>, nita);
+nita.send(<span class="hljs-string">&#x27;Hello Everyone!!&#x27;</span>);
+</code></pre>
+<p>Result:</p>
+<pre><code class="language-bash">John to Adam: Hello Nita
+Adam to Nita: Hello Nita!
+Nita to John: Hello Everyone!!
+Nita to Adam: Hello Everyone!!
+</code></pre>
+<h2 id="objects-participating-in-the-mediator-pattern">Objects participating in the mediator pattern</h2>
+<ul>
+<li><p><strong>Mediator</strong> - In the sample code <code>Chatroom</code></p>
+<ul>
+<li>defines interface for communicating with <code>Colleague</code> objects</li>
+<li>maintains references to <code>colleagues</code> objects</li>
+<li>manages central control over operations</li>
+</ul>
+</li>
+<li><p><strong>Colleagues</strong> - In the same code <code>User</code></p>
+<ul>
+<li>objects are being mediated by the Mediator</li>
+<li>each instance maintains a reference to the Mediator</li>
+</ul>
+<p>Another nice example of a mediator is a wizard type of interface. Let&#39;s say you have a large registration process for a system you have worked on. Oftentimes, when a lot of information is required from a user, it is a good practice to break this down into multiple steps.</p>
+</li>
+</ul>
+<p>This way, the code will be a lot cleaner and the user isn&#39;t overwhelmed by the amount of information which is requested just in order to finish the registration. A mediator is an object which would handle the registration steps, taking into account different possible workflows that might happen due to the fact that each user could potentially have a unique registration process. </p>
+<p>In implementation terms, <strong>Mediator pattern</strong> is essentially a <strong>shared subject</strong> in the <strong>Observer pattern</strong>. This might assume that a direct (Pub/Sub) relationship between objects in such system is scrificed in order to maintain a central point of contact.</p>
+<p>It may also be considered supplemantal - perhaps used for application-level notifications such as a  communication between different subsystems that are themselves complex and may desire internal component decoupling through PubSub relationships.</p>
+<p>Another analogy would be DOM event bubbling and event delegation. If all subscriptions in a system are made against the document rather than individual nodes, the document effectively serves as a mediator. Instead of binding to the events of the individual nodes, a higher level object is given the responsibility of notifying subscribers about interaction events. </p>
+<h2 id="pubsub-event-aggregator-and-mediator-together">PubSub (Event Aggregator) And Mediator together</h2>
+<p>In a menu, clicking a menu item may trigger a series of changes throughout the application. Some of these changes will be independent of others, and using an <strong>event aggregator</strong> for this makes sense. But some of these changes may be internally related to each other, and may use a <strong>mediator</strong> to enact those changes.</p>
+<p>A <strong>mediator</strong>, then could be set up to listen to the <strong>event aggregator</strong>. It could run its logic and process to facilitate and coordinate many objects that are <strong>related</strong> to each other, but <strong>unrelated</strong> to the original event source.</p>
+<h2 id="pubsub-vs-mediator">PubSub vs Mediator</h2>
+<p><strong>PubSub:</strong></p>
+<p><img src="2021-03-12-12-06-18.png" alt=""></p>
+<ul>
+<li>EventChannel as pub/sub itself sits between publisher and subscriber and encapsulates all connection details.</li>
+<li>Support of different events and handlers inside one object.</li>
+<li>Many-to-Many connection</li>
+</ul>
+<p><strong>Mediator:</strong></p>
+<p><img src="2021-03-12-12-01-45.png" alt=""></p>
+<p>Event channel sits between everthing. Everything communicates with the mediator and the mediator coordinates the communication between all compoenents. In implementation terms, <strong>Mediator pattern</strong> is essentially a <strong>shared subject</strong> in the <strong>Observer pattern</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Pub/Sub</th>
+<th>Mediator</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Scope of usage: Event-based dependency whithout usage of specific component instance</td>
+<td>Event-based dependency of components on the level of application</td>
+</tr>
+<tr>
+<td>Profit: No specifics of connection stored in compoenents itself, many events to subscribe on</td>
+<td>All Pub/Sub advantages + a mediator handling complex relationship between components.</td>
+</tr>
+</tbody></table>
+
+        <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>

@@ -379,6 +379,7 @@ So, the changes are:
 - This differs from the Observer pattern as it allows any subscriber implementing an appropriate event handler to register for and receive topic notifications broadcasted by the publisher
 - The general idea here is the promotion of loose coupling. Rather than single objects calling on the methods of other objets directly, they instead subscribe to a specific activity of anohter object and are notified when it occurs
 
+![](2021-03-12-11-25-33.png)
 
 Observer Pattern | Pub/Sub Pattern
 -- | --
