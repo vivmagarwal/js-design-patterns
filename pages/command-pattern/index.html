@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>command-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+  </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="command-pattern">Command Pattern</h1>
+<p><strong>Command</strong> is a behavorial design pattern that turns a <strong>request</strong> into a <strong>stand-alone object</strong> that contains all information about the request. This transformation let&#39;s you parameterize methods whith different requests, delay or queue a request&#39;s execution, and support undoable operations.</p>
+<p>In many ways, you see examples of the command pattern all around you in software. For instance, a menu in an image manipulation software allows you to color correct or add filter effects to a photo. In this case, the intricacies of the individual commands are unknown to the menu, which we&#39;ll call as the <strong>invoker</strong>. </p>
+<p>The <strong>invoker</strong> is used by the <strong>client</strong> to invoke a command. <em>It doesn&#39;t need to know how the command works on the inside</em>. </p>
+<p>So, the command design pattern essentially contains an <strong>invoker</strong> object which is designed to <strong>execute</strong> a given <strong>command</strong>. Every command must encapsulate its internals, and should expose an <strong>execute</strong> function which the <strong>invoker</strong> will execute. This interface should remain consistent across all commands. Additionally, the invoker should keep a stack of commands that have been executed, and allow undoability. </p>
+<p>Most applications such as text, code, and image-editing apps allow you to undo the last command or a series of commands in the last-in, first-out order. </p>
+<p>The commands themselves affect or modify a <strong>receiver</strong> which receives the end result of the command being executed. Commands can inherit from a base Command class that should minimally offer an execute method and an undo method. </p>
+<ul>
+<li>The command pattern makes it easy to craft a uniform interface known as an invoker that issues commands which encapsulate the inner workings of the operation. </li>
+<li>The invoker exposes a simple interface consisting of an execute command, which takes in an instance of a Command class and executes the command&#39;s own execute function. </li>
+<li>The end result of every command is the receiver, which receives the final outcome of the action. </li>
+<li>This pattern allows you to write a diverse set of operations without affecting or refactoring the invoker interface which is used by the client. </li>
+<li>Command objects with the same interface can easily be swapped as needed and this is considered one of the larger benefits of the pattern.</li>
+</ul>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
