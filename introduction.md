@@ -99,6 +99,3 @@ Observer | A way of notifying change to a number of classes to ensure consistenc
 State | Alter an objects behaviour when the state changes
 Strategy | Encapsulate an algorithm inside a class separating the selection from the implementation
 Visitor | Adds a new operation to a class without changing the class
-
-
-
