@@ -28,6 +28,8 @@
 <h2 id="gof-definition">Gof Definition</h2>
 <p>&quot;Prototype Design Pattern Specify the kind of objects to create using a prototypal instance, and create new objects by copying this prototype&quot;</p>
 <p>To simplify, instead of creating object from scratch, you can make copies of an original instance and modify it as required. Prototype is unique among the other creational patterns as it doesnot require a class but only an end object.</p>
+<h2 id="note">Note</h2>
+<p>Please dont confuse <code>Prototype design pattern</code> with Javascripts <code>Prototypal inheritance</code>. Even though we are going to use Javascript&#39;s <code>Prototype chain</code> in implementing the <code>Prototype design pattern</code>, remember that they are two different concepts.</p>
 <h2 id="usecases">Usecases</h2>
 <p>Choose Prototype Design Pattern when:</p>
 <ul>
@@ -116,7 +118,7 @@ phone2.makeACall(); <span class="hljs-comment">// Apple::basic::Calling...</span
   <span class="hljs-keyword">return</span> out;
 }
 </code></pre>
-<p>Proving an easy way to set new properties </p>
+<p>Proving an easy way to set new properties.Please remember that a class, (i.e. Contructor) bears the prototype property not the instance! this keyword here will be pointing to the instance.</p>
 <pre><code>Phone.prototype.setProperty = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key, value</span>) </span>{
   <span class="hljs-built_in">Object</span>.defineProperty(<span class="hljs-built_in">this</span>, key, {
     <span class="hljs-attr">value</span>: value,
@@ -149,21 +151,17 @@ phone7.brand = <span class="hljs-string">&quot;Samsung&quot;</span>;
 phone7.color = <span class="hljs-string">&quot;Black&quot;</span>;
 phone7.makeACall();
 phone7.ring();
-
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;=======================================&#x27;</span>);
-
-<span class="hljs-comment">// Deep cloning phone6 enumerating properties in the prototypal chain but making a copy of them.</span>
-<span class="hljs-keyword">const</span> phone8 = phone6.deepClone();
+</code></pre>
+<p>Deep cloning phone6 enumerating properties in the prototypal chain but making a copy of them.</p>
+<pre><code><span class="hljs-keyword">const</span> phone8 = phone6.deepClone();
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;phone8&#x27;</span>);
 phone6.color = <span class="hljs-string">&#x27;Red&#x27;</span>; <span class="hljs-comment">// it doesnot affect the deepClone</span>
 phone8.brand = <span class="hljs-string">&#x27;Apple&#x27;</span>; <span class="hljs-comment">// it can surely be overwritten</span>
 phone8.makeACall(); <span class="hljs-comment">// Apple ::: Calling...</span>
 phone8.ring(); <span class="hljs-comment">// Apple, Yellow, ringing ::: tring tring...</span>
-
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;=======================================&#x27;</span>);
-
-<span class="hljs-comment">// Deep cloing (making a separate copy) only of own properties without enumerating properties in the prototypal chain.</span>
-<span class="hljs-keyword">const</span> phone9 = phone6.deepClone(<span class="hljs-literal">true</span>);
+</code></pre>
+<p>Deep cloing (making a separate copy) only of own properties without enumerating properties in the prototypal chain.</p>
+<pre><code><span class="hljs-keyword">const</span> phone9 = phone6.deepClone(<span class="hljs-literal">true</span>);
 <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;phone9&#x27;</span>);
 phone6.color = <span class="hljs-string">&#x27;Red&#x27;</span>; 
 phone9.brand = <span class="hljs-string">&#x27;Apple&#x27;</span>; 

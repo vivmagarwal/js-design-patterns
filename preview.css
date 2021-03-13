@@ -17,6 +17,10 @@ blockquote {
   margin-left: 1rem;
 }
 
+pre {
+  margin-top: 0.3125rem;
+}
+
 pre code {
   display: block;
   font-family: Consolas, Monaco, monospace;
@@ -49,4 +53,9 @@ h2 {
 
 img {
   max-width: 100%;
+}
+
+p {
+  margin-top: 2rem;
+  margin-bottom: .15rem;
 }

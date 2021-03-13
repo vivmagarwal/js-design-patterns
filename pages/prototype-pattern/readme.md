@@ -6,6 +6,8 @@
 
 To simplify, instead of creating object from scratch, you can make copies of an original instance and modify it as required. Prototype is unique among the other creational patterns as it doesnot require a class but only an end object.
 
+## Note
+Please dont confuse `Prototype design pattern` with Javascripts `Prototypal inheritance`. Even though we are going to use Javascript's `Prototype chain` in implementing the `Prototype design pattern`, remember that they are two different concepts.
 ## Usecases
 
 Choose Prototype Design Pattern when:
@@ -119,7 +121,7 @@ Phone.prototype.deepClone = function (onlyOwnProperties = false) {
 }
 ```
 
-Proving an easy way to set new properties 
+Proving an easy way to set new properties.Please remember that a class, (i.e. Contructor) bears the prototype property not the instance! this keyword here will be pointing to the instance.
 ```
 Phone.prototype.setProperty = function (key, value) {
   Object.defineProperty(this, key, {
@@ -155,20 +157,20 @@ phone7.brand = "Samsung";
 phone7.color = "Black";
 phone7.makeACall();
 phone7.ring();
+```
 
-console.log('=======================================');
-
-// Deep cloning phone6 enumerating properties in the prototypal chain but making a copy of them.
+Deep cloning phone6 enumerating properties in the prototypal chain but making a copy of them.
+```
 const phone8 = phone6.deepClone();
 console.log('phone8');
 phone6.color = 'Red'; // it doesnot affect the deepClone
 phone8.brand = 'Apple'; // it can surely be overwritten
 phone8.makeACall(); // Apple ::: Calling...
 phone8.ring(); // Apple, Yellow, ringing ::: tring tring...
+```
 
-console.log('=======================================');
-
-// Deep cloing (making a separate copy) only of own properties without enumerating properties in the prototypal chain.
+Deep cloing (making a separate copy) only of own properties without enumerating properties in the prototypal chain.
+```
 const phone9 = phone6.deepClone(true);
 console.log('phone9');
 phone6.color = 'Red'; 
