@@ -51,11 +51,15 @@ h2 {
   font-weight: 500;
 }
 
-img {
+img, iframe {
   max-width: 100%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 p {
   margin-top: 2rem;
   margin-bottom: .15rem;
 }
+
