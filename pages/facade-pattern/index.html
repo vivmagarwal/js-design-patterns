@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>facade-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+  </head>
+  <body>
+    <div class="main-content">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="facade-pattern">Facade Pattern</h1>
+<p><strong>Facade</strong> is a structural design pattern that provides a simplified interface to a library, a framework, or any other complex set of classes. A facade might provide limited functionality in comparisn to working with the subsystem directly. However, it includes only those features that clients really care about.</p>
+<p>Note: <code>clients</code> in design patterns refers to the lines of code in our application that is using/calling or consuming other set of code.</p>
+<ul>
+<li>A complex subsustem may consist of vairous objects. To make them all do something meaningful, you have to dive deep into the subsystem&#39;s implementation details, such as initializing objects in the correct order and supplying them with data in the proper format.</li>
+<li>The client uses the facade instead of calling the subsystem objects directly. The Subsystem classes are not aware of the facade&#39;s existence. They operate within the system and work with each other directly.</li>
+<li>The Facade provides convinient access to a particular part of the subsystem&#39;s functionality. It knows where to direct the client&#39;s request and how to operate all the moving parts.</li>
+<li>An additional facade class can be created to prevent polluting a single facade with unrelated features that might make it yet another complex structure. Additional facades can be used by both clients and other facades.</li>
+<li>You can create facades to define entry points to each level of subsystems. Use the facade pattern when you need to have a limited but straightforward interface to a complex subsystem.</li>
+<li>Check whether it’s possible to provide a simpler interface than what an existing subsystem already provides. You’re on the right track if this interface makes the client code independent from many of the subsystem’s classes.</li>
+<li>Declare and implement this interface in a new facade class. The facade should redirect the calls from the client code to appropriate objects of the subsystem. The facade should be responsible for initializing the subsystem and managing its further life cycle unless the client code already does this.</li>
+<li>To get the full benefit from the pattern, make all the client code communicate with the subsystem only via the facade. Now the client code is protected from any changes in the subsystem code. For example, when a subsystem gets upgraded to a new version, you will only need to modify the code in the facade.</li>
+<li>If the facade becomes too big, consider extracting part of its behavior to a new, refined facade class.</li>
+</ul>
+<p>Instead of making your code work with dozens of the framework classes directly, you create a facade class which encapsulats that functionality and hides it from the rest of the code. This structure also help&#39;s you minimize the effort of upgrading to future versions of the framework or replacing it with another one. The only thing you&#39;d need to change in your app would be the implementation of the facade&#39;s methods.</p>
+<h2 id="example">Example</h2>
+<p>Imagine that you have a script where for each DOM element found on a page with class &quot;foo&quot;, we wish to increment a counter. What&#39;s the most efficient way to query this collection of elements? Well, there are a few different ways this probelem could be tackeled:</p>
+<ol>
+<li>Select all the elements in the page and then store references to them. Next, filter this collection and use regular expressions to only store those with the class &quot;foo&quot;</li>
+<li>Use a modern native browswer feature such as <code>querySelectorAll()</code> to select all of the elements with the class &quot;foo&quot;.</li>
+<li>Use a native feature such as <code>getElementsByClassName()</code> to similarly get back the desired collection.</li>
+</ol>
+<p>So, which of these options is the fastest? It&#39;s actually option 3, by a factor of 8 - 10 times the alternatives. But we have a probem, option 3, doesnot work with some legacy browsers and we need to support them.</p>
+<p>To simplify query selection, jQuery creates a <strong>Facade</strong>, which, behind the scenes will opt for the most optimal approach to selecting elements depending on what our current browser supports and we can just consume the abstraction layer.</p>
+<p>We&#39;re probably all also familiar with jQuery&#39;s <code>$(&quot;selector&quot;)</code>. This is significantly more easy to use for selecting HTML elements on a page versus having to manually opt for <code>getElementById()</code>, <code>getElementsByClassName()</code>, <code>getElementsByTagName()</code> and so on.</p>
+<p>Behind the scenes, the library simply opt for the most optimal approach to selecting elements depending on what the users current browser supports and the client code just consumes the abstraction layer.</p>
+<h2 id="example-1">Example</h2>
+<p>Using Facade to simplify an interface for listening to events corss-browser. We do this breating a common method that can be used in one&#39;s code which does the task of checking for the existence of features so that it can provide a save and cross-browser compatible solution.</p>
+<pre><code><span class="hljs-comment">// Facade</span>
+<span class="hljs-keyword">var</span> addMyEvent = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">el, ev, fn</span>) </span>{
+  <span class="hljs-keyword">if</span> (el.addEventListener) {
+    el.addEventListener(ev, fn, <span class="hljs-literal">false</span>);
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (el.attachEvent) {
+    el.attachEvent(<span class="hljs-string">&quot;on&quot;</span> + ev, fn);
+  } <span class="hljs-keyword">else</span> {
+    el[<span class="hljs-string">&quot;on&quot;</span> + ev] = fn;
+  }
+};
+</code></pre>
+<p>Client or the Consumer of the Facade dont need to worry about the cross browser checkings.</p>
+<pre><code><span class="hljs-comment">// Client</span>
+addMyEvent(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;facade-pattern&quot;</span>), <span class="hljs-string">&quot;click&quot;</span>, <span class="hljs-function">() =&gt;</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Heading clicked.&quot;</span>) });
+</code></pre>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
