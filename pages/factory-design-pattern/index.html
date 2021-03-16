@@ -27,15 +27,48 @@
       <div
         class="injected-readme">
         <!-- inject:readme:md -->
-        <h1 id="factory-design-pattern">Factory Design Pattern</h1>
+        <h1 id="factory--the-abstract-factory-design-pattern">Factory &amp; the Abstract Factory Design Pattern</h1>
+<p><strong>Variations:</strong> Simple Factory | Factory Method | Abstract Factory</p>
 <blockquote>
-<p>A Factory define an Interface for creating an Object, but let Subclasses decide which Class to instantiate.
+<p>A Factory define an Interface for creating an Object, but let Subclasses (concrete factories) decide which Class to instantiate.
 <em>-- GOF</em></p>
 </blockquote>
-<p>// The phone example both for factory and abstract factrory needs re-work based on Addy&#39;s ebook.</p>
+<p><a href="https://www.youtube.com/watch?v=channel/UCbF-4yQQAWw-UnuCd2Azfzg">Christopher Okhravi</a> has beautifully explained the concept of Factory method in the following video: </p>
+<p><a href="https://www.youtube.com/watch?v=EcFVTgRHJLM"><img src="https://img.youtube.com/vi/EcFVTgRHJLM/0.jpg" alt="this video"></a>. </p>
+<p>I encourage you to go through the video and we have implemented the same example as explained by Christopher in Javascript.</p>
+<p>In our code we use a lot of different <strong>objects</strong>. We have <strong>classes</strong> and we instantiate these <strong>objects</strong> from the classes and use them in a bunch of different ways. We have to <strong>instantiate objects</strong> from our classes at some point or the other in the program. <strong>Factory</strong> method says, when you are tryin to instantiate, let&#39;s e<strong>ncapsulate that instantiation</strong>, so that we can make in <strong>uniform</strong> across all places, So that you can use the <strong>factory</strong>, whenever you want to <strong>instantiate</strong> and the <strong>factory</strong> is responsible for <strong>instantiating appropriately</strong>. </p>
+<p>It makes sense when the instantiation is very complex &amp; needs computation &amp; some kind of business logic to determine what parameters you want to pass through this particular object. Maybe there are variations of object and you need some business logic to determine which variation of the object do you need to construct. </p>
+<p>It&#39;s also about polymorphism. If we have a factory that wraps our construction &amp; if that factory is an instance, then you can swap that instance at runtime for an instance of an another factory. If while entering a function, we knew, which varitaion of object do we need, then it&#39;s not a factory problem. We could has just passed it in via dependency injection / as a prameter. But if we identify the variation somewhere inside the function body. Basically we randomly want to create a variation of the object &amp; we need to do that at several different functions.</p>
+<p>Just an example, Say we have a <code>virtual_animal_park</code>. We have a class called Animal and it can construct either a <code>dog</code> , <code>cat</code> or a <code>duck</code> object.</p>
+<p>a dog barks, has 4 legs, has no wings &amp; it cant fly
+a cat meows, has 4 legs, has no wings &amp; it cant fly
+a duck quacks, has 2 legs, has 2 wings &amp; it can fly</p>
+<p>In some scenarios we need a way to just constuct any random animal out of three. In some scenarios we need a bit balanced approach for example, 5 seconds after the program starts, random one of the 3 animals is to be constructed. Then after 5 seconds one of the rest of the two needs to be constructed. Again, after 5 seconds, one of the remaining one needs to be constructed &amp; so on. The <strong>factory</strong> pattern says that this creational logic can be encapsulated inside a <code>RandomAnimalFactory</code> or/and a <code>BalancedAnimalFactory</code>. </p>
+<p>The <strong>business logic of creation</strong> can go inside a factory. The factory can decide on <strong>which sub type</strong> it needs to construct and/or the factory can decide <strong>in which way</strong> it needs to construct.</p>
+<p><code>RandomAnimalFactory</code> could have a method called <code>createAnimal()</code>, which simply returns any random Animal object. </p>
+<p>We could have another factory called <code>RandomAnimalFactoryBalanced</code> which too has a method with the same name <code>createAnimal()</code>. It may have some sort of state. It makes sure that the number of animals are balanced. It may contain a logic that upon every 3rd creation, we&#39;ll have equal number of each animals.</p>
+<p><strong>Actors in our example:</strong></p>
+<p><strong>Product</strong> : <code>Animal</code> [ interface/superclass ]</p>
+<p><strong>Creator</strong> : <code>AnimalFactory</code> [ interface/superclass ]</p>
+<ul>
+<li>difines a factoryMethod() that returns an object of type Product</li>
+</ul>
+<p><strong>ConcreteProducts</strong> :  <code>cat</code>, <code>dog</code>, <code>duck</code> [ implements <code>Animal</code> ]</p>
+<p><strong>ConcreteCreators</strong> : <code>RandomAnimalFactory</code>, <code>BalancedAnimalFactory</code> [ implements <code>AnimalFactory</code> ]</p>
+<ul>
+<li>implements a factoryMethod() that returns an object of type Product</li>
+</ul>
+<h2 id="simple-factory">Simple Factory</h2>
+<p>Simple factory simply means that we have a <code>ConcreteCreator</code> that creates a <code>ConcreteProduct</code>. There are no shared interfaces for Procucts or Creators.</p>
+<h2 id="factory-method">Factory Method</h2>
+<p>We have all four actors involved in the Factory Method pattern: <code>Product</code>, <code>ConcreteProducts</code>, <code>Creator</code> &amp; <code>ConcreteCreators</code>.</p>
+<h2 id="example-implementation">Example Implementation:</h2>
 
         <!-- endinject -->
       </div>
+
+
+
 
     </div>
     <script type="module" defer src="script.js"></script>
