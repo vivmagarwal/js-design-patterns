@@ -15,6 +15,8 @@ Design patterns can be broken down into a number of different categories:
 
 Creational design patterns focus on handling **object creation** mechanisms where objects are created in a manner suitalbe for the situation we're working in. 
 
+As the name suggests, these patterns addresses problems related to the creation of objects. For example, the factory pattern allows us to encapulate the creation of an object within a function. The Revelaing Constructor pattern allows us to expose private objet properties and methods only durint the objects creation, while builder pattern simplifies the creation of complex objects. Finally, the singleton pattern and the dependency Injection pattern help us wiring the modules within our application.
+
 Some of the patterns that fall under this category are: 
 - Constructor
 - Factory

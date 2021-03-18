@@ -66,13 +66,13 @@ class GreekPizza extends Pizza {
   }
 }
 
-class NYStyleGreekPizza extends GreekPizza {
+class NYStyleGreekPizza extends Pizza {
   constructor(pizzaName = "Newyork Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Some Cheeze"]) {
     super(pizzaName, dough, sauce, toppings);
   }
 }
 
-class ChichagoStyleGreekPizza extends GreekPizza {
+class ChichagoStyleGreekPizza extends Pizza {
   constructor(pizzaName = "Chicago Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Lot's of Cheeze"]) {
     super(pizzaName, dough, sauce, toppings);
   }
@@ -84,13 +84,13 @@ class PepperoniPizza extends Pizza {
   }
 }
 
-class NYStylePepperoniPizza extends PepperoniPizza {
+class NYStylePepperoniPizza extends Pizza {
   constructor(pizzaName = "NY Style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
     super(pizzaName, dough, sauce, toppings);
   }
 }
 
-class ChichagoStylePepperoniPizza extends PepperoniPizza {
+class ChichagoStylePepperoniPizza extends Pizza {
   constructor(pizzaName = "Chichago style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
     super(pizzaName, dough, sauce, toppings);
   }
@@ -114,9 +114,8 @@ class SimplePizzaFactory {
 }
 
 // ===================================================== //
-// Concrete Simple factory subclasses
+// Concrete factory classes
 // ===================================================== //
-
 class NYStylePizzaFactory extends SimplePizzaFactory {
   constructor() {
     super();
@@ -130,12 +129,12 @@ class NYStylePizzaFactory extends SimplePizzaFactory {
       pizza = new NYStyleGreekPizza();
     } else if (pizzaType == "pepperoni") {
       pizza = new NYStylePepperoniPizza();
-    }
+    } 
     return pizza;
   }
 }
 
-class ChicagoStylePizzaFactory extends SimplePizzaFactory {
+class ChicagoPizzaFactory extends SimplePizzaFactory {
   constructor() {
     super();
   }
@@ -153,84 +152,24 @@ class ChicagoStylePizzaFactory extends SimplePizzaFactory {
   }
 }
 
+
 // ===================================================== //
-// Creator class (kind of abstract) :: the client code
+// Creator class :: the client code
 // ===================================================== //
 class PizzaStore {
-  // Client: This method is not required to be overridden; It just uses the pizza that the createPizza - factory method - returns
-  // here it doesnot know what will it get back, it depends on the implementation of createPizza by it's subclasses
-  // that's its important that all the pizza (product) implement a common interface
+  constructor(factory) {
+    this.factory = factory;
+  }
+
   orderPizza = function (type) {
-    let pizza = this.createPizza(type);
+    let pizza = this.factory.createPizza(type);
     pizza.prepare();
     pizza.bake();
     pizza.cut();
     pizza.box();
     return pizza;
   }
-
-  // instead of injecting a factory object we have this abstract method here which could be overridden by the subclasses of the PizzaStore.
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new CheesePizza();
-    } else if (pizzaType == "greek") {
-      pizza = new GreekPizza();
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
-    }
-    return pizza;
-  }
 }
 
-// ===================================================== //
-// Concrete crator classes :: subclasses that extends creator and overrided the createPizza() method
-// ===================================================== //
-
-// This subclass is fully responsible for which concrete pizza it instantiates.
-// NYPizzaStore extends PizzaStore, so it inherits the orderPizza() method.
-class NyStypePizzaStore extends PizzaStore {
-  constructor() {
-    super();
-  }
-
-  // orderPizza() : the orderPizza() method in the superclass has no clue which Pizza we are creating; it just knows it can prepare, bake, cut and box it.
-  // overridding/implementing just the createPizza() method
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new NYStyleCheesePizza(); // instantiating the region specific pizza.
-    } else if (pizzaType == "greek") {
-      pizza = new NYStyleGreekPizza();  // instantiating the region specific pizza.
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
-    }
-    return pizza;
-  }
-}
-
-class ChichagoStypePizzaStore extends PizzaStore {
-  constructor() {
-    super();
-  }
-
-  // overridding just the createPizza() method
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new ChichagoStyleCheesePizza(); // instantiating the region specific pizza.
-    } else if (pizzaType == "greek") {
-      pizza = new ChichagoStyleGreekPizza();  // instantiating the region specific pizza.
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
-    }
-    return pizza;
-  }
-}
-
-// ===================================================== //
-// Usage
-// ===================================================== //
-
-let ny_pizza_store_one = new NyStypePizzaStore();
-ny_pizza_store_one.orderPizza("greek");
+let pizza_store_one = new PizzaStore(new NYStylePizzaFactory);
+pizza_store_one.orderPizza("cheese");

@@ -66,13 +66,13 @@ class GreekPizza extends Pizza {
   }
 }
 
-class NYStyleGreekPizza extends GreekPizza {
+class NYStyleGreekPizza extends Pizza {
   constructor(pizzaName = "Newyork Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Some Cheeze"]) {
     super(pizzaName, dough, sauce, toppings);
   }
 }
 
-class ChichagoStyleGreekPizza extends GreekPizza {
+class ChichagoStyleGreekPizza extends Pizza {
   constructor(pizzaName = "Chicago Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Lot's of Cheeze"]) {
     super(pizzaName, dough, sauce, toppings);
   }
@@ -84,13 +84,13 @@ class PepperoniPizza extends Pizza {
   }
 }
 
-class NYStylePepperoniPizza extends PepperoniPizza {
+class NYStylePepperoniPizza extends Pizza {
   constructor(pizzaName = "NY Style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
     super(pizzaName, dough, sauce, toppings);
   }
 }
 
-class ChichagoStylePepperoniPizza extends PepperoniPizza {
+class ChichagoStylePepperoniPizza extends Pizza {
   constructor(pizzaName = "Chichago style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
     super(pizzaName, dough, sauce, toppings);
   }

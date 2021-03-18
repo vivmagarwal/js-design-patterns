@@ -28,41 +28,444 @@
         class="injected-readme">
         <!-- inject:readme:md -->
         <h1 id="factory--the-abstract-factory-design-pattern">Factory &amp; the Abstract Factory Design Pattern</h1>
-<p><strong>Variations:</strong> Simple Factory | Factory Method | Abstract Factory</p>
-<blockquote>
-<p>A Factory define an Interface for creating an Object, but let Subclasses (concrete factories) decide which Class to instantiate.
-<em>-- GOF</em></p>
-</blockquote>
-<p><a href="https://www.youtube.com/watch?v=channel/UCbF-4yQQAWw-UnuCd2Azfzg">Christopher Okhravi</a> has beautifully explained the concept of Factory method in the following video: </p>
-<p><a href="https://www.youtube.com/watch?v=EcFVTgRHJLM"><img src="https://img.youtube.com/vi/EcFVTgRHJLM/0.jpg" alt="this video"></a>. </p>
-<p>I encourage you to go through the video and we have implemented the same example as explained by Christopher in Javascript.</p>
-<p>In our code we use a lot of different <strong>objects</strong>. We have <strong>classes</strong> and we instantiate these <strong>objects</strong> from the classes and use them in a bunch of different ways. We have to <strong>instantiate objects</strong> from our classes at some point or the other in the program. <strong>Factory</strong> method says, when you are tryin to instantiate, let&#39;s e<strong>ncapsulate that instantiation</strong>, so that we can make in <strong>uniform</strong> across all places, So that you can use the <strong>factory</strong>, whenever you want to <strong>instantiate</strong> and the <strong>factory</strong> is responsible for <strong>instantiating appropriately</strong>. </p>
+<p><strong>VARIATIONS:</strong> <strong>Simple Factory</strong> | <strong>Factory Method</strong> | <strong>Abstract Factory</strong></p>
+<p>In our code we use a lot of different <strong>objects</strong>. We have <strong>classes</strong> and we instantiate <strong>objects</strong> from the classes and use them in a bunch of different ways. We have to <strong>instantiate objects</strong> from our classes at some point or the other in the program.</p>
+<p>An example client code (<code>PizzaStore.orderPizza()</code>) without a factory:
+<img src="2021-03-18-16-12-56.png" alt=""></p>
+<p><strong>When you have code that instantiates concreate classes, this is an area of frequent change.</strong></p>
+<p>Without a simple factory, our client code could look something like this. Remeber, our application may have many such places where the decision needs to be made at runtime about which variation of pizza to instantiate:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">orderPizza</span>(<span class="hljs-params">type</span>) </span>{
+  <span class="hljs-keyword">let</span> pizza;
+
+  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">&quot;cheese&quot;</span>) {
+    pizza = <span class="hljs-keyword">new</span> CheesePizza();
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">&quot;greek&quot;</span>) {
+    pizza = <span class="hljs-keyword">new</span> GreekPizza();
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+    pizza = <span class="hljs-keyword">new</span> PepperoniPizza();
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">&quot;calm&quot;</span>) {
+    pizza = <span class="hljs-keyword">new</span> CalmPizza();
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">&quot;veggie&quot;</span>) {
+    pizza = <span class="hljs-keyword">new</span> VeggiePizza();
+  }
+
+  pizza.prepare();
+  pizza.bake();
+  pizza.cut();
+  pizza.box();
+
+  <span class="hljs-keyword">return</span> pizza;
+}
+</code></pre>
+<p> <strong>Factory</strong> method says, let&#39;s <strong>encapsulate</strong> the code that create objects, so that we can make the object creation process <strong>uniform</strong> across all places. You can use the <strong>factory</strong>, whenever you want to <strong>instantiate</strong> and the <strong>factory</strong> is responsible for <strong>instantiating appropriately</strong>. </p>
+<p>We can use &quot;factories&quot; that allows you to encapsulate the behaviour of instantiation. By placing all the creation code in one object or method, you <strong>avoid duplication</strong> in your code and provide <strong>one place to perform maintenance</strong>. </p>
+<p>The client code, depend only upon the interfaces our factory provides, rather than the concrete classes required to instantiate the objects. </p>
 <p>It makes sense when the instantiation is very complex &amp; needs computation &amp; some kind of business logic to determine what parameters you want to pass through this particular object. Maybe there are variations of object and you need some business logic to determine which variation of the object do you need to construct. </p>
-<p>It&#39;s also about polymorphism. If we have a factory that wraps our construction &amp; if that factory is an instance, then you can swap that instance at runtime for an instance of an another factory. If while entering a function, we knew, which varitaion of object do we need, then it&#39;s not a factory problem. We could has just passed it in via dependency injection / as a prameter. But if we identify the variation somewhere inside the function body. Basically we randomly want to create a variation of the object &amp; we need to do that at several different functions.</p>
-<p>Just an example, Say we have a <code>virtual_animal_park</code>. We have a class called Animal and it can construct either a <code>dog</code> , <code>cat</code> or a <code>duck</code> object.</p>
-<p>a dog barks, has 4 legs, has no wings &amp; it cant fly
-a cat meows, has 4 legs, has no wings &amp; it cant fly
-a duck quacks, has 2 legs, has 2 wings &amp; it can fly</p>
-<p>In some scenarios we need a way to just constuct any random animal out of three. In some scenarios we need a bit balanced approach for example, 5 seconds after the program starts, random one of the 3 animals is to be constructed. Then after 5 seconds one of the rest of the two needs to be constructed. Again, after 5 seconds, one of the remaining one needs to be constructed &amp; so on. The <strong>factory</strong> pattern says that this creational logic can be encapsulated inside a <code>RandomAnimalFactory</code> or/and a <code>BalancedAnimalFactory</code>. </p>
-<p>The <strong>business logic of creation</strong> can go inside a factory. The factory can decide on <strong>which sub type</strong> it needs to construct and/or the factory can decide <strong>in which way</strong> it needs to construct.</p>
-<p><code>RandomAnimalFactory</code> could have a method called <code>createAnimal()</code>, which simply returns any random Animal object. </p>
-<p>We could have another factory called <code>RandomAnimalFactoryBalanced</code> which too has a method with the same name <code>createAnimal()</code>. It may have some sort of state. It makes sure that the number of animals are balanced. It may contain a logic that upon every 3rd creation, we&#39;ll have equal number of each animals.</p>
-<p><strong>Actors in our example:</strong></p>
-<p><strong>Product</strong> : <code>Animal</code> [ interface/superclass ]</p>
-<p><strong>Creator</strong> : <code>AnimalFactory</code> [ interface/superclass ]</p>
+<h2 id="benifits">Benifits</h2>
 <ul>
-<li>difines a factoryMethod() that returns an object of type Product</li>
+<li>Avoids duplication</li>
+<li>One place for maintenance</li>
+<li>Decouple object creation from is usage</li>
+<li>Expose a smaller surface are to client</li>
 </ul>
-<p><strong>ConcreteProducts</strong> :  <code>cat</code>, <code>dog</code>, <code>duck</code> [ implements <code>Animal</code> ]</p>
-<p><strong>ConcreteCreators</strong> : <code>RandomAnimalFactory</code>, <code>BalancedAnimalFactory</code> [ implements <code>AnimalFactory</code> ]</p>
+<h2 id="when-to-use-factory-pattern">When to use Factory Pattern:</h2>
 <ul>
-<li>implements a factoryMethod() that returns an object of type Product</li>
+<li>When our Object or component setup involves a high level of complexity</li>
+<li>When we easily need to genrate different instances of objects on the environment we are in</li>
+<li>When we are working with many small objects or component that share the same properties</li>
+<li>When composing objects with instances of other objects that need to only satisfy an API contract to work.</li>
 </ul>
+<h2 id="real-world-example">Real world example</h2>
+<p>Knex is a SQL query builder that supports multiple databases. Its package exports just a function, which is a factory. The factory performs various checks, selects the right dialect object to use based on the database engine, and finally creates and returns a knex object.</p>
+<p>There are three variations of the factory pattern:</p>
 <h2 id="simple-factory">Simple Factory</h2>
 <p>Simple factory simply means that we have a <code>ConcreteCreator</code> that creates a <code>ConcreteProduct</code>. There are no shared interfaces for Procucts or Creators.</p>
 <h2 id="factory-method">Factory Method</h2>
 <p>We have all four actors involved in the Factory Method pattern: <code>Product</code>, <code>ConcreteProducts</code>, <code>Creator</code> &amp; <code>ConcreteCreators</code>.</p>
-<h2 id="example-implementation">Example Implementation:</h2>
+<h2 id="abstract-factores">Abstract Factores</h2>
+<p>An Abstract factory aims to encapsulate a group of individual factories with a common goal. </p>
+<p>You know that, if your code is written to an interface, then it will work with any new classes implementing that interface through polymorphism. However, when you hava a code that makes use of lot&#39;s of concreate classes, you are looking for trouble because that code may have to be changed as new concreate classes are added. In other words your code will not be &quot;closed for modification&quot;. To extended your code with new concreate types, you will have to re-open it.</p>
+<p>Let&#39;s start exloring the simple factory first:</p>
+<p>Here&#39;s a very good example from the Oreilly&#39;s, <a href="https://www.oreilly.com/library/view/head-first-design/9781492077992/">head first design patterns</a> book.</p>
+<h2 id="the-simple-factory">The Simple Factory</h2>
+<p>Many developers argue that <strong>the simple factory</strong> isn&#39;t actually a design pattern. But in my very humble opinion, it is a very useful pattern and has all the glory to qualify as a simple design pattern. </p>
+<p>PS: In case you are preparing for an interview, and they happen to ask you about the Simple Factory, tell them that it is a very useful programming idiom but not a pattern 😏</p>
+<p>Following are the <strong>actors</strong> involved in a simple Factory:</p>
+<p>The <strong>client/creator/store</strong>: In our example, the client is going to be <code>PizzaStore</code>&#39;s <code>orderPizza()</code> method. This piece of code will be using our factory.</p>
+<p>The <strong>factory</strong>: In our example, the factory is going to be  <code>SimplePizzaFactory</code> object. We use the <code>createPizza()</code> method of our simple factory to create pizza&#39;s. It is the only part of our application that refers to the concrete pizza classes.</p>
+<p>The <strong>product</strong>: The product of our factory is <code>pizza</code>. We have defined <code>Pizza</code> as an <strong>abstract product class</strong> with some helpful implementations that can be overridden. </p>
+<p>the <strong>concrete products</strong>: <code>CheezePizza</code>, <code>VeggiePizza</code>, <code>CalmPizza</code> etc are going to be our concrete product classes. Each product class needs to extend the <code>Pizza</code> class. and as long as that&#39;s the case, it can be created by the <strong>factory</strong> and handed back to the <strong>client</strong>.</p>
+<p>In A simple factory, you need to be able to do something similar to the following at the client side:</p>
+<pre><code><span class="hljs-comment">// client code:</span>
+<span class="hljs-keyword">let</span> pizza_store_one = <span class="hljs-keyword">new</span> PizzaStore(<span class="hljs-keyword">new</span> SimplePizzaFactory());
+pizza_store_one.orderPizza(<span class="hljs-string">&quot;cheese&quot;</span>);
+</code></pre>
+<ul>
+<li>You instantiate a <code>PizzaStore</code> and pass in (inject) our pizza <strong>factory</strong> object.</li>
+<li>You invoke the <code>orderPizza()</code> [our client] method of the <strong>pizzaStore</strong> and pass in a variation of <strong>pizza</strong>.</li>
+<li>the orderPizza invokes the <code>createPizza()</code> method of the factory object that we injected and it returns back a pizza object back to the client.</li>
+</ul>
+<p>A visual representation of our <strong>simple factory</strong> looks something like this:
+<img src="img/simple-factory/pattern.png" alt=""></p>
+<p>In other words, in the client code, we replace an ugly if..else statement of multiple <code>new</code> keywords with a simple argument. Beautiful!!  </p>
+<h3 id="product-abstract-class">Product (abstract) class</h3>
+<p>Pizza (abstract) class with some default implementations:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&#x27;default pizza&#x27;</span>, dough = <span class="hljs-string">&#x27;default dough&#x27;</span>, sauce = <span class="hljs-string">&#x27;default sauce&#x27;</span>, toppings = []</span>)</span> {
+    <span class="hljs-keyword">let</span> default_topping = [<span class="hljs-string">&#x27;default topping1&#x27;</span>, <span class="hljs-string">&#x27;default topping2&#x27;</span>];
+    <span class="hljs-built_in">this</span>.pizzaName = pizzaName;
+    <span class="hljs-built_in">this</span>.dough = dough;
+    <span class="hljs-built_in">this</span>.sauce = sauce;
+    <span class="hljs-built_in">this</span>.toppings = [...default_topping, ...toppings];
+  }
+
+  <span class="hljs-function"><span class="hljs-title">prepare</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Preparing ::: <span class="hljs-subst">${<span class="hljs-built_in">this</span>.pizzaName}</span> with <span class="hljs-subst">${<span class="hljs-built_in">this</span>.toppings.join(<span class="hljs-string">&#x27; ,&#x27;</span>)}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">bake</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Baking for 25 minutes at 350`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cut</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Cutting the pizza into diagonal slices`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">box</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Placing pizza in official Pizzastore box`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">getName</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.pizzaName;
+  }
+}
+</code></pre>
+<h3 id="product-concrete-classes">Product concrete classes:</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CheesePizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&#x27;Plain Cheeze Pizza&#x27;</span>, dough, sauce, toppings = [<span class="hljs-string">&#x27;Extra Cheeze&#x27;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NYStyleCheesePizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&#x27;NY Style Plain Cheeze Pizza&#x27;</span>, dough = <span class="hljs-string">&quot;thin chrust&quot;</span>, sauce, toppings = [<span class="hljs-string">&#x27;some Cheeze&#x27;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cut</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Cut the cheezy pizza in NY Style.`</span>); 
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChichagoStyleCheesePizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&#x27;Chichago Style Plain Cheeze Pizza&#x27;</span>, dough = <span class="hljs-string">&quot;thick chrust&quot;</span>, sauce, toppings = [<span class="hljs-string">&#x27;lots of Cheeze&#x27;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GreekPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;Plain Greek Pizza&quot;</span>, dough = <span class="hljs-string">&quot;Greek dough&quot;</span>, sauce = <span class="hljs-string">&quot;Greek sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Greek spices&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NYStyleGreekPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;Newyork Greek Pizza&quot;</span>, dough = <span class="hljs-string">&quot;Greek dough&quot;</span>, sauce = <span class="hljs-string">&quot;Greek sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Greek spices&quot;</span>, <span class="hljs-string">&quot;Some Cheeze&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChichagoStyleGreekPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;Chicago Greek Pizza&quot;</span>, dough = <span class="hljs-string">&quot;Greek dough&quot;</span>, sauce = <span class="hljs-string">&quot;Greek sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Greek spices&quot;</span>, <span class="hljs-string">&quot;Lot&#x27;s of Cheeze&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PepperoniPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;Plain Pepperoni Pizza&quot;</span>, dough, sauce = <span class="hljs-string">&quot;Peeper sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Peeper&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NYStylePepperoniPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;NY Style Pepperoni Pizza&quot;</span>, dough, sauce = <span class="hljs-string">&quot;Peeper sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Peeper&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChichagoStylePepperoniPizza</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Pizza</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">pizzaName = <span class="hljs-string">&quot;Chichago style Pepperoni Pizza&quot;</span>, dough, sauce = <span class="hljs-string">&quot;Peeper sauce&quot;</span>, toppings = [<span class="hljs-string">&quot;Peeper&quot;</span>]</span>)</span> {
+    <span class="hljs-built_in">super</span>(pizzaName, dough, sauce, toppings);
+  }
+}
+</code></pre>
+<p>Based on type of pizza (runtime), we instantiate the correct concrete class. This code is not closed for modification. If the pizza store changes it&#39;s pizza offerings, we will have to modify it. Clearly, the logic of selecting the concrete class to be instantiated, is preventing our <code>orderPizza()</code> method from being closed for modificaiton.</p>
+<p>Let&#39;s extract the oject creation logic to a separate factory object:</p>
+<h3 id="a-simple-factory-class">A Simple Factory class</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimplePizzaFactory</span> </span>{
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> CheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> GreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> PepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<p>Next, we need to some how inject this factory to our pizza store. We can either use a method like <code>setFactory()</code> or pass it in as a constructor. In any case we need a property in the <code>PizzaStore</code> class for a factory.</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">PizzaStore</span>(<span class="hljs-params">factory</span>) </span>{
+  <span class="hljs-built_in">this</span>.factory = factory;
+}
+</code></pre>
+<p>In the <code>orderPizza()</code> method we need to invoke the <code>createPizza()</code> method (#1) of the factory to build a pizza object of our choice. </p>
+<pre><code><span class="hljs-keyword">let</span> pizza = <span class="hljs-built_in">this</span>.factory.createPizza(type);
+</code></pre>
+<p>ES6 classes variation of the PizzaStore may look something like this now.</p>
+<h3 id="creator-class-clientstore">Creator class (client/store)</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PizzaStore</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">factory</span>)</span> {
+    <span class="hljs-built_in">this</span>.factory = factory;
+  }
+
+  orderPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">type</span>) </span>{
+    <span class="hljs-keyword">let</span> pizza = <span class="hljs-built_in">this</span>.factory.createPizza(type);
+    pizza.prepare();
+    pizza.bake();
+    pizza.cut();
+    pizza.box();
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<p>Finally our client code would look as simple as this:</p>
+<pre><code><span class="hljs-keyword">let</span> pizza_store_one = <span class="hljs-keyword">new</span> PizzaStore(SimplePizzaFactory);
+pizza_store_one.orderPizza(<span class="hljs-string">&quot;pepperoni&quot;</span>);
+</code></pre>
+<p>The visual representation of the simple factory pattern will hopefully make much more now: 
+<img src="img/simple-factory/pattern.png" alt=""></p>
+<p>With the <code>Simple Factory</code>, we try to abstract the creation details of the product from our caller. The only thing our caller (client code) knows, by calling a method and passing the desired parameter, it returns an object of type <code>Pizza</code>. But, how the pizza is created is encaplulared away from the client. </p>
+<p>So, whenever you see there are chances of creating many instances of product and the product creation requires some conditions/logic, we may go for a <code>Simple Factory</code>.</p>
+<p>The complete source code the example can be found <a href="simple-factory-basic.js">here</a> </p>
+<h2 id="simple-factory---with-multiple-factory-subclasses">Simple factory - with multiple factory subclasses.</h2>
+<p>We, can further orgaize a simple factory, by making our factory a (kind of abstract) class &amp; letting it&#39;s subclasses decide how to make pizza&#39;s</p>
+<p>If we take out SimplePizzaFactory and create three different factories - NYPizzaFactory, ChicagoPizzaFactory and CaliforniaPizzaFactory -- then we can just compose the PizzaStore with the appropriate factory and a franchise is good to go. </p>
+<p>The visual representation may look something like this:
+<img src="2021-03-18-08-09-34.png" alt=""></p>
+<h3 id="factory-subclasses-concrete-factories-that-extends-factory">Factory Subclasses (concrete factories that extends Factory)</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NYStylePizzaFactory</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimplePizzaFactory</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleCheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleGreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStylePepperoniPizza();
+    } 
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChicagoPizzaFactory</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimplePizzaFactory</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleCheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleGreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStylePepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<h3 id="usage-client-code">Usage (Client Code)</h3>
+<pre><code><span class="hljs-keyword">let</span> pizza_store_one = <span class="hljs-keyword">new</span> PizzaStore(<span class="hljs-keyword">new</span> NYStylePizzaFactory);
+pizza_store_one.orderPizza(<span class="hljs-string">&quot;cheese&quot;</span>);
+</code></pre>
+<p>The complete source code of this expample can be found <a href="simple-factory-advanced.js">here</a></p>
+<h2 id="factory-method-1">Factory Method</h2>
+<p>In Simple Factory, the Concrete Product Creator is <strong>instantiated</strong> with a separate factory object.</p>
+<p>But, in the factory method, the Concrete Product Creator <strong>extends</strong> a class that has defined a <code>createProduct()</code> method. It&#39;s upto  the concrete Creator Classes to implement/override the behaviour of the createProduct() factory method.</p>
+<p>The <strong>Factory Method</strong> pattern defines an <strong>interface</strong> for creating objects (creator abstract class) , but lets <strong>subclasses</strong> of the (concrete crators) <em>decide</em> which class (of product) to instantiate. Factory method lets a class defer instantiation to subclasses.</p>
+<p>Abstract Creator class gives you an interface with a method for creating objects, also known as the <strong>factory methtod</strong>. Any other methods implemented in the abstract Creator are written to operate on products produced by the factory method. It&#39;s upto the subclasses (concrete creators) to implement or override the factory method and make their product of choice.</p>
+<p>Creator class is written without knowledge of the actual products that will be created, because the pattern allows subclasses themselves to decide, which product subclasses to use to create the product.</p>
+<p><strong>Actors in the Factory Method Pattern:</strong></p>
+<ul>
+<li>Abstract Creator <ul>
+<li>factoryMethod()</li>
+<li>other_methods_that_may_use_the_created_product()</li>
+</ul>
+</li>
+<li>Concrete Creator<ul>
+<li>factoryMethod()</li>
+</ul>
+</li>
+<li>Abstract Product</li>
+<li>Concrete Product</li>
+</ul>
+<p>All products must implement the same interface so that the classes that use the products can refer to the interface and not the concrete class. <strong>We are docoupling the creation of a product from its use</strong></p>
+<p>Each frachise, of our PizzaStore might want to offer different styles of pizzas, depending on where the franchise store is located. For example one franchise wants a factory that makes NY-style pizzas: thin crust, tasty sauce and just a little cheeze. Another franchise wahts a factory that makes Chicago-style pizzas: thick crust, rich sauce and tons of cheese.</p>
+<p>A factoryMethod handles object creation and encapsulates it in a subclass. This decouples the client code in the superclass from the object creation code in the subclass</p>
+<p>The visual representation of the Factory Method Pattern may look something like this:</p>
+<p><img src="2021-03-18-07-47-41.png" alt=""></p>
+<p>So, the first step of refactoring could be to use our factory class as an (abstract) class and create a few subclasses that extends our simpleFactory class.</p>
+<h3 id="concrete-factories-subclasses-that-extends-simplefactory">Concrete factories (subclasses that extends simpleFactory)</h3>
+<p>Here in the factory subclass, we decide which product subclass to use for making Pizza.</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NYStylePizzaFactory</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimplePizzaFactory</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleCheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleGreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStylePepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChicagoStylePizzaFactory</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimplePizzaFactory</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleCheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleGreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStylePepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<p>Next step could be to, convert our PizzaStore to an (abstract) class. Move the createPizza() factory method as an abstract method in the PizzaStore class. So, now the createPizza() is back to being a call the a method in the PizzaStore rather than on a factory object.</p>
+<h3 id="abstract-creator-class-with-an-abstract-factory-method">(Abstract) Creator class with an abstract factory method</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PizzaStore</span> </span>{
+  <span class="hljs-comment">// Client: This method is not required to be overridden; It just uses the pizza that the createPizza - factory method - returns</span>
+  <span class="hljs-comment">// here it doesnot know what will it get back, it depends on the implementation of createPizza by it&#x27;s subclasses</span>
+  <span class="hljs-comment">// that&#x27;s its important that all the pizza (product) implement a common interface</span>
+  orderPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">type</span>) </span>{
+    <span class="hljs-keyword">let</span> pizza = <span class="hljs-built_in">this</span>.createPizza(type);
+    pizza.prepare();
+    pizza.bake();
+    pizza.cut();
+    pizza.box();
+    <span class="hljs-keyword">return</span> pizza;
+  }
+
+  <span class="hljs-comment">// instead of injecting a factory object we have this abstract method here which could be overridden by the subclasses of the PizzaStore.</span>
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> CheesePizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> GreekPizza();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> PepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<p>Now we have got an abstract store, waiting for subclasses. We are going to have a subclass for each regional type (NYPizzaStore, ChicagoPizzaStore &amp; CaliforniaPizzaStore) and each <strong>subclass is going to make the decision</strong> about what makes up a pizza. We will let each subclass of Pizza Store define what the createPizza() method looks like. </p>
+<p>So, we&#39;ll have a number of concrete subclasses of PizzaStore, each with it&#39;s own pizza variations, still making use of the well tested orderPizza() method.</p>
+<h3 id="concrete-creators--subclasses-that-extends-pizzastore">Concrete Creators :: subclasses that extends PizzaStore</h3>
+<pre><code><span class="hljs-comment">// NYPizzaStore extends PizzaStore, so it inherits the orderPizza() method.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NyStypePizzaStore</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">PizzaStore</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  <span class="hljs-comment">// orderPizza() : the orderPizza() method in the superclass has no clue which Pizza we are creating; it just knows it can prepare, bake, cut and box it.</span>
+  <span class="hljs-comment">// overridding/implementing just the createPizza() method</span>
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleCheesePizza(); <span class="hljs-comment">// instantiating the region specific pizza.</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> NYStyleGreekPizza();  <span class="hljs-comment">// instantiating the region specific pizza.</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> PepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ChichagoStypePizzaStore</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">PizzaStore</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  <span class="hljs-comment">// overridding just the createPizza() method</span>
+  createPizza = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">pizzaType = <span class="hljs-string">&quot;cheese&quot;</span></span>) </span>{
+    <span class="hljs-keyword">let</span> pizza;
+    <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;cheese&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleCheesePizza(); <span class="hljs-comment">// instantiating the region specific pizza.</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;greek&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> ChichagoStyleGreekPizza();  <span class="hljs-comment">// instantiating the region specific pizza.</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (pizzaType == <span class="hljs-string">&quot;pepperoni&quot;</span>) {
+      pizza = <span class="hljs-keyword">new</span> PepperoniPizza();
+    }
+    <span class="hljs-keyword">return</span> pizza;
+  }
+}
+</code></pre>
+<h3 id="usage--client-code">Usage :: client code</h3>
+<pre><code><span class="hljs-keyword">let</span> ny_pizza_store_one = <span class="hljs-keyword">new</span> NyStypePizzaStore();
+ny_pizza_store_one.orderPizza(<span class="hljs-string">&quot;greek&quot;</span>);
+</code></pre>
+<p>The complete sourcecode of the above example could be found <a href="factory-method.js">here</a></p>
+<h2 id="abstract-factory">Abstract Factory</h2>
+<p><strong>Abstract Factory</strong> offers the <strong>interface</strong> for creating a <strong>family of related products</strong>, without explicitly specifying their concrete classes.</p>
+<p>Abstract factory allows a client to use an abstract interface to create a set of related products without caring about the concrete products that are actually produced. In this way, the client is decoupled from any of the specifics of the concrete products. </p>
+<p>Often, the methods of an Abstract factory are implemented as factory methods.</p>
+<table>
+<thead>
+<tr>
+<th>Factory Method</th>
+<th>Abstract Factory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Uses classes</td>
+<td>Uses objects</td>
+</tr>
+<tr>
+<td>creates object through inheritance</td>
+<td>creates object through composition</td>
+</tr>
+<tr>
+<td>extend a class and provide an implementation for a factory method</td>
+<td>provides an abstract type, subclasses of these types define how those products are produced. To use factory you instantiate one and pass it into some code that is written against the abstract type</td>
+</tr>
+<tr>
+<td>creates just one product, so needs just one method</td>
+<td>It&#39;s interface has to change if new products are added</td>
+</tr>
+</tbody></table>
 
         <!-- endinject -->
       </div>
