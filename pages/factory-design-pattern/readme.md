@@ -4,12 +4,16 @@
 
 In our code we use a lot of different **objects**. We have **classes** and we instantiate **objects** from the classes and use them in a bunch of different ways. We have to **instantiate objects** from our classes at some point or the other in the program.
 
+In this article, we are using very good example from the Oreilly's, [head first design patterns](https://www.oreilly.com/library/view/head-first-design/9781492077992/) book.
+
+![](img/head-first-design-pattern.png)
+
 An example client code (`PizzaStore.orderPizza()`) without a factory:
 ![](2021-03-18-16-12-56.png)
 
 **When you have code that instantiates concreate classes, this is an area of frequent change.**
 
-Without a simple factory, our client code could look something like this. Remeber, our application may have many such places where the decision needs to be made at runtime about which variation of pizza to instantiate:
+Without a simple factory, our client code could look something like this. Remember, our application may have many such places where the decision needs to be made at runtime about which variation of pizza to instantiate:
 
 ```
 function orderPizza(type) {
@@ -35,6 +39,8 @@ function orderPizza(type) {
   return pizza;
 }
 ```
+
+Every new kind of pizza we add creates another dependency for PizzaStore. If the implementation of these dependencies  changes, then we may have to modify the pizza store. This version of Pizza store depends on all those pizza objects, because it's creating them directly. Because any change to the concrete implementaions of pizzas affects the PizzaStore, we say that pizza store **depends** on the pizza implementations.
 
  **Factory** method says, let's **encapsulate** the code that create objects, so that we can make the object creation process **uniform** across all places. You can use the **factory**, whenever you want to **instantiate** and the **factory** is responsible for **instantiating appropriately**. 
 
@@ -76,8 +82,6 @@ An Abstract factory aims to encapsulate a group of individual factories with a c
 You know that, if your code is written to an interface, then it will work with any new classes implementing that interface through polymorphism. However, when you hava a code that makes use of lot's of concreate classes, you are looking for trouble because that code may have to be changed as new concreate classes are added. In other words your code will not be "closed for modification". To extended your code with new concreate types, you will have to re-open it.
 
 Let's start exloring the simple factory first:
-
-Here's a very good example from the Oreilly's, [head first design patterns](https://www.oreilly.com/library/view/head-first-design/9781492077992/) book.
 
 ## The Simple Factory
 
@@ -269,7 +273,7 @@ class PizzaStore {
 
 Finally our client code would look as simple as this:
 ```
-let pizza_store_one = new PizzaStore(SimplePizzaFactory);
+let pizza_store_one = new PizzaStore(new SimplePizzaFactory);
 pizza_store_one.orderPizza("pepperoni");
 ```
 
@@ -517,15 +521,619 @@ extend a class and provide an implementation for a factory method | provides an 
 creates just one product, so needs just one method | It's interface has to change if new products are added
 
 
+#### Dependency Inversion Design principle:
+Our High-level components (Factories & Stores) should not depend on our low-level (Pizza) components, rather, they should both depend on abstractions.
+
+Pizza store is a high-level component because it's behaviour is defined in terms of pizzas - it creates all the different pizza objects, prepares, bakes, cuts and boxes them, while the pizza's it uses are low-level components.
+
+If we are working with a dependency inversion mindset, our thought process could be: "Since I now have Pizza abstraction, I can design my Pizza Store and not worry about the concreate pizza classses."
+
+#### Guidelines (not mandatory rules) to follow the principle:
+- No variable should hold a reference to a concrete class
+- No class should derive from a concrete class
+- No mehtod should override an implemented method of any bits of its base class
+
+Just keep these guidelines in the back of your mind. In a real world, you will have to violate these principles if you have a good reason for doing so.
+
+#### Building a factory that products them and ships them to your franchises!
+
+We have got the same product families (dough, sauce, cheese, veggies) but different implementation based on our regions.
+
+#### Abstract Factory
+
+An Abstract Factory gives us an **interface** (abstract factory) for creating a family of products. By writing code that uses this interface, we decouple our code from the actual factory that creates the products. That allows us to implement a variety of factories that produce products meant for different contexts - such as different regions, different operating systems or different look and feels.
+
+Because our code is decoupled from the actual products, we can substitue different factories to get different behaviours.
+
+From the abstract factory, we derive one or more concrete factories that produce the same products, but with different implementations.
+
+Then we write our code so that it uses the factory to create products. By passing in a variety of factories,  we get a variety of implementations of those products. But our client code stays the same.
+
+1- first we need a NYPizzaStore
+2- now we can take an order
+3- orderPizza calls the cretePizza mehtod
+4- when the createPizza() method is called, that's when our ingredient factory get's involved; 
+   create an instance of pizza composed with new yourk factory
+5- prepare()
+6. we have pizza in hand
+
+Abstract Factory allows a client to use an abstract interface to create a set of releted products without caring about the concrete products that are actually produced.
+
+#### Actors:
+Abstract Factory (Interface) : The Abstract Factory defines the interface that all concrete factories must implement, which consists of a set of methods for producing products. In our example (sub system) it is the PizzaIngredientFactory.
+
+Concrete Factories : The Concrete factories implement the different product families. To create a product, the client uses one of these factories, so it never has to instantiate a product object. In our example concrete factories are NYPizzaIngredientFactory & ChichagoPizzaIngredientFactory
+
+Client : The client is written against the abstract factory (PizzaStore) and then composed at runtime with an actual factory (NYPizzaStore)
+
+Abstract Product Interfaces : Each Asbstract product interface can produce and entire famity of products. Example: Clams (interface) , Dough
+
+ConcreteProducts : FrozenClams, FreshCalms, Thin crust dough, Thick crust dough
 
 
+If we look at our example of AbstractFactory
+
+```
+AbstractFactory
+├── CreateProductA()
+└── CreateProductB()
+```
+```
+PizzaIngredientFactory
+├── CreateDough()
+├── CreateSauce()
+├── CreateCheeze()
+├── CreateVeggies()
+├── CreatePeeperoni()
+└── CreateCalm()
+```
+The methods of our AbstractFactory as implemented as factory methods. The job of an an Abstract Factory is to define an interface for creating a set of products. Each method in that interface is responsible for creating a concrete product., and we implement a subclass of the Abstract factory to supply those implementations. So, factory methods are a natural way to implement your product methods in your abstract factories.
+
+#### Abstract Factory vs Factory Method
+**Abstract Factory** provides an interface for creating families of related or dependent objects without specifying their concrete classes.
+
+**Factory Methos** defines an interface, for creating an object, but let subclasses decide which class to instantitiate. Factory method lets a class defer instantiation to the subclass.
 
 
+## Abstract factory example:
+
+### Abstract Product Interface:
+```
+class Pizza {
+  constructor() {
+    this.pizzaName = null;
+    this.dough = null;
+    this.sauce = null;
+    this.toppings = [];
+    this.pepperoni = null;
+    this.calm = null;
+  }
+
+  // We've now made the prepare abstract;
+  prepare() { }; 
+
+  bake() {
+    console.log(`Baking for 25 minutes at 350`);
+  }
+
+  cut() {
+    console.log(`Cutting the pizza into diagonal slices`);
+  }
+
+  box() {
+    console.log(`Placing pizza in official Pizzastore box`);
+  }
+
+  getName() {
+    return this.pizzaName;
+  }
+
+  setName(pizza_name) {
+    this.pizzaName = pizza_name;
+  }
+
+  toString() {
+    return `${this.pizzaName} with ${this.dough}, ${this.sauce}, ${this.pepperoni}, ${this.calm }, ${this.toppings.join(' ,')}`;
+  }
+}
+```
+
+### Concrete Products
+```
+class CheesePizza extends Pizza {
+  constructor(ingredientFactory) {
+    super();
+    // providing a way to inject factory
+    this.ingredientFactory = ingredientFactory;
+  }
+
+ // one called, the factories are aked to prepare ingredients
+  prepare() { 
+    this.dough = this.ingredientFactory.createDough();
+    this.sauce = this.ingredientFactory.createSauce();
+    this.cheeze = this.ingredientFactory.createCheese();
+  };
+
+  box() {
+    console.log(`Placing pizza in official Cheezepizza box`);
+  }
 
 
+}
+
+class CalmPizza extends Pizza {
+  constructor(ingredientFactory) {
+    this.ingredientFactory = ingredientFactory;
+  }
+
+  prepare() {
+    this.dough = this.ingredientFactory.createDough();
+    this.sauce = this.ingredientFactory.createSauce();
+    this.cheeze = this.ingredientFactory.createPepperoni();
+    this.calm = this.ingredientFactory.createCalm(); // IN the NY Factory the calm's will be fresh and in Chichago they will be frozen.
+  };
+}
+```
+
+### Abstract Factory
+```
+class PizzaIngredientFactory {
+  createDough() { }; // factory methods to create ingredients.
+  createSauce() { };
+  createCheese() { };
+  createVeggies() { };
+  createPepperoni() { };
+  createCalms() { };
+}
+```
+
+### Concrete Factories
+
+Each Factory Method is implemented here.
+```
+class NyPizzaIngredientFactory extends PizzaIngredientFactory {
+
+  constructor() {
+    super();
+  }
+
+  createDough() {
+    return 'ThinChrustDough';
+  }
+
+  createSauce() {
+    return 'MarinaraSauce';
+  }
+
+  createCheese() {
+    return 'ReggianoCheeze';
+  }
+
+  createVeggies() {
+    return ['Garlic', 'Onion', 'Mushroom', 'RedPepper'];
+  }
+
+  createPepperoni() {
+    return 'SlicedPepperoni';
+  }
+
+  createCalm() {
+    return 'FreshCalms';
+  }
+}
+
+class ChichagoIngredientFactory extends PizzaIngredientFactory {
+
+  constructor() {
+    super();
+  }
+
+  createDough() {
+    return 'ThickChrustDough';
+  }
+
+  createSauce() {
+    return 'PlumTomatoSauce';
+  }
+
+  createCheese() {
+    return 'MozzarellaCheeze';
+  }
+
+  createVeggies() {
+    return ['Spinach', 'Blackolives', 'EggPlant'];
+  }
+
+  createPepperoni() {
+    return 'SlicedPepperoni';
+  }
+
+  createCalm() {
+    return 'FrozenCalms';
+  }
+}
+```
 
 
+### Abstract Creator / Client
+
+```
+class PizzaStore {
+
+  orderPizza = function (type) {
+    let pizza = this.createPizza(type);
+    console.log('pizza before prepare :::',  pizza.toString());
+    pizza.prepare();
+    console.log('pizza after prepare :::',  pizza.toString());
+    pizza.bake();
+    pizza.cut();
+    pizza.box();
+    return pizza;
+  }
+
+  createPizza = function () {}
+}
+```
+
+### Concrete Creator / Client
+
+```
+class NyStypePizzaStore extends PizzaStore {
+
+  constructor() {
+    super();
+  }
+  
+  createPizza = function (pizzaType = "cheese") {
+    let pizza = null;
+    let ingredientFactory = new NyPizzaIngredientFactory();
+
+    if (pizzaType == "cheese") {
+      pizza = new CheesePizza(ingredientFactory);
+      pizza.setName("NY Style cheeze pizza");
+    } else if (pizzaType == "calm") {
+      pizza = new CalmPizza(ingredientFactory);
+      pizza.setName("NY Style calm pizza");
+    }
+    return pizza;
+  }
+}
+
+class ChichagoStypePizzaStore extends PizzaStore {
+
+  constructor() {
+    super();
+  }
+
+  createPizza = function (pizzaType = "cheese") {
+    let pizza = null;
+    let ingredientFactory = new ChichagoIngredientFactory()
+
+    if (pizzaType == "cheese") {
+      pizza = new CheesePizza(ingredientFactory);
+      pizza.setName("NY Style cheeze pizza");
+    } else if (pizzaType == "calm") {
+      pizza = new CalmPizza(ingredientFactory);
+      pizza.setName("NY Style calm pizza");
+    }
+    return pizza;
+  }
+}
+```
+
+### Usage
+```
+let ny_pizza_store_one = new NyStypePizzaStore();
+ny_pizza_store_one.orderPizza("cheese");
+```
+
+full source code for Abstract Factory can be found : [here](abstract-factory.js);
+
+## Summary
+- All factories encapsulat object creation
+- Simple factory is a simple way to decouple your clients from concrete classes
+- Factory method relies on inheritance: object creation is delegated to subclasses, which implement the factory method to create objects
+- Abstract factory relies on object composition: object creation is implemented in methods exposed in the factory interface
+- All Factory pattern promotes loose coupling by reducing the dependency of your application on concrete classes
+- The intent of a factory method is to allow a class to defer instantiation to its subclasses
+- The intent of Abstract factory is to create families of related objects, whithout having to depend on their concrete classes.
 
 
+## PseudoCodes
+
+### Simple factory
+```
+// client/creator/store/caller 
+class ProductStore
+	constructor(factory_object)
+	clientMethod(type)
+		let product = this.factory.createProduct(type)
+       … do something with the product
+		return product
+
+// Abstract Product
+class Product
+	constructor(name)
+   other mehtods
+
+// Concrete Products
+class concreteProduct extends Product
+	constructor(name=concreteProduct)
+		super(name)
 
 
+// Simple factory
+class SimpleFactory 
+  createProduct(type)
+	… instantiate a relevant concreteProduct based on type
+
+
+// Usage
+store_obj = new ProductStore(new simpleFactory)
+store_obj.clientMethod("some_type")
+```
+
+### Simple factory with factory subclasses
+```
+// client/creator/store/caller 
+class ProductStore
+	constructor(factory_object)
+	clientMethod(type)
+		let product = this.factory.createProduct(type)
+       … do something with the product
+		return product
+
+// Abstract Product
+class Product
+	constructor(name)
+   other mehtods
+
+// Concrete Products
+class concreteProduct1 extends Product
+	constructor(name=concreteProduct1)
+		super(name)
+
+class concreteProduct2 extends Product
+	constructor(name=concreteProduct2)
+		super(name)
+
+// Simple factory - as an Inteface/abstract class
+class SimpleFactory 
+  createProduct()
+
+
+// Concrete factories
+class ConcreteFactory1 extends SimpleFactory
+  createProduct(type)
+   … instantiate a relevant concreteProduct based on type 
+
+class ConcreteFactory2 extends SimpleFactory
+  createProduct(type)
+   … instantiate a relevant concreteProduct based on type 
+
+// Usage
+store_obj = new ProductStore(new ConcreteFactory1)
+store_obj.clientMethod()   
+
+```
+
+### Factory method
+
+```
+// abstract client/creator/store/caller 
+class ProductStore
+
+	clientMethod(type)
+		let product = this.createProduct(type)
+       … do something with the product
+		return product
+
+   factoryMethod() {}; 
+
+// concrete client/creator/store/caller
+class ConcreteProductStore1 extends ProductStore
+  factoryMethod()
+    instantiate and return proper product
+
+class ConcreteProductStore2 extends ProductStore
+  factoryMethod()
+    instantiate and return proper product    
+
+// Abstract Product
+class Product
+	constructor(name)
+   other methods
+
+// Concrete Products
+class concreteProduct1 extends Product
+	constructor(name=concreteProduct1)
+		super(name)
+
+class concreteProduct2 extends Product
+	constructor(name=concreteProduct2)
+		super(name)
+
+// Usage
+store_obj = new concreteProductStore1()
+store_obj.clientMethod()
+```
+
+## Abstract factory example a bit simplified
+
+### Abstract Factory
+```
+class IngredientFactory {
+  createBase() { };
+  createTopping() { };
+}
+```
+
+### Concrete Factories
+```
+class NYIngredientFactory extends IngredientFactory {
+  createBase() {
+    return `thin chrust`;
+  }
+
+  createTopping() {
+    return `some cheese`;
+  }
+}
+
+class ChichagoIncredientFactory extends IngredientFactory {
+  createBase() {
+    return `thick chrust`;
+  }
+
+  createTopping() {
+    return `lots of cheese`;
+  }
+}
+```
+
+### Product Superclass
+```
+class Pizza {
+  constructor(ingredientFactory, name) {
+    this.factory = ingredientFactory;
+    this.name = name;
+    this.base = '';
+    this.topping = '';
+  }
+
+  setBaseAndTopping() {
+    this.base = this.factory.createBase();
+    this.topping = this.factory.createTopping();
+  };
+  setName(name) { this.name = name };
+  serve() {
+    console.log(`Here's your ${this.name} on ${this.base} with ${this.topping}`);;
+  }
+}
+```
+
+### Product subclasses (concrete products)
+```
+class CheesePizza extends Pizza{
+  constructor(ingredientFactory, name) {
+    super(ingredientFactory, name)
+  }
+}
+
+class PepperoniPizza extends Pizza {
+  constructor(ingredientFactory, name) {
+    super(ingredientFactory, name)
+  }
+}
+```
+
+### Store/Caller super class 
+```
+class PizzaStore {
+  orderPizza(type) {
+    let pizza = this.createPizza(type);
+    pizza.setBaseAndTopping();
+    pizza.serve();
+  };
+
+
+  createPizza() { };
+}
+```
+
+### Concrete store/caller class 
+```
+class ChichagoPizzaStore extends PizzaStore {
+  createPizza(type) {
+    let chiFactory = new ChichagoIncredientFactory();
+    if (type == "cheese") {
+      return new CheesePizza(chiFactory,"Chichago Style Cheese Pizza");
+    } else if (type == "pepperoni") {
+      return new PepperoniPizza(chiFactory, "Chichago Style Pepperni Pizza");
+    }
+  }
+}
+
+class NYPizzaStore extends PizzaStore {
+  createPizza(type) {
+    let nyFactory = new NYIngredientFactory();
+    if (type == "cheese") {
+      return new CheesePizza(nyFactory, "NY Style Cheese Pizza");
+    } else if (type == "pepperoni") {
+      return new PepperoniPizza(nyFactory, "NY Style Pepperni Pizza");
+    }
+  }
+}
+```
+
+### Usage
+```
+let nyStore = new NYPizzaStore();
+nyStore.orderPizza("cheese"); // Here's your NY Style Cheese Pizza on thin chrust with some cheese
+nyStore.orderPizza("pepperoni"); // Here's your NY Style Pepperni Pizza on thin chrust with some cheese
+
+let chiStore = new ChichagoPizzaStore(); 
+chiStore.orderPizza("cheese"); // Here's your Chichago Style Cheese Pizza on thick chrust with lots of cheese
+chiStore.orderPizza("pepperoni") // Here's your Chichago Style Pepperni Pizza on thick chrust with lots of cheese
+```
+
+If students still find it difficult to visualize the connected dots in the abstract factory start with a very simplified example with just the concrete classes and add abstractions once they have internalized the connections between the concrete classes. Start with this example:
+
+## Only concrete classes to start with (super simplified)
+
+```
+// Concrete Factory
+class NYIngredientFactory {
+  createBase() {
+    return `thin chrust`;
+  }
+
+  createTopping() {
+    return `some cheese`;
+  }
+}
+
+// Concrete Product
+class CheesePizza {
+  constructor(factory) {
+    this.factory = factory;
+    this.name = null;
+    this.base = null;
+    this.topping = null;
+  }
+
+  setBaseAndToppings() {
+    this.base = this.factory.createBase();
+    this.topping = this.factory.createTopping();
+  }
+  
+  setName(name) {
+    this.name = name;
+  }
+
+  serve() {
+    console.log(`Here's your ${this.name} on ${this.base} with ${this.topping}`);
+  }
+}
+
+// Concrete Store
+class NYPizzaStore {
+  orderPizza(type) {
+    let pizza = this.createPizza(type);
+    pizza.setName("NY Cheese Pizza");
+    pizza.setBaseAndToppings();
+    pizza.serve();
+  
+  };
+
+  createPizza(type) {
+    if (type == "cheese") {
+      return new CheesePizza(new NYIngredientFactory);
+    }
+  }
+}
+
+// usage
+let nyStore = new NYPizzaStore();
+nyStore.orderPizza("cheese");
+```

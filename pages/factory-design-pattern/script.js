@@ -1,236 +1,244 @@
-console.log('factory-design-pattern works!!');
+/**
+ * concrete factory
+ *  - createBase()
+ *  - createTopping()
+ * 
+ * concrete product
+ *   factory
+ *   name
+ *   base
+ *   topping
+ * 
+ *   setBaseAndTopping()
+ *   setName()
+ *   serve()
+ * 
+ * concrete store
+ *   orderPizza(type)
+ *     pizza = createPizza(type)
+ *     pizza.setName
+ *     pizza.setBaseAndTopping
+ *     pizza.serve
+ * 
+ *   createPizza(type)
+ *      create pizza based on time
+ * 
+ * usage:
+ * instantiate concrete store
+ * call orderPizza and pass in the type
+ */
 
-// ===================================================== //
-// Product class
-// ===================================================== //
-// Kind of an interface or an abstract class.
-class Pizza {
-  constructor(pizzaName = 'default pizza', dough = 'default dough', sauce = 'default sauce', toppings = []) {
-    let default_topping = ['default topping1', 'default topping2'];
-    this.pizzaName = pizzaName;
-    this.dough = dough;
-    this.sauce = sauce;
-    this.toppings = [...default_topping, ...toppings];
+// Abstract factory
+
+class IngredientFactory {
+  createBase() { };
+  createTopping() { };
+}
+
+class NYIngredientFactory extends IngredientFactory {
+  createBase() {
+    return `thin chrust`;
   }
 
-  prepare() {
-    console.log(`Preparing ::: ${this.pizzaName} with ${this.toppings.join(' ,')}`);
-  }
-
-  bake() {
-    console.log(`Baking for 25 minutes at 350`);
-  }
-
-  cut() {
-    console.log(`Cutting the pizza into diagonal slices`);
-  }
-
-  box() {
-    console.log(`Placing pizza in official Pizzastore box`);
-  }
-
-  getName() {
-    return this.pizzaName;
+  createTopping() {
+    return `some cheese`;
   }
 }
 
+class ChichagoIncredientFactory extends IngredientFactory {
+  createBase() {
+    return `thick chrust`;
+  }
 
-// ===================================================== //
-// Product Subclasses - concrete product's
-// ===================================================== //
+  createTopping() {
+    return `lots of cheese`;
+  }
+}
+
+class Pizza {
+  constructor(ingredientFactory, name) {
+    this.factory = ingredientFactory;
+    this.name = name;
+    this.base = '';
+    this.topping = '';
+  }
+
+  setBaseAndTopping() {
+    this.base = this.factory.createBase();
+    this.topping = this.factory.createTopping();
+  };
+  setName(name) { this.name = name };
+  serve() {
+    console.log(`Here's your ${this.name} on ${this.base} with ${this.topping}`);;
+  }
+}
 
 class CheesePizza extends Pizza {
-  constructor(pizzaName = 'Plain Cheeze Pizza', dough, sauce, toppings = ['Extra Cheeze']) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-class NYStyleCheesePizza extends Pizza {
-  constructor(pizzaName = 'NY Style Plain Cheeze Pizza', dough = "thin chrust", sauce, toppings = ['some Cheeze']) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-
-  cut() {
-    console.log(`Cut the cheezy pizza in NY Style.`); 
-  }
-}
-class ChichagoStyleCheesePizza extends Pizza {
-  constructor(pizzaName = 'Chichago Style Plain Cheeze Pizza', dough = "thick chrust", sauce, toppings = ['lots of Cheeze']) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-class GreekPizza extends Pizza {
-  constructor(pizzaName = "Plain Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices"]) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-class NYStyleGreekPizza extends GreekPizza {
-  constructor(pizzaName = "Newyork Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Some Cheeze"]) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-class ChichagoStyleGreekPizza extends GreekPizza {
-  constructor(pizzaName = "Chicago Greek Pizza", dough = "Greek dough", sauce = "Greek sauce", toppings = ["Greek spices", "Lot's of Cheeze"]) {
-    super(pizzaName, dough, sauce, toppings);
+  constructor(ingredientFactory, name) {
+    super(ingredientFactory, name)
   }
 }
 
 class PepperoniPizza extends Pizza {
-  constructor(pizzaName = "Plain Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
-    super(pizzaName, dough, sauce, toppings);
+  constructor(ingredientFactory, name) {
+    super(ingredientFactory, name)
   }
 }
 
-class NYStylePepperoniPizza extends PepperoniPizza {
-  constructor(pizzaName = "NY Style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-class ChichagoStylePepperoniPizza extends PepperoniPizza {
-  constructor(pizzaName = "Chichago style Pepperoni Pizza", dough, sauce = "Peeper sauce", toppings = ["Peeper"]) {
-    super(pizzaName, dough, sauce, toppings);
-  }
-}
-
-// ===================================================== //
-// Simple factory (abstract) class
-// ===================================================== //
-class SimplePizzaFactory {
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new CheesePizza();
-    } else if (pizzaType == "greek") {
-      pizza = new GreekPizza();
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
-    }
-    return pizza;
-  }
-}
-
-// ===================================================== //
-// Concrete Simple factory subclasses
-// ===================================================== //
-
-class NYStylePizzaFactory extends SimplePizzaFactory {
-  constructor() {
-    super();
-  }
-
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new NYStyleCheesePizza();
-    } else if (pizzaType == "greek") {
-      pizza = new NYStyleGreekPizza();
-    } else if (pizzaType == "pepperoni") {
-      pizza = new NYStylePepperoniPizza();
-    }
-    return pizza;
-  }
-}
-
-class ChicagoStylePizzaFactory extends SimplePizzaFactory {
-  constructor() {
-    super();
-  }
-
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new ChichagoStyleCheesePizza();
-    } else if (pizzaType == "greek") {
-      pizza = new ChichagoStyleGreekPizza();
-    } else if (pizzaType == "pepperoni") {
-      pizza = new ChichagoStylePepperoniPizza();
-    }
-    return pizza;
-  }
-}
-
-// ===================================================== //
-// Creator class (kind of abstract) :: the client code
-// ===================================================== //
 class PizzaStore {
-  // Client: This method is not required to be overridden; It just uses the pizza that the createPizza - factory method - returns
-  // here it doesnot know what will it get back, it depends on the implementation of createPizza by it's subclasses
-  // that's its important that all the pizza (product) implement a common interface
-  orderPizza = function (type) {
+  orderPizza(type) {
     let pizza = this.createPizza(type);
-    pizza.prepare();
-    pizza.bake();
-    pizza.cut();
-    pizza.box();
-    return pizza;
-  }
+    pizza.setBaseAndTopping();
+    pizza.serve();
+  };
 
-  // instead of injecting a factory object we have this abstract method here which could be overridden by the subclasses of the PizzaStore.
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new CheesePizza();
-    } else if (pizzaType == "greek") {
-      pizza = new GreekPizza();
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
+
+  createPizza() { };
+}
+
+class ChichagoPizzaStore extends PizzaStore {
+  createPizza(type) {
+    let chiFactory = new ChichagoIncredientFactory();
+    if (type == "cheese") {
+      return new CheesePizza(chiFactory, "Chichago Style Cheese Pizza");
+    } else if (type == "pepperoni") {
+      return new PepperoniPizza(chiFactory, "Chichago Style Pepperni Pizza");
     }
-    return pizza;
   }
 }
 
-// ===================================================== //
-// Concrete crator classes :: subclasses that extends creator and overrided the createPizza() method
-// ===================================================== //
-
-// This subclass is fully responsible for which concrete pizza it instantiates.
-// NYPizzaStore extends PizzaStore, so it inherits the orderPizza() method.
-class NyStypePizzaStore extends PizzaStore {
-  constructor() {
-    super();
-  }
-
-  // orderPizza() : the orderPizza() method in the superclass has no clue which Pizza we are creating; it just knows it can prepare, bake, cut and box it.
-  // overridding/implementing just the createPizza() method
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new NYStyleCheesePizza(); // instantiating the region specific pizza.
-    } else if (pizzaType == "greek") {
-      pizza = new NYStyleGreekPizza();  // instantiating the region specific pizza.
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
+class NYPizzaStore extends PizzaStore {
+  createPizza(type) {
+    let nyFactory = new NYIngredientFactory();
+    if (type == "cheese") {
+      return new CheesePizza(nyFactory, "NY Style Cheese Pizza");
+    } else if (type == "pepperoni") {
+      return new PepperoniPizza(nyFactory, "NY Style Pepperni Pizza");
     }
-    return pizza;
   }
 }
 
-class ChichagoStypePizzaStore extends PizzaStore {
-  constructor() {
-    super();
-  }
+let nyStore = new NYPizzaStore();
+nyStore.orderPizza("cheese");
+nyStore.orderPizza("pepperoni");
 
-  // overridding just the createPizza() method
-  createPizza = function (pizzaType = "cheese") {
-    let pizza;
-    if (pizzaType == "cheese") {
-      pizza = new ChichagoStyleCheesePizza(); // instantiating the region specific pizza.
-    } else if (pizzaType == "greek") {
-      pizza = new ChichagoStyleGreekPizza();  // instantiating the region specific pizza.
-    } else if (pizzaType == "pepperoni") {
-      pizza = new PepperoniPizza();
-    }
-    return pizza;
-  }
+let chiStore = new ChichagoPizzaStore();
+chiStore.orderPizza("cheese");
+chiStore.orderPizza("pepperoni")
+
+
+// ===================================================== //
+// Example from : https://addyosmani.com/resources/essentialjsdesignpatterns/book/#factorypatternjavascript
+// ===================================================== //
+
+function Car(options) {
+  this.doors = options.doors || 4;
+  this.state = options.state || "brand new";
+  this.color = options.color || "silver";
 }
 
+function Truck(options) {
+  this.state = options.state || "used";
+  this.wheelSize = options.wheelSize || "large";
+  this.color = options.color || "blue";
+}
+
+function VehicleFactory() { };
+
+VehicleFactory.prototype.vehicleClass = Car; // default
+
+VehicleFactory.prototype.createVehicle = function (options) {
+  switch (options.vehicleType) {
+    case "car":
+      this.vehicleClass = Car;
+      break;
+    case "truck":
+      this.vehicleClass = Truck;
+      break;
+  }
+  return new this.vehicleClass(options)
+};
+
+
+var carFactory = new VehicleFactory();
+var car = carFactory.createVehicle({
+  vehicleType: "car",
+  color: "yellow",
+  doors: 6
+});
+
+console.log(car);
+
+var movingTruck = carFactory.createVehicle({
+  vehicleType: "truck",
+  state: "like new",
+  color: "red",
+  wheelSize: "small",
+});
+
+console.log(movingTruck);
+
 // ===================================================== //
-// Usage
+// subclassing
+
+function TruckFactory() { };
+TruckFactory.prototype = new VehicleFactory();
+TruckFactory.prototype.vehicleClass = Truck;
+
+var truckFactory = new TruckFactory();
+var myBigTruck = truckFactory.createVehicle({
+  state: "Very bad",
+  color: "pink",
+  wheelSize: "So big"
+});
+
+console.log(myBigTruck);
+
+// ===================================================== //
+// Abstract factory
+// A vehicle factory that defines ways to get or register vehicly types. 
 // ===================================================== //
 
-let ny_pizza_store_one = new NyStypePizzaStore();
-ny_pizza_store_one.orderPizza("greek");
+console.log('=======================================');
+
+var abstractVehicleFactory = (function () {
+  var types = {}; // "car": Car
+
+  return {
+    getVehicle: function (type, customizations){
+      var Vehicle = types[type]; // types["car"] = Car
+      console.log(Vehicle);
+      return (Vehicle ? new Vehicle(customizations) : null); // new Car({})
+    },
+
+    registerVehicle: function (type, Vehicle){
+      var proto = Vehicle.prototype;
+      console.log(proto);
+      // only register classes that fulfill the vehicle contract
+      if (proto) {
+        types[type] = Vehicle;
+        console.log(`type ${type} registered for production in the factorry.`);
+      } else {
+        console.log(`type ${type} could not be registered.`);
+      }
+
+      return abstractVehicleFactory;
+    },
+
+    types: types,
+
+  }
+})();
+
+// usage:
+abstractVehicleFactory.registerVehicle("car", Car);
+abstractVehicleFactory.registerVehicle("truck", Truck);
+
+console.log(abstractVehicleFactory.types);
+
+var car = abstractVehicleFactory.getVehicle("car", {
+  color: "yellow",
+  doors: 5,
+});
+
+console.log('=======================================');
