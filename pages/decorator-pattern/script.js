@@ -235,3 +235,10 @@ console.log('=======================================');
 
 let esp2 =  new Mocha( new Mocha ( new Mocha( new Espresso())))
 console.log(esp2.getDescription(), esp2.cost())
+
+const func = new Function(`
+  var a = 34;
+  console.log(a);
+`);
+
+func();
