@@ -1,7 +1,7 @@
 {
   "editor": {
-    "theme": "light",
-    "statusBar": false,
+    "theme": "dark",
+    "statusBar": true,
     "layout": {
       "elements": [
         {
@@ -19,8 +19,8 @@
       ],
       "direction": "vertical",
       "sizes": [
-        80,
-        20
+        65,
+        35
       ]
     }
   },
@@ -54,6 +54,7 @@
     "stage": [],
     "commits": {}
   },
-  "v": "6.5.1"
+  "v": "6.5.1",
+  "name": ""
 }
 
