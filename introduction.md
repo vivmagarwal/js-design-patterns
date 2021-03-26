@@ -11,6 +11,15 @@ Designing software presents challenges that need reliable and reusable solutions
 
 Design patterns can be broken down into a number of different categories:
 
+
+<div class="container">
+  <h2>Demo-it Example</h2>
+  <iframe src="/vendor/demoit/index.html?state=/vendor/demoit/samples/js.json" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+</div>
+
+
+
+
 ## Creational Design Patterns
 
 Creational design patterns focus on handling **object creation** mechanisms where objects are created in a manner suitalbe for the situation we're working in. 
