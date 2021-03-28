@@ -1,0 +1,46 @@
+{
+  "editor": {
+    "theme": "dark",
+    "statusBar": true,
+    "layout": {
+      "elements": [
+        {
+          "name": "editor",
+          "elements": []
+        },
+        {
+          "elements": [
+            {
+              "name": "console",
+              "elements": []
+            }
+          ]
+        }
+      ],
+      "direction": "vertical",
+      "sizes": [
+        65,
+        35
+      ]
+    }
+  },
+  "dependencies": [],
+  "files": {
+    "working": [
+      [
+        ".js",
+        {
+          "c": "let func=new Function(`let name='John Doe';\n  console.log(name);`\n)\nfunc();",
+          "en": true
+        }
+      ]
+    ],
+    "head": null,
+    "i": 0,
+    "stage": [],
+    "commits": {}
+  },
+  "v": "6.5.1",
+  "name": ""
+}
+

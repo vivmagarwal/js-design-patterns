@@ -3,6 +3,10 @@
   padding-left: 4rem;
 }
 
+body {
+  padding-bottom: 10rem;
+}
+
 a {
   text-decoration: none;
 }

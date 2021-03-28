@@ -72,7 +72,7 @@ gulp.task('reload', async function reload() {
 });
 
 gulp.task('styles', function styles() {
-  return gulp.src('./*.scss')
+  return gulp.src('./*.scss', { allowEmpty: true })
     .pipe(sourcemaps.init())
     .pipe(sassGlob())
     .pipe(sass.sync({ outputStyle: 'expanded', includePaths: ['node_modules'] }).on('error', sass.logError))
@@ -83,7 +83,7 @@ gulp.task('styles', function styles() {
 });
 
 gulp.task('styles:pages', function styles() {
-  return gulp.src(['./pages/**/*.scss'])
+  return gulp.src(['./pages/**/*.scss'], { allowEmpty: true })
     .pipe(sourcemaps.init())
     .pipe(sassGlob())
     .pipe(sass.sync({ outputStyle: 'expanded' }).on('error', sass.logError))
@@ -94,7 +94,7 @@ gulp.task('styles:pages', function styles() {
 });
 
 gulp.task('cssInject', function cssInject() {
-  return gulp.src('./*.scss')
+  return gulp.src('./*.scss', { allowEmpty: true })
     .pipe(browserSync.stream())
 });
 
@@ -106,7 +106,7 @@ gulp.task('watch', function () {
     }
   });
 
-  watch(['index.html'],
+  watch(['index.html'], 
     gulp.series(
       gulp.parallel('reload')
     )
@@ -161,7 +161,7 @@ gulp.task('twig:html', function () {
     throw new Error('Incorrect page name!');
   }
 
-  return gulp.src('./_templates/index.twig')
+  return gulp.src('./_templates/index.twig', { allowEmpty: true })
     // Stay live and reload on error
     .pipe(plumber({
       handleError: function (err) {
@@ -243,9 +243,9 @@ gulp.task('twig:script', function () {
 });
 
 gulp.task('linksInject', async function (done) {
-  gulp.src('./index.html')
+  gulp.src('./index.html', { allowEmpty: true })
     .pipe(inject(
-      gulp.src(['./pages/**/*.html'], { read: false }), {
+      gulp.src(['./pages/**/*.html'], { read: false, allowEmpty: true }), {
       transform: function (filepath) {
         if (filepath.slice(-5) === '.html') {
           let splittedString = filepath.split('/');
@@ -295,7 +295,7 @@ gulp.task('twig:classdiagram', function () {
     throw new Error('Incorrect page name!');
   }
 
-  return gulp.src('./_templates/classdiagram.twig')
+  return gulp.src('./_templates/classdiagram.twig', { allowEmpty: true })
     // Stay live and reload on error
     .pipe(plumber({
       handleError: function (err) {
@@ -315,7 +315,7 @@ gulp.task('twig:classdiagram', function () {
 });
 
 gulp.task('readmeInject', function (done) {
-  gulp.src('./index.html')
+  gulp.src('./index.html', { allowEmpty: true })
     .pipe(inject(gulp.src(['./introduction.md'], { allowEmpty: true }), {
       starttag: '<!-- inject:readme:md -->',
       transform: function (filepath, file) {
@@ -344,7 +344,7 @@ gulp.task('readmeInject:pages', function (done) {
 
   if (allPages.length > 0) {
     allPages.forEach(function (_page) {
-      gulp.src(`./pages/${_page}/index.html`)
+      gulp.src(`./pages/${_page}/index.html`, { allowEmpty: true })
         .pipe(inject(
           gulp.src([`./pages/${_page}/readme.md`], { allowEmpty: true }), {
           starttag: '<!-- inject:readme:md -->',
@@ -463,7 +463,7 @@ gulp.task('clone-page', function () {
   }
 
   return gulp
-    .src(path.join(__dirname, 'pages', clonefrom, '*'))
+    .src(path.join(__dirname, 'pages', clonefrom, '*'), { allowEmpty: true })
     .pipe(gulp.dest(path.join(__dirname, 'pages', cloneto)))
 });
 

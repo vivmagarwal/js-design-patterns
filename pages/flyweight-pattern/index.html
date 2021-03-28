@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>flyweight-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+    <link rel="shortcut icon" href="../../favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="flyweight-pattern">Flyweight Pattern</h1>
+<p><strong>Flyweight</strong> is a structural design pattern that let&#39;s you fit more objects in to the available amount of RAM by <strong>sharing</strong> common parts of state between multiple objects instead of keeping all of the data in each object.</p>
+<p>The flyweight pattern is a classical structural solution for optimizing code that is repetitive, slow and inefficiently shares data. It aims to minimize the use of memory in an application by sharing as much data as possible with related objects. </p>
+<p>In practice, Flyweight data sharing can involve taking several similar objects or data constructs used by a number of objects and placing this data into a single external object. We can pass through this object to those depending on this data, rather than storing identical data across each one.</p>
+<p>A great example could be a forest (game) app where we need to draw thousands of trees. An example implementation could be something like this:</p>
+<h3 id="a-tree-class">A Tree class</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tree</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">treeType</span>)</span> {
+    <span class="hljs-built_in">this</span>.treeType = treeType;
+    <span class="hljs-built_in">this</span>.x = <span class="hljs-literal">null</span>;
+    <span class="hljs-built_in">this</span>.y = <span class="hljs-literal">null</span>;
+    <span class="hljs-built_in">this</span>.image = <span class="hljs-literal">null</span>;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`:::: &gt;&gt; constructing a tree of type: <span class="hljs-subst">${treeType}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setImage</span>(<span class="hljs-params">image</span>)</span> {
+    <span class="hljs-built_in">this</span>.image = image;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`**** &gt;&gt; setting image <span class="hljs-subst">${<span class="hljs-built_in">this</span>.image}</span> for <span class="hljs-subst">${<span class="hljs-built_in">this</span>.treeType}</span> tree`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">getx</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.x;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setx</span>(<span class="hljs-params">x</span>)</span> {
+    <span class="hljs-built_in">this</span>.x = x;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">gety</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.y;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">sety</span>(<span class="hljs-params">y</span>)</span> {
+    <span class="hljs-built_in">this</span>.y = y;
+  }
+  
+  <span class="hljs-function"><span class="hljs-title">draw</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Drawing a tree of type : <span class="hljs-subst">${<span class="hljs-built_in">this</span>.treeType}</span> at (<span class="hljs-subst">${<span class="hljs-built_in">this</span>.x}</span>,<span class="hljs-subst">${<span class="hljs-built_in">this</span>.y}</span>)`</span>);
+   };
+}
+</code></pre>
+<h3 id="helper-functions-at-client-code">Helper functions at client code</h3>
+<pre><code><span class="hljs-keyword">let</span> getRandomTree = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> treeTypes[(<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * treeTypes.length))];
+}
+
+<span class="hljs-keyword">let</span> getRandomX = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">100</span>);
+}
+
+<span class="hljs-keyword">let</span> getRandomY = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">100</span>);
+}
+</code></pre>
+<h3 id="usage-at-client-code">Usage at client code</h3>
+<pre><code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">20</span>; i++) {
+  <span class="hljs-keyword">let</span> randomTreeType = getRandomTree();
+  
+  <span class="hljs-keyword">let</span> tree = <span class="hljs-keyword">new</span> Tree(randomTreeType); <span class="hljs-comment">// #(1)</span>
+  tree.setImage(<span class="hljs-string">`<span class="hljs-subst">${randomTreeType}</span>.png`</span>); <span class="hljs-comment">// #(2)</span>
+
+  tree.setx(getRandomX());
+  tree.sety(getRandomY());
+
+  tree.draw();
+}
+</code></pre>
+<h3 id="output">Output</h3>
+<pre><code class="language-bash">:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (20,5)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (34,5)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (75,31)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (26,43)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (58,69)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (88,48)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (1,45)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (83,66)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+**** &gt;&gt; setting image Teak.png <span class="hljs-keyword">for</span> Teak tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (27,94)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (62,20)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (99,12)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (90,36)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (6,8)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (87,33)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (62,83)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+**** &gt;&gt; setting image Teak.png <span class="hljs-keyword">for</span> Teak tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (6,77)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (82,2)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (4,56)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (26,76)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (61,65)
+</code></pre>
+<p>Do you see a problem here in the output? Even though there are just 4 types of trees in our app, but in order to <strong>draw</strong> 20 trees, 20 different tree objects are <strong>created</strong>.</p>
+<p>What if we need to <strong>draw</strong> 1000 trees, our app will end up <strong>creating</strong> 1000 tree objects. It may be expensive. What If each tree object carries an image with itself and takes up 1mb of RAM. total RAM consumed for <strong>drawing</strong> 1000 tees would be <strong><code>1000 x 1mb = 1GB</code></strong></p>
+<p>On closer inspection of the <code>Tree</code> class, you may notice that the <code>image</code> field cosumes a lot more memory than other fields. What&#39;s worse is that the <code>image</code> field store almost identical data across all trees. Other parts of the trees state, such as coordinates are unique for each tree object.</p>
+<p>In other words, the <code>image</code> mostly remains <strong>constant</strong> for each tree and the <code>coordinates</code> are always <strong>changing</strong>.</p>
+<p>The constant data of an object is usually called the <em>intrinsic</em> state. It mostly lives withing the object and other objects can only read it, not change it.</p>
+<p>The rest of the objects state, often altered from outside by other objects, is called the <em>extrinsic</em> state.</p>
+<p>Our intention here is to reduce the  total RAM consumed for <strong>drawing</strong> 1000 tees to be <strong><code>4 x 1mb = 4mb</code></strong></p>
+<p>We basically need to manage the object instantiation <code>#(1)</code> and the setting of image <code>#(2)</code>. We can create a separate staic factory to manage and create trees with image for us.</p>
+<h3 id="a-treefactory-object">A TreeFactory Object</h3>
+<pre><code><span class="hljs-keyword">let</span> TreeFactory =  {
+  <span class="hljs-attr">treeMap</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>(),
+  
+  <span class="hljs-attr">getTree</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">treeType</span>) </span>{
+    <span class="hljs-keyword">let</span> tree = <span class="hljs-built_in">this</span>.treeMap.get(treeType);
+
+    <span class="hljs-keyword">if</span> (!tree) {
+      tree = <span class="hljs-keyword">new</span> Tree(treeType);
+      tree.setImage(<span class="hljs-string">`<span class="hljs-subst">${treeType}</span>.png`</span>)
+      <span class="hljs-built_in">this</span>.treeMap.set(treeType, tree);
+    }
+
+    <span class="hljs-keyword">return</span> tree;
+  }
+}
+</code></pre>
+<p>In the property <code>treeMap</code> the factory stores tree objects in the form (&#39;treeType&#39;, tree_object). Yes, its kind of singleton. For each treeType it just cretes one object and set&#39;s relevant image to it.</p>
+<p>At client side we now, could use our factory instead of new instantitation. The client code now looks like:</p>
+<pre><code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">20</span>; i++) {
+  <span class="hljs-comment">// here we get a tree object with an image (intrinsic state).</span>
+  <span class="hljs-keyword">let</span> tree = TreeFactory.getTree(getRandomTree());
+
+  <span class="hljs-comment">// here we set the coordinates (extrinsic state)</span>
+  tree.setx(getRandomX());
+  tree.sety(getRandomY());
+
+  <span class="hljs-comment">// now that we have our tree ready,  we can draw it.</span>
+  tree.draw();
+}
+</code></pre>
+<p>And here&#39;s our new output:</p>
+<pre><code class="language-bash">:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (13,65)
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (82,26)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+**** &gt;&gt; setting image Teak.png <span class="hljs-keyword">for</span> Teak tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (88,42)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (27,43)
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (44,61)
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (29,64)
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (71,17)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (63,9)
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (53,26)
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (7,24)
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (72,13)
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (66,56)
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (54,82)
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (49,26)
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (59,39)
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (24,72)
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (43,10)
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (29,57)
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (53,63)
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (83,60)
+</code></pre>
+<p>Can you notice the differene. We still have 20 trees drawn but only 4 tree objects created. Awesome!!</p>
+<h2 id="applicability">Applicability</h2>
+<ul>
+<li>an application needs to spawn a huge number of similar objects</li>
+<li>this drains all available RAM on a target device</li>
+<li>the objects contain duplicate states which can be extracted and shared between multiple objects</li>
+</ul>
+<h2 id="just-keeping-the-setimage-part-out">Just keeping the SetImage() part out</h2>
+<p>This variation is acutally the real <code>FlyWeight</code> pattern. Once you&#39;ve got the above solution, it will be super easy to get it.</p>
+<p>In several real life situations, you may actually need separate Tree objects. So, we are looking for the following end result:</p>
+<ul>
+<li>a separate <code>Tree</code> object is created for each tree in our app</li>
+<li>but the <code>TreeImage</code> is constructed only once for each type of tree</li>
+<li>a <code>tree</code> object is composed with a <code>treeImage</code> to re-use a tree image</li>
+</ul>
+<p>As a first step we need to move the <code>image</code> out of the <code>Tree</code>. As <code>image</code> is dependent on <code>treeType</code> we&#39;ll need to move <code>treeType</code> out as well. </p>
+<h3 id="our-flyweight-class">Our Flyweight class</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">TreeImage</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">treeType</span>)</span> {
+    <span class="hljs-built_in">this</span>.treeType = treeType;
+    <span class="hljs-built_in">this</span>.image = <span class="hljs-literal">null</span>; 
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`### &gt;&gt; constructing a TreeImage of type: <span class="hljs-subst">${treeType}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setImage</span>(<span class="hljs-params">image</span>)</span> {
+    <span class="hljs-built_in">this</span>.image = image;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`**** &gt;&gt; setting image <span class="hljs-subst">${<span class="hljs-built_in">this</span>.image}</span> for <span class="hljs-subst">${<span class="hljs-built_in">this</span>.treeType}</span> tree`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">getType</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.treeType;
+  }
+}
+</code></pre>
+<h3 id="our-tree-class">Our Tree class</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tree</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">treeImageObject</span>)</span> {
+    <span class="hljs-built_in">this</span>.x = <span class="hljs-literal">null</span>;
+    <span class="hljs-built_in">this</span>.y = <span class="hljs-literal">null</span>;
+    <span class="hljs-built_in">this</span>.treeImageObject = treeImageObject;
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`:::: &gt;&gt; constructing a tree of type: <span class="hljs-subst">${<span class="hljs-built_in">this</span>.treeImageObject.getType()}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">getx</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.x;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setx</span>(<span class="hljs-params">x</span>)</span> {
+    <span class="hljs-built_in">this</span>.x = x;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">gety</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.y;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">sety</span>(<span class="hljs-params">y</span>)</span> {
+    <span class="hljs-built_in">this</span>.y = y;
+  }
+  
+  <span class="hljs-function"><span class="hljs-title">draw</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Drawing a tree of type : <span class="hljs-subst">${<span class="hljs-built_in">this</span>.treeImageObject.getType()}</span> at (<span class="hljs-subst">${<span class="hljs-built_in">this</span>.x}</span>,<span class="hljs-subst">${<span class="hljs-built_in">this</span>.y}</span>)`</span>);
+   };
+}
+</code></pre>
+<p>Each tree has a treeImage. The idea is to store and re-use a tree image.When instantiaing, a tree object is composed with a treeImage</p>
+<h3 id="static-treeimage-factory">Static TreeImage factory</h3>
+<p>This is the only place in the app where we are managing / constructing a new TreeImage</p>
+<pre><code><span class="hljs-keyword">let</span> TreeImageFactory = {
+  <span class="hljs-attr">treeImageMap</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>(),
+  
+  <span class="hljs-attr">getTreeImage</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">treeType</span>) </span>{
+    <span class="hljs-keyword">let</span> treeImg = <span class="hljs-built_in">this</span>.treeImageMap.get(treeType);
+
+    <span class="hljs-keyword">if</span> (!treeImg) {
+      treeImg = <span class="hljs-keyword">new</span> TreeImage(treeType);
+      treeImg.setImage(<span class="hljs-string">`<span class="hljs-subst">${treeType}</span>.png`</span>)
+      <span class="hljs-built_in">this</span>.treeImageMap.set(treeType, treeImg);
+    }
+
+    <span class="hljs-keyword">return</span> treeImg;
+  }
+}
+</code></pre>
+<h3 id="helper-objects-and-functions">Helper objects and functions</h3>
+<pre><code><span class="hljs-keyword">let</span> treeTypes = [<span class="hljs-string">&quot;Neem&quot;</span>, <span class="hljs-string">&quot;Apple&quot;</span>, <span class="hljs-string">&quot;Mango&quot;</span>, <span class="hljs-string">&quot;Teak&quot;</span>];
+
+<span class="hljs-keyword">let</span> getRandomTreeType = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> treeTypes[(<span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * treeTypes.length))];
+}
+
+<span class="hljs-keyword">let</span> getRandomX = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">100</span>);
+}
+
+<span class="hljs-keyword">let</span> getRandomY = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">100</span>);
+}
+</code></pre>
+<h3 id="usage--client--main-app">Usage / Client / Main app</h3>
+<pre><code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">20</span>; i++) {
+  <span class="hljs-comment">//  we re-use the treeImage. We are not storing the treeImage for each tree.</span>
+  <span class="hljs-keyword">let</span> tree = <span class="hljs-keyword">new</span> Tree(TreeImageFactory.getTreeImage(getRandomTreeType()));
+
+  tree.setx(getRandomX());
+  tree.sety(getRandomY());
+
+  <span class="hljs-comment">// now that we have our tree ready, we can draw it.</span>
+  tree.draw();
+}
+</code></pre>
+<h3 id="output-1">Output</h3>
+<pre><code class="language-bash"><span class="hljs-comment">### &gt;&gt; constructing a TreeImage of type: Mango</span>
+**** &gt;&gt; setting image Mango.png <span class="hljs-keyword">for</span> Mango tree
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (15,21)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (15,68)
+<span class="hljs-comment">### &gt;&gt; constructing a TreeImage of type: Neem</span>
+**** &gt;&gt; setting image Neem.png <span class="hljs-keyword">for</span> Neem tree
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (99,96)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (79,63)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (54,94)
+<span class="hljs-comment">### &gt;&gt; constructing a TreeImage of type: Apple</span>
+**** &gt;&gt; setting image Apple.png <span class="hljs-keyword">for</span> Apple tree
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (7,64)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (87,11)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (62,16)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (79,46)
+<span class="hljs-comment">### &gt;&gt; constructing a TreeImage of type: Teak</span>
+**** &gt;&gt; setting image Teak.png <span class="hljs-keyword">for</span> Teak tree
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (19,70)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (60,97)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (76,73)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (73,92)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (74,81)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Teak
+Drawing a tree of <span class="hljs-built_in">type</span> : Teak at (64,69)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (13,80)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Apple
+Drawing a tree of <span class="hljs-built_in">type</span> : Apple at (90,40)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (71,18)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Mango
+Drawing a tree of <span class="hljs-built_in">type</span> : Mango at (45,51)
+:::: &gt;&gt; constructing a tree of <span class="hljs-built_in">type</span>: Neem
+Drawing a tree of <span class="hljs-built_in">type</span> : Neem at (15,16)
+</code></pre>
+<p>As per our requirement, we are constructing 20 different tree objects this time, but the expensive task of creating a treeImage is happeing just 4 times (once for each type). We are composing a tree with a treeImage and we have control over how many treeImage&#39;s object we create. </p>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>

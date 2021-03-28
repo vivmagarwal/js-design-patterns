@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "pwa-chrome",
+      "name": "http://localhost:3000/pages/flyweight-pattern/index.html",
+      "request": "launch",
+      "url": "http://localhost:3000/pages/flyweight-pattern/index.html"
+    }
+  ]
+}
