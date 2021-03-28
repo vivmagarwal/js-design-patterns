@@ -4,7 +4,7 @@
 
 The flyweight pattern is a classical structural solution for optimizing code that is repetitive, slow and inefficiently shares data. It aims to minimize the use of memory in an application by sharing as much data as possible with related objects. 
 
-In practice, Flyweight data sharing can involve taking several similar objects or data constructs used by a number of objects and placing this data into a single external object. We can pass through this object to those depending on this data, rather than storing identical data across each one.
+In practice, Flyweight data sharing can involve taking several similar objects or data constructs used by a number of objects and placing this data into a single **external object**. We can **pass through** this object to those depending on this data, rather than **storing** *identical data* across each one.
 
 A great example could be a forest (game) app where we need to draw thousands of trees. An example implementation could be something like this:
 
@@ -242,6 +242,10 @@ Can you notice the differene. We still have 20 trees drawn but only 4 tree objec
 ## Just keeping the SetImage() part out
 
 This variation is acutally the real `FlyWeight` pattern. Once you've got the above solution, it will be super easy to get it.
+
+Just a recap that in the Flyweight pattern, there's a concept of two states - *intrinsic* & *extrinsic*. *Intrinsic information* may be required by internal methods which they asbolutely cannot function without. *Extrinsic information* can however be removed and stored externally.
+
+Objects with the same intrinsic data can be replaced with a single **shared object** usually created by a **factory**. The factory is responsible to keep an eye on objects that have already been instantiated so that new copies are only ever created if the object differs from the objects we already have.
 
 In several real life situations, you may actually need separate Tree objects. So, we are looking for the following end result:
 - a separate `Tree` object is created for each tree in our app
