@@ -15,7 +15,7 @@
 
 <span class="circle-yellow">1</span> User presses the `+` button which is handled by the **controller** associated with the `+` button.
 
-<span class="circle-yellow">2</span> The **controller** calls some method in the **model** to updates the **model**.
+<span class="circle-yellow">2</span> The **controller** calls some method in the **model** to update the **model**.
 
 <span class="circle-yellow">3</span> The model publishes an event. It doesnot care about any thing else. It's upto view's to subscribe to the model and act upon the event it raises.  
 
@@ -75,7 +75,7 @@ Having called the business objects, the **controller** passes control to the **v
 
 <span class="circle-yellow">7</span> the **front-controller** sends back the response to the **client** or the front-end code that invoked it.   
 
-One of the problems with this architecture is that there are no solid boundaries here. What happens is that controllers and views like functions could end up in business objects. Most of the times it's because of carelessness by the one writing the code. Busness stuff gets into view. Basically there are no good boundaries & you can loose contorl of it if you are not disciplined. 
+One of the problems with this architecture is that there are no solid boundaries here. What happens is that controllers and views like functions could end up in business objects. Most of the times it's because of carelessness by the one writing the code. Business stuff gets into view. Basically there are no good boundaries & you can loose contorl of it if you are not disciplined. 
 
 Model doesnot implement Observer as View is not active. Controller directs the Model to perform business logic and passes the control to View for further output. View queries the modal to get the data and typically generates serialized HTML or JSON.
 

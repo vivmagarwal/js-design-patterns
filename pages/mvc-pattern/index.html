@@ -34,7 +34,7 @@
 <p><img src="img/classical-mvc--1.png" alt=""></p>
 <p><strong>Dataflow:</strong></p>
 <p><span class="circle-yellow">1</span> User presses the <code>+</code> button which is handled by the <strong>controller</strong> associated with the <code>+</code> button.</p>
-<p><span class="circle-yellow">2</span> The <strong>controller</strong> calls some method in the <strong>model</strong> to updates the <strong>model</strong>.</p>
+<p><span class="circle-yellow">2</span> The <strong>controller</strong> calls some method in the <strong>model</strong> to update the <strong>model</strong>.</p>
 <p><span class="circle-yellow">3</span> The model publishes an event. It doesnot care about any thing else. It&#39;s upto view&#39;s to subscribe to the model and act upon the event it raises.  </p>
 <p><span class="circle-yellow">4</span> In our above example the view associated with the label control with displays <code>1</code> listens to the event and acts accordingly by increasing the controls text to <code>2</code></p>
 <p><strong>Trygve Reenskaug</strong> introduced MVC into Smalltalk-79 while visiting the Xerox Palo Alto Research Center (PARC) in the 1970s. In the 1980s, Jim Althoff and others implemented a version of MVC for the Smalltalk-80 class library.</p>
@@ -68,7 +68,7 @@
 <p><span class="circle-yellow">5</span> The <strong>view</strong> typically gets back some raw data.</p>
 <p><span class="circle-yellow">6</span> the server side <strong>view</strong> processes the raw data into easy to consume response and sends it back to the <strong>front-controller</strong>. </p>
 <p><span class="circle-yellow">7</span> the <strong>front-controller</strong> sends back the response to the <strong>client</strong> or the front-end code that invoked it.   </p>
-<p>One of the problems with this architecture is that there are no solid boundaries here. What happens is that controllers and views like functions could end up in business objects. Most of the times it&#39;s because of carelessness by the one writing the code. Busness stuff gets into view. Basically there are no good boundaries &amp; you can loose contorl of it if you are not disciplined. </p>
+<p>One of the problems with this architecture is that there are no solid boundaries here. What happens is that controllers and views like functions could end up in business objects. Most of the times it&#39;s because of carelessness by the one writing the code. Business stuff gets into view. Basically there are no good boundaries &amp; you can loose contorl of it if you are not disciplined. </p>
 <p>Model doesnot implement Observer as View is not active. Controller directs the Model to perform business logic and passes the control to View for further output. View queries the modal to get the data and typically generates serialized HTML or JSON.</p>
 <p>The front-controller is ta component typically provided by the underlying technology stack to handle HTTP reqest. For example Java has <code>Servlet</code> and our Node.js has <code>HTTP.Server</code></p>
 <h2 id="the-webserver-mvc---with-client-modal-cmmvc">The Webserver MVC - with client-modal (CMMVC)</h2>
