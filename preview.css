@@ -90,3 +90,17 @@ p {
   /* height: 400px; */
   box-shadow: 0 0 20px rgb(0 0 0 / 35%);
 }
+
+.circle-yellow {
+  background: #FCE06F;
+  border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: black;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 2px;
+  text-align: center;
+  width: 1.6em; 
+}

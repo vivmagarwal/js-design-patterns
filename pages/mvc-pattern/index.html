@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>mvc-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+    <link rel="shortcut icon" href="../../favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="mvc-pattern">MVC Pattern</h1>
+<p><strong>M</strong> - Model | 
+<strong>V</strong> - View | 
+<strong>C</strong> - Controller</p>
+<br>
+
+
+<h2 id="the-classical-desktop-mvc">The classical desktop MVC</h2>
+<p><img src="img/classical-mvc--1.png" alt=""></p>
+<p><strong>Dataflow:</strong></p>
+<p><span class="circle-yellow">1</span> User presses the <code>+</code> button which is handled by the <strong>controller</strong> associated with the <code>+</code> button.</p>
+<p><span class="circle-yellow">2</span> The <strong>controller</strong> calls some method in the <strong>model</strong> to updates the <strong>model</strong>.</p>
+<p><span class="circle-yellow">3</span> The model publishes an event. It doesnot care about any thing else. It&#39;s upto view&#39;s to subscribe to the model and act upon the event it raises.  </p>
+<p><span class="circle-yellow">4</span> In our above example the view associated with the label control with displays <code>1</code> listens to the event and acts accordingly by increasing the controls text to <code>2</code></p>
+<p><strong>Trygve Reenskaug</strong> introduced MVC into Smalltalk-79 while visiting the Xerox Palo Alto Research Center (PARC) in the 1970s. In the 1980s, Jim Althoff and others implemented a version of MVC for the Smalltalk-80 class library.</p>
+<p>Let&#39;s first get familiar with the original idea of MVC before moving into how it is implemented these days. </p>
+<p>In the MVC architecture that Trygve Reenskaug came up with, there&#39;s a <strong>Model</strong> object which hides some very small business rules.</p>
+<p>The job of the <strong>controller</strong> is to gather input from some device (keyboard, mouse whatever). And the <strong>controller</strong> will then translate those gestures from the device into method calls against the <strong>Model</strong>. The <strong>Model</strong> is not allowed to know what <strong>devices</strong> control it. The Model is not allowed to know from where it get&#39;s its input from. That is the job of the <strong>controller</strong>. Also, the controller has the power to decide wether to call modal functions or not. For simple visual effects, the controller may choose to directly talk with the view.</p>
+<p>There is an observer relationship in between the <strong>View</strong> and the <strong>Model</strong>. The <strong>View</strong> <em>registers</em> with the <strong>Model</strong> &amp; the <strong>Model</strong> <em>calls-back</em> to the <strong>View</strong> through an observer like pattern and tells the <strong>View</strong> that I have changed and you better re-display me.</p>
+<p>The job of the <strong>View</strong> is to then present the data within the <strong>modal</strong> appropritely to the user. </p>
+<p><strong>Controller</strong> : Input</p>
+<p><strong>Model</strong> : Process</p>
+<p><strong>View</strong> : Output</p>
+<p>The important thing here to note about this design is that the model and the view never iteract with each other &amp; any interactions in between them happens through the controller. This means that the presentation of data &amp; the logic are completely separated which makes creating complex applications much easier.</p>
+<p>MVC is an architechural design pattern that encourages improved application organization through a sepratation of concerns. It enforces the isolation of business data (Models) from user interfaces (Views) with a third component (Controllers) traditionally manging modal and user-input.</p>
+<p>The original idea was to seprate the logic from the user interface. The idea was that decoupling these parts of the application would also allow the reuse of models for other interfaces in the application.</p>
+<p><strong>Understanding Smalltalk&#39;80&#39;s architecture:</strong></p>
+<ul>
+<li>A Model represented domain specific data and was ignorant of the user interface and logic</li>
+<li>A View represented the current state of a Model</li>
+<li>The Observer pattern (Pub/Sub) was used for letting the View know wnenever the Model was updated or modified</li>
+<li>Presentation was taken care by View</li>
+<li>The Controllers role was primarily to handle user interaction &amp; making decisions for the View</li>
+</ul>
+<p>In those days, the MVC was used in the small. We had an MVC for the button, another MVC for the text box and another for a group of radio buttons. We din&#39;t had A MVC for the entire page. That&#39;s a much later invention.</p>
+<h2 id="the-webserver-mvc---similar-to-sun-micorsystems-model-2">The Webserver MVC - Similar to Sun Micorsystem&#39;s Model-2</h2>
+<p><img src="img/web-server-mvc-model-2.png" alt=""></p>
+<p><span class="circle-yellow">1</span> Here&#39;s the web is sitting to the left. First, the web server invokes one of the <strong>controllers</strong> after it receives the url (or a http request or a getter/putter or something like that) from the Frontend. Typically there&#39;s <strong>front controller</strong> or a <strong>front interactor</strong> that handles the interaction between the Front End and the Back End. Almost every server side framework will have a front-controller which exposes only the necessary interface to front end application developers. </p>
+<p><span class="circle-yellow">2</span> the <strong>front-controller</strong> passes on the request to the <strong>controller</strong></p>
+<p><span class="circle-yellow">3</span>  The <strong>controller</strong>&#39;s job is to unpack all the strange parameters that came in through the URL (or the webform or whatever) and then call the business objects in the <strong>model</strong>. Controller in the web mvc has more responsiblity. It is in charge of general HTTP request lifecycle. Note that while in classical MVC, controller responds to the user inputs, here it responds to user HTTP requests delegated by web framework.</p>
+<p>Having called the business objects, the <strong>controller</strong> passes control to the <strong>view</strong>. </p>
+<p><span class="circle-yellow">4</span> The <strong>view</strong> queries the business objects in the <strong>model</strong> and  </p>
+<p><span class="circle-yellow">5</span> The <strong>view</strong> typically gets back some raw data.</p>
+<p><span class="circle-yellow">6</span> the server side <strong>view</strong> processes the raw data into easy to consume response and sends it back to the <strong>front-controller</strong>. </p>
+<p><span class="circle-yellow">7</span> the <strong>front-controller</strong> sends back the response to the <strong>client</strong> or the front-end code that invoked it.   </p>
+<p>One of the problems with this architecture is that there are no solid boundaries here. What happens is that controllers and views like functions could end up in business objects. Most of the times it&#39;s because of carelessness by the one writing the code. Busness stuff gets into view. Basically there are no good boundaries &amp; you can loose contorl of it if you are not disciplined. </p>
+<p>Model doesnot implement Observer as View is not active. Controller directs the Model to perform business logic and passes the control to View for further output. View queries the modal to get the data and typically generates serialized HTML or JSON.</p>
+<p>The front-controller is ta component typically provided by the underlying technology stack to handle HTTP reqest. For example Java has <code>Servlet</code> and our Node.js has <code>HTTP.Server</code></p>
+<h2 id="the-webserver-mvc---with-client-modal-cmmvc">The Webserver MVC - with client-modal (CMMVC)</h2>
+<p><img src="img/client-server-webmvc.png" alt=""></p>
+<p>The <strong>client-modal-mvc</strong> is very similar to the <strong>Model-2 MVC</strong>. The only difference you will notice is that now, the client (or the front end code) has access to a client-modal which typically is a normalized subset of actual server-modal.</p>
+<p>This small change, opens up a range of possilities at the front end. The front-end code could directly interact with the client-modal which can significantly reduce the server cycles. Things like form submission, input validation etc can be handled by the client side code.</p>
+<p>For the backend architectures as well, it opens up a number of possiblities. There could be several variations of CMMVC. For example, the client-modal could take in all the requests from the client and make a decision to send the data back to the client or to involve the server-side controller in the process. </p>
+<h2 id="the-frontend-mvp-pattern">The Frontend MVP Pattern</h2>
+<p>We are now starting to move MV*&#39;s which are equally relevant to the Frontend architecture as they are to the Backend architecture. During his research and preparation of material on presentation layer patterns, Martin Fowoler decided that the treatment gien to the design intentions behind <strong>Model</strong> - <strong>View</strong> - <strong>Presenter</strong> can be devided under the names <strong>Supervising Controller</strong> and <strong>Passive View</strong>.</p>
+<p><img src="img/mvp-pattern.png" alt=""></p>
+<h3 id="the-supervising-controller-mvp-pattern">The Supervising Controller MVP Pattern</h3>
+<p><span class="circle-yellow">1</span> The <strong>User</strong> interacts with the <strong>View</strong></p>
+<p><span class="circle-yellow">2</span> <strong>Views</strong> delegate user events to the <strong>Presenter</strong> </p>
+<p><span class="circle-yellow">3</span> The <strong>Presenter</strong> interacts with the Business objects (<strong>Modal</strong>)</p>
+<p><span class="circle-yellow">4</span> <strong>Modal</strong> is independent and raises <strong>events</strong></p>
+<p><span class="circle-yellow">5</span> For <strong>simple presentation logic</strong>, the <strong>View</strong> uses data binding techniques and/or <strong>observer pattern</strong> to update itself when changes occur within the application</p>
+<p><span class="circle-yellow">6</span> <strong>Complex presentation logic</strong>, particulary any logic one desires to unit test, is handled by the interaction of the <strong>Presenter</strong> and the <strong>View</strong>.</p>
+<p>The Supervising Controller pattern separates an application&#39;s concerns of presentation and presentation logic into the specialized compoents of View and Controller, with the View assigned the responsibility of simple presentation logic and presenter (controller) assigned the responsibilites of responding to user input and handling complex presentation logic. The <strong>View</strong> is the visual components used within an application such as screens and widgets. The <strong>Presenter</strong> is a component which processes user events and complex presentation logic.</p>
+<h3 id="the-passive-view-mvp-pattern">The Passive View MVP Pattern</h3>
+<p><span class="circle-yellow">1</span> The <strong>User</strong> interacts with the <strong>View</strong></p>
+<p><span class="circle-yellow">2</span> The <strong>Views</strong> delegates user events to the <strong>Presenter</strong></p>
+<p><span class="circle-yellow">3</span> The <strong>Presenter</strong> interacts with the business objects (<strong>Modal</strong>)</p>
+<p><span class="circle-yellow">4</span> <strong>Modal</strong> raises an event which is subscribed and listened by the <strong>Presenter</strong>. It can either be a PubSub/Observer releation or a query-response relation.</p>
+<p><span class="circle-yellow">5</span> The <strong>Presenter</strong> prepares everything that View needs and updates the <strong>View</strong>. <strong>View</strong> is quite passive here. The View maintaines no link to the Modal and relies solely on the presenter for all presentation logic. The presenters within pattern take on mediating role between the Views and Business logics. </p>
+<p>Most of the significant processing about the presentation is done by the presenter. The goal is to make the view super stupid. All it needs to do is to grab code form view model and stick it to screen without any processing.</p>
+<p>The Passive view pattern separates an applications concerns of Presentation and Presentation logic into the specialized components of View and Presenter, with the presenter (contorller) taking on the responsibility for responding to user events and presentation logic. View is the visual component used within an application such as screens and widgets. The Controller is a component which processes user events and the presentation logic within an application.</p>
+<p>MVP is equally popular in the Server side world. It has a hard architecutral boundary that separates the business rules from the Web(or whatever else you are using).  </p>
+<p>The UI is dependent on the business logic. Basically the UI in MVP is a plug-in to the business rules. The business rules in this pattern are immune to the UI&#39;s that plugs in. UI&#39;s are dependent on the business rules and not the other way round. The UI is going to change more than business logic, isn&#39;t it. </p>
+<p>In the server version of the MVP we have an <strong>interactor</strong> that creates the <strong>response model</strong> using the <strong>entities</strong>. The interactor is going to take the <strong>response model</strong> and pass it out through the <strong>output boundary</strong> to a <strong>presenter</strong>. </p>
+<p>The <strong>presenter</strong> is an object whose job is to take the <strong>respoinse model</strong> and translate it into a <strong>view model</strong>. </p>
+<p>The <strong>response model</strong> has data in it which was created by the interactor as a result of a usecase. But, this data is not presentable.  It is the job of the <strong>presenter</strong> to trun them into presentable <strong>formatted strings</strong>. </p>
+<p>Most of the significant processing about the presentation is done by the <strong>presenter</strong>. The goal is to make the <strong>view</strong> super stupid. All it needs to do is to grab code form <strong>view model</strong> and stick it to screen without any processing. </p>
+<p>We can clearly see the plugin architechure here. We have our hard boundary. We can deploy both the sides independently. To re-compile the GUI side we dont need to recompile the rest of the code. That&#39;s one of the goals of the MVP.</p>
+<h2 id="mvvm---model-view-viewmodel-pattern">MVVM - Model View ViewModel Pattern</h2>
+<p>MVVM is the basis of many front-end libraries like Angularjs, Vue, React etc. MVVM is similar to the Passive View MVP pattern. MVVM is able to eliminate lots of boiler plate code that we see in the PV-MVP because of the <strong>Data-binding</strong> mechanism between ViewModel (<strong>Presenter</strong>) and the <strong>View</strong>.</p>
+<p><strong>Data-binding</strong> is a programming technique that binds data sources from the provider and consumer together and synchromizes them. It helps our application get rid of lots of boilerplate code that we traditionally need to keep View and Model in Sync.</p>
+<p><img src="img/mvvm.png" alt=""></p>
+<p><span class="circle-yellow">1</span> End user interacts with the <strong>View</strong>. The view is the structure, layout and the appearance that the user sees on the screen. </p>
+<p><span class="circle-yellow">2</span> <strong>ViewModel</strong> is an object that exposes <strong>bind-able properties</strong> and methods which are consumed by the <strong>View</strong>. This <strong>Binder</strong> is responsible for keeping the View in sync with the <strong>ViewModel</strong>. Every time a property on <strong>ViewModel</strong> changes, <strong>View</strong> is automatically updated to reflect the changes in the UI. The view forwards user interactions to the viewModel via data-binding (properties, event callbacks etc). </p>
+<p><span class="circle-yellow">3</span> <strong>ViewModel</strong> queries the <strong>Model</strong></p>
+<p><span class="circle-yellow">4</span> <strong>Model</strong> emits events with are listened by the <strong>ViewModel</strong>. <strong>ViewModel</strong> updated itself &amp; thanks to the data binding, the View gets updated automatically. </p>
+<p>The Model-view-viewmodel is a software architectural pattern that facilitates the separation of the development of the GUI be it via markup language or from the developmen tof the backend logic. View is not dependent on any specific model platform.</p>
+<p>The view model is responsible for converting the data objects from the model in such a way that objects are easily manged and presented. View-model handles most if not all view&#39;s display logic. </p>
+<h2 id="todo-live-examples">@todo: live examples</h2>
+<h2 id="todo-a-very-simple-console-todo-list-mvc-example-work-in-progress">@todo: A Very simple console Todo list MVC example [Work in progress]</h2>
+<ul>
+<li>A user asks the controller to show its todoItems in a (compact/full/summary) from.</li>
+<li>controller asks the model for the data</li>
+<li>controller send the data to the appropriate view to get back a formatted string</li>
+<li>controller send the formatted string received from the view to the console of the user.</li>
+</ul>
+<h2 id="todo-pure-mvc-example-work-in-progress">@todo: Pure MVC Example [Work in Progress]</h2>
+<p>We&#39;ll build a small question/answer game, be decoupling every component in a proper Model-View-Controller manner.</p>
+<p>First we&#39;ll implement the <strong>model</strong> layer, with all of its components, including a <strong>model controller</strong>, which helps to implement parts of the loading logic.</p>
+<p>Second, we&#39;ll take a look at the <strong>view</strong> layer, implemented with the help of a <strong>view controller</strong> and views. The view controller helps to organize the logic arount the views on the screen.</p>
+<p>Finally, we&#39;ll tie the program together, with a <strong>controller</strong> responsible for organizing the logic between the <strong>view layer</strong> and the <strong>model layer</strong>.</p>
+<h3 id="references">References</h3>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/o_TH-Y78tt4?start=1650" title="The Principles of Clean Architecture by Uncle Bob Martin" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<p><a href="https://learning.oreilly.com/library/view/hands-on-design-patterns/9781789135565/033ef6d1-ff55-4473-b0dc-824ef44c5060.xhtml">https://learning.oreilly.com/library/view/hands-on-design-patterns/9781789135565/033ef6d1-ff55-4473-b0dc-824ef44c5060.xhtml</a></p>
+<p><a href="https://alexatnet.com/model-view-controller-mvc-in-javascript/">https://alexatnet.com/model-view-controller-mvc-in-javascript/</a></p>
+<p><a href="https://drstearns.github.io/tutorials/mvc/">https://drstearns.github.io/tutorials/mvc/</a></p>
+<p><a href="https://www.dotnettricks.com/learn/designpatterns/understanding-mvc-mvp-and-mvvm-design-patterns">https://www.dotnettricks.com/learn/designpatterns/understanding-mvc-mvp-and-mvvm-design-patterns</a></p>
+<p><a href="https://www.beyondjava.net/model-view-whatever">https://www.beyondjava.net/model-view-whatever</a></p>
+<p><a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html</a></p>
+<p><a href="https://www.martinfowler.com/eaaDev/uiArchs.html">https://www.martinfowler.com/eaaDev/uiArchs.html</a></p>
+<p><a href="http://aspiringcraftsman.com/2007/08/25/interactive-application-architecture/">http://aspiringcraftsman.com/2007/08/25/interactive-application-architecture/</a></p>
+<p><a href="https://blog.webf.zone/contemporary-front-end-architectures-fb5b500b0231">https://blog.webf.zone/contemporary-front-end-architectures-fb5b500b0231</a></p>
+<p><a href="https://www.bacancytechnology.com/blog/mvc-vs-mvp-vs-mvvm">https://www.bacancytechnology.com/blog/mvc-vs-mvp-vs-mvvm</a></p>
+
+      <!-- endinject -->
+      </div>
+    
+      <h2> Example results [Work in progress] </h2>
+      
+      <div id="app" class="app app-one"></div>
+
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
