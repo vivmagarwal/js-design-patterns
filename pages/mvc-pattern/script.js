@@ -267,3 +267,40 @@ game.askQuestion();
 
 
 // https://learning.oreilly.com/library/view/hands-on-design-patterns/9781789135565/a912ac3e-9c02-464e-b124-9a323c3faedd.xhtml
+
+// ===================================================== //
+// Example from https://addyosmani.com/resources/essentialjsdesignpatterns/book/#detailmvcmvp
+// ===================================================== //
+
+var buildPhotoView = function (photoModel, photoController){
+  var base = document.createElement("div");
+  var photoEl = document.createElement("div");
+
+  base.appendChild(photoEl);
+
+  var render = function () {
+    photoEl.innerHTML = _.template("#photoTemplate", {
+      src: photoModel.getSrc()
+    });
+  };
+
+  photoModel.addSubscriber(render);
+
+  photoEl.addEventListener("click", function () {
+    photoController.handleEvent("click", photoModel);
+  });
+
+  var show = function (){
+    photoEl.style.display = "";
+  }
+
+  var hide = function (){
+    photoEl.style.display = "none";
+  }
+
+  return {
+    showView: show,
+    hideView: hide
+  }
+}
+

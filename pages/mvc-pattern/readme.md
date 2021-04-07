@@ -184,6 +184,10 @@ Second, we'll take a look at the **view** layer, implemented with the help of a 
 
 Finally, we'll tie the program together, with a **controller** responsible for organizing the logic between the **view layer** and the **model layer**.
 
+## Additional Resources
+
+[Maria](http://peter.michaux.ca/maria/quick-start-tutorial-for-the-impatient.html) was av attempt to implement MVC in Javascript in its purest form.
+
 ### References
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/o_TH-Y78tt4?start=1650" title="The Principles of Clean Architecture by Uncle Bob Martin" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
