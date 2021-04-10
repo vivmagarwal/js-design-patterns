@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>specification-enterprise-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+    <link rel="shortcut icon" href="../../favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="specification-enterprise-pattern">Specification Enterprise Pattern</h1>
+<p>In computer programming, the <strong>specification pattern</strong> is a particular software design pattern, whereby business rules can be <strong>recombined</strong> by <strong>chaining</strong> the business rules together using <strong>boolean logic</strong>. The pattern is frequently used in the context of domain-driven design.</p>
+<p>A <code>specification</code> is a predicate that determines whether another object does or does not satisfy some criteria. Specifications could be combined with other specifications using “AND”, “OR” and “NOT” operations.</p>
+<p>A specification pattern outlines a <strong>business rule</strong> that is <strong>combinable</strong> with other <strong>business rules</strong>. </p>
+<p>In this pattern, a unit of business logic inherits its functionality from the <strong>abstract aggregate Composite Specification class</strong>. The Composite Specification class has one function called <strong>IsSatisfiedBy</strong> that returns a boolean value. </p>
+<p>After instantiation, the specification is &quot;chained&quot; with other specifications, making new specifications easily maintainable, yet highly customizable business logic. Furthermore, upon instantiation the business logic may, through method invocation or inversion of control, have its state altered in order to become a delegate of other classes such as a persistence repository.</p>
+<p>As a consequence of performing runtime composition of high-level business/domain logic, the Specification pattern is a convenient tool for converting ad-hoc user search criteria into low level logic to be processed by repositories.</p>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>

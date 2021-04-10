@@ -25,14 +25,50 @@
 
       <div class="injected-readme">
       <!-- inject:readme:md -->
-      <h1 id="javascript-tricks">Javascript Tricks</h1>
+      <h1 id="javascript-tricks--jugards">Javascript Tricks &amp; Jugards</h1>
 <h2 id="executing-js-code-genrated-at-runtime">Executing JS Code genrated at runtime</h2>
 <p>This rarely used pattern is known as function constructor:</p>
 <div class="demo-container">
   <iframe src="../../vendor/demoit/index.html?state=../../pages/javascript-tricks/function-constructor.json" style="width:100%; height:300px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 </div>
 
-<h2 id="duck-punching-implements">Duck punching &quot;implements&quot;</h2>
+<h2 id="cloningextending-objects">Cloning/Extending objects</h2>
+<p>A naive implementation:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clone</span>(<span class="hljs-params">source, destination</span>) </span>{
+  <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> source.prototype){ destination.prototype[attr] = source.prototype[attr];}
+}
+</code></pre>
+<p>A little robust:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span>(<span class="hljs-params"></span>)</span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> i=<span class="hljs-number">1</span>; i&lt;<span class="hljs-built_in">arguments</span>.length; i++)
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> key <span class="hljs-keyword">in</span> <span class="hljs-built_in">arguments</span>[i])
+            <span class="hljs-keyword">if</span>(<span class="hljs-built_in">arguments</span>[i].hasOwnProperty(key))
+                <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>][key] = <span class="hljs-built_in">arguments</span>[i][key];
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">arguments</span>[<span class="hljs-number">0</span>];
+}
+</code></pre>
+<p>Extend as in Typescript:</p>
+<pre><code><span class="hljs-keyword">let</span> __extends = <span class="hljs-built_in">this</span>.__extends || <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">d, b</span>) </span>{
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> p <span class="hljs-keyword">in</span> b) <span class="hljs-keyword">if</span> (b.hasOwnProperty(p)) d[p] = b[p];
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-built_in">this</span>.constructor = d; }
+  __.prototype = b.prototype;
+  d.prototype = <span class="hljs-keyword">new</span> __();
+};
+</code></pre>
+<p>Usage:</p>
+<pre><code>
+</code></pre>
+<p>Spread operator:</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clone</span>(<span class="hljs-params">source, destination</span>) </span>{
+  <span class="hljs-keyword">return</span> {...source, ...destination };
+}
+</code></pre>
+<p>Object.assing</p>
+<pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">extend</span>(<span class="hljs-params">source, destination</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assing({}, source, destination);
+}
+</code></pre>
+<p>The jQuery library provides a function called extend which implements prototype inheritance in a robust fashion. It is about 50 lines long and deals with deep copies and null values. The underscore library porovides a similar implimentation.</p>
 
       <!-- endinject -->
       </div>

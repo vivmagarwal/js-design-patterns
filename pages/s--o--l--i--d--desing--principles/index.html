@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>s--o--l--i--d--desing--principles</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+    <link rel="shortcut icon" href="../../favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="s--o--l--i--d--design--principles">S  O  L  I  D  Design  Principles</h1>
+<p>The following 5 <strong>concepts</strong> make up our <strong>SOLID</strong> principles:</p>
+<p><strong>S</strong>ingle Responsibility</p>
+<p><strong>O</strong>pen/Closed</p>
+<p><strong>L</strong>iskov Substitution</p>
+<p><strong>I</strong>nterface Segregation</p>
+<p><strong>D</strong>ependency Inversion</p>
+<h2 id="single-responsibility">Single Responsibility</h2>
+<p>This principle states that a class should only have one responsibility. Furthermore, it should have only one reason to change.</p>
+<p>Benifits of the principle:</p>
+<ul>
+<li><strong>Testing</strong> - Easy to test</li>
+<li><strong>Lower coupling</strong> - less functionality in a single class</li>
+<li><strong>Organization</strong> - easier to understand, figure out, manage and refactor</li>
+<li><strong>separation</strong> of <strong>concerns</strong></li>
+</ul>
+<h2 id="open-closed-principle">Open Closed Principle</h2>
+<p>This priciple states that a classes should be <strong>open</strong> for <strong>extension</strong>, but <strong>closed</strong> for <strong>modification</strong>. In doing so, we stop ourselves from modifying existing class which might have been tested and deployed somewhere. </p>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lokijs/1.5.11/lokijs.min.js" integrity="sha512-oFY8+8fx8FbSwmHxrzxJSZIbcHb9QBA2M9e/YKAfg8eChhNm0dG6F12LvWF7WrNFwRctq7gN6GLAnsMGKT3MjA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lokijs/1.5.11/loki-indexed-adapter.min.js" integrity="sha512-pfMLWJShjPZDqFJNJ3FmS2FFFUtp45dam0PbN4N2NgmOIGvWbFzPp66hTANwWOr+ho51IyfsvmURkBzRep+Ofg==" crossorigin="anonymous"></script>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>
