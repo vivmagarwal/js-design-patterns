@@ -85,6 +85,64 @@ j.addEntry('I exercised today.');
 
 
 // ===================================================== //
-// Open/Closed
+// Liskov substitution principle
 // ===================================================== //
+
+class Bird {
+  constructor(name) {
+    this.name = name;
+  }
+
+  sleep() {
+    console.log(`I am ${this.name} and I am sleeping!!`);
+  }
+
+  fly() {
+    console.log(`I am ${this.name} and I am flying freely in the sky!!`);
+  };
+ }
+ 
+class Eagle extends Bird {
+  constructor(name) {
+    super(name);
+  }
+}
+ 
+class Ostritch extends Bird {
+  constructor(name) {
+    super(name);
+  }
+}
+ 
+let b = new Bird('a bird');
+let e = new Eagle('an eagle');
+let o = new Ostritch('an ostritch');
+
+b.fly();
+e.fly();
+o.fly();
+o.sleep();
+
+// ===================================================== //
+// liskov substitution principle
+// ===================================================== //
+
+
+// ===================================================== //
+
+class Machine {
+  constructor() {
+    if (this.constructor.name === "Machine") {
+      throw new Error('Machine is abstract!');
+    }
+  }
+
+  print(doc) { }
+  fax(doc) { }
+  scan(doc) { }
+}
+
+class Printer extends Machine {
+  
+}
 

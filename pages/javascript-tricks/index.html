@@ -69,6 +69,58 @@
 }
 </code></pre>
 <p>The jQuery library provides a function called extend which implements prototype inheritance in a robust fashion. It is about 50 lines long and deals with deep copies and null values. The underscore library porovides a similar implimentation.</p>
+<h2 id="interface-or-an-abstract-class-in-javascript">Interface or an Abstract class in Javascript</h2>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IInterfaceName</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">this</span>.constructor.name === <span class="hljs-string">&#x27;IInterfaceName&#x27;</span>) {
+      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;IInterfaceName is designed to be abstract!&#x27;</span>);
+    }
+  }
+
+  <span class="hljs-function"><span class="hljs-title">requiredFunction</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">&#x27;requiredFunction needs to be implemented&#x27;</span>);
+  }
+}
+</code></pre>
+<p>VSCode Snippet code:</p>
+<pre><code>    <span class="hljs-string">&quot;abstract class&quot;</span>: {
+        <span class="hljs-string">&quot;prefix&quot;</span>: <span class="hljs-string">&quot;abs-js&quot;</span>,
+        <span class="hljs-string">&quot;body&quot;</span>: [
+            <span class="hljs-string">&quot;class ${1:AbstractClassName} {&quot;</span>,
+            <span class="hljs-string">&quot;  constructor() {&quot;</span>,
+            <span class="hljs-string">&quot;    if(this.constructor.name === &#x27;${1:AbstractClassName}&#x27;) {&quot;</span>,
+            <span class="hljs-string">&quot;      throw new Error(&#x27;${1:AbstractClassName} is designed to be abstract!&#x27;);&quot;</span>,
+            <span class="hljs-string">&quot;    }&quot;</span>,
+            <span class="hljs-string">&quot;  }&quot;</span>,
+            <span class="hljs-string">&quot;}&quot;</span>
+        ],
+        <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;Abstract class in Javascript&quot;</span>
+    },
+</code></pre>
+<h2 id="extend-error-class">Extend Error class</h2>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpecialError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Error</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name</span>)</span> {
+    <span class="hljs-keyword">let</span> msg = <span class="hljs-string">`<span class="hljs-subst">${name}</span> some special error message here.`</span>
+    <span class="hljs-built_in">super</span>(msg);
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">Error</span>.captureStackTrace) {
+      <span class="hljs-built_in">Error</span>.captureStackTrace(<span class="hljs-built_in">this</span>, SpecialError);
+    }
+  }
+}
+
+<span class="hljs-comment">//usage:</span>
+<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> SpecialError(<span class="hljs-string">&#x27;test&#x27;</span>);
+</code></pre>
+<h2 id="simple-enum-in-javascript">Simple Enum in Javascript</h2>
+<pre><code><span class="hljs-keyword">let</span> enumSize = <span class="hljs-built_in">Object</span>.freeze({
+  <span class="hljs-attr">large</span>: <span class="hljs-string">&quot;large&quot;</span>,
+  <span class="hljs-attr">medium</span>: <span class="hljs-string">&quot;medium&quot;</span>,
+  <span class="hljs-attr">small</span>: <span class="hljs-string">&quot;small&quot;</span>
+});
+
+<span class="hljs-comment">//usage</span>
+<span class="hljs-built_in">console</span>.log(enumSize.large);
+</code></pre>
 
       <!-- endinject -->
       </div>

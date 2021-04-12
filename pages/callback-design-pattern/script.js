@@ -83,10 +83,10 @@ heading.addEventListener("click", function (e) {
 let booksList = [
   { title: 'Elequent Javascript', author: 'Marjin haverbeke', price: 100, ebook: true },
   { title: 'JavaScript & JQuery', author: 'Jon Duckett', price: 80, ebook: false },
-  { title: 'JavaScript: The Good Parts', author: 'Douglas Crockford', price: 70, ebook: true },
+  { title: 'JavaScript: The Good Parts', author: 'Douglas Crockford', price: 80, ebook: true },
   { title: 'Learn JavaScript VISUALLY', author: 'Ivelin Demirov', price: 100, ebook: true },
   { title: 'You Don’t Know JS', author: 'Kyle Simpson', price: 100, ebook: true },
-  { title: 'Beginning JavaScript', author: 'Jeremy McPeak', price: 90, ebook: true },
+  { title: 'Beginning JavaScript', author: 'Jeremy McPeak', price: 80, ebook: true },
 ];
 
 // my own function that uses a callback. I need a higer order function that takes in an array of books and just processes ebooks one by one.

@@ -64,3 +64,64 @@ The jQuery library provides a function called extend which implements prototype 
 
 
 
+## Interface or an Abstract class in Javascript
+
+```
+class IInterfaceName {
+  constructor() {
+    if(this.constructor.name === 'IInterfaceName') {
+      throw new Error('IInterfaceName is designed to be abstract!');
+    }
+  }
+
+  requiredFunction() {
+    throw new Error('requiredFunction needs to be implemented');
+  }
+}
+```
+
+VSCode Snippet code:
+```
+	"abstract class": {
+		"prefix": "abs-js",
+		"body": [
+			"class ${1:AbstractClassName} {",
+			"  constructor() {",
+			"    if(this.constructor.name === '${1:AbstractClassName}') {",
+			"      throw new Error('${1:AbstractClassName} is designed to be abstract!');",
+			"    }",
+			"  }",
+			"}"
+		],
+		"description": "Abstract class in Javascript"
+	},
+```
+
+## Extend Error class
+
+```
+class SpecialError extends Error {
+  constructor(name) {
+    let msg = `${name} some special error message here.`
+    super(msg);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, SpecialError);
+    }
+  }
+}
+
+//usage:
+throw new SpecialError('test');
+```
+
+## Simple Enum in Javascript
+```
+let enumSize = Object.freeze({
+  large: "large",
+  medium: "medium",
+  small: "small"
+});
+
+//usage
+console.log(enumSize.large);
+```
