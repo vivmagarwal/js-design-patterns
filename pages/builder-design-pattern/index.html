@@ -29,6 +29,17 @@
         class="injected-readme">
         <!-- inject:readme:md -->
         <h1 id="builder-design-pattern">Builder Design Pattern</h1>
+<p><em>Builder</em> is a creational design pattern that lets you contruct complex objects step by step. </p>
+<blockquote>
+<p>Separate the construction if a complex object from its representation so that the same construction process can create different representations. <em>-- GoF</em></p>
+</blockquote>
+<h2 id="builder-benifits">Builder benifits</h2>
+<ul>
+<li>Encapsulates the way a complex object is constructed</li>
+<li>Allows object to be constructed in a multistep process</li>
+<li>Hides the internal representation if the product from the client</li>
+<li>Product implementations can be swapped in and out because the client only sees an abstract interface</li>
+</ul>
 <h3 id="example">Example</h3>
 <p><strong>Build Pizza step by step</strong>:
 From customers point of view, four steps are needed to build a pizza</p>
@@ -39,9 +50,292 @@ From customers point of view, four steps are needed to build a pizza</p>
 <li>choose the topping</li>
 </ul>
 <h3 id="example-1">Example</h3>
-<p>For signing up a new user, the essential details can be taken in the first step &amp; then rest of the information can be taken in a step by step manner (stages or piecewise construction).</p>
-<p>Separate the construction if a complex object from its representation so that the same construction process can create different representations. <em>-- GoF</em></p>
-<p>the Builder design pattern enables the creation of an easy to use interface to a complex process. By introducing a step-by-step workflow, if the class is made for public, it is easier to understand and consume.  </p>
+<p>A huge list of arguments is certainly prone to mistakes and is not client friendly. this kind of telescoping construction anti pattern in OOP languages:</p>
+<pre><code>signup.create({ <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;John doe&#x27;</span>, <span class="hljs-attr">email</span>: <span class="hljs-string">&#x27;John@email.com&#x27;</span>, <span class="hljs-attr">age</span>: <span class="hljs-number">36</span>, <span class="hljs-attr">nickname</span>: <span class="hljs-string">&#x27;jd&#x27;</span>, <span class="hljs-attr">photo</span>: <span class="hljs-string">&#x27;john.jpeg&#x27;</span>, <span class="hljs-attr">isModerator</span>: <span class="hljs-literal">true</span>, <span class="hljs-attr">isAdmin</span>: <span class="hljs-literal">false</span> });
+</code></pre>
+<p>For signing up a new user, the essential details can be taken in the first step &amp; then rest of the information can be taken in a step by step manner (stages or piecewise construction) :</p>
+<pre><code><span class="hljs-keyword">new</span> SignupBuilder(<span class="hljs-string">&#x27;James Bond&#x27;</span>, <span class="hljs-string">&#x27;bond@james.com&#x27;</span>, <span class="hljs-string">&#x27;40&#x27;</span>)
+  .setPhoto(<span class="hljs-string">&#x27;james.jped&#x27;</span>)
+  .setNickName(<span class="hljs-string">&#x27;bond&#x27;</span>)
+  .setModerator()
+  .setAdmin()
+  .create();
+</code></pre>
+<h3 id="example-2">Example</h3>
+<p>An HTML Tag can be constructed step by step, for example:</p>
+<pre><code>  <span class="hljs-keyword">let</span> parentDivTag = <span class="hljs-keyword">new</span> Tag(<span class="hljs-string">&#x27;div&#x27;</span>);
+  parentDivTag.setText(I am parent);
+  parentDivTag.setClass(<span class="hljs-string">&#x27;parent-class&#x27;</span>);
+  parentDivTag.setId(<span class="hljs-string">&#x27;parent-id&#x27;</span>);
+</code></pre>
+<h3 id="example-3">Example</h3>
+<p>An HTML Dom Tree can be constructed step by step, for example:</p>
+<pre><code>  <span class="hljs-keyword">let</span> root = <span class="hljs-keyword">new</span> HTMLTree(tagA);
+  <span class="hljs-keyword">let</span> rootList = root.addChild(tagUl);
+  rootList.addChild(tagLi1);
+  rootList.addChild(tagLi2);
+  rootList.addChild(tagLi3);
+</code></pre>
+<p>In this example, I am intentionally avoiding tree data structure to keep it simple and to the point.</p>
+<p>Product class:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tag</span> </span>{
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">get</span> <span class="hljs-title">indentSize</span>() { <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>; }
+  
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name = <span class="hljs-string">&#x27;&#x27;</span></span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+    <span class="hljs-built_in">this</span>.text = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.class = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.id = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.children = []; <span class="hljs-comment">// list of Tag objects</span>
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setText</span>(<span class="hljs-params">text</span>)</span> {
+    <span class="hljs-built_in">this</span>.text = text;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setClass</span>(<span class="hljs-params">classes</span>)</span> {
+    <span class="hljs-built_in">this</span>.class = classes;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">setId</span>(<span class="hljs-params">id</span>)</span> {
+    <span class="hljs-built_in">this</span>.id = id;
+  }
+
+  _toString (indent) {
+    <span class="hljs-keyword">let</span> html = [];
+
+    <span class="hljs-comment">// opening tag</span>
+    html.push(<span class="hljs-string">&#x27; &#x27;</span>.repeat(indent * Tag.indentSize));
+    html.push(<span class="hljs-string">&#x27;&lt;&#x27;</span>);
+    html.push(<span class="hljs-built_in">this</span>.name);
+
+    <span class="hljs-comment">// set classes</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.class.length &gt; <span class="hljs-number">0</span>) {
+      html.push(<span class="hljs-string">` class=&quot;<span class="hljs-subst">${<span class="hljs-built_in">this</span>.<span class="hljs-keyword">class</span>}</span>&quot;`</span>);
+    }
+
+    <span class="hljs-comment">// set id</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.id.length &gt; <span class="hljs-number">0</span>) {
+      html.push(<span class="hljs-string">` id=&quot;<span class="hljs-subst">${<span class="hljs-built_in">this</span>.id}</span>&quot;`</span>);
+    }
+
+    html.push(<span class="hljs-string">&#x27;&gt;&#x27;</span>);
+    html.push(<span class="hljs-string">&#x27;\n&#x27;</span>);
+
+    <span class="hljs-comment">// text</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">this</span>.text.length &gt; <span class="hljs-number">0</span>) {
+      html.push(<span class="hljs-string">&#x27; &#x27;</span>.repeat(Tag.indentSize * (indent + <span class="hljs-number">1</span>)));
+      html.push(<span class="hljs-built_in">this</span>.text);
+      html.push(<span class="hljs-string">&#x27;\n&#x27;</span>);
+    }
+
+    <span class="hljs-comment">// children [recursion to handle the tree]</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> child <span class="hljs-keyword">of</span> <span class="hljs-built_in">this</span>.children) {
+      html.push(child._toString(indent + <span class="hljs-number">1</span>));
+    }
+
+    <span class="hljs-comment">// closing tag</span>
+    html.push(<span class="hljs-string">&#x27; &#x27;</span>.repeat(indent * Tag.indentSize));
+    html.push(<span class="hljs-string">&#x27;&lt;/&#x27;</span>);
+    html.push(<span class="hljs-built_in">this</span>.name);
+    html.push(<span class="hljs-string">&#x27;&gt;&#x27;</span>);
+    html.push(<span class="hljs-string">&#x27;\n&#x27;</span>);
+
+    <span class="hljs-keyword">return</span> html.join(<span class="hljs-string">&#x27;&#x27;</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">toString</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>._toString(<span class="hljs-number">0</span>);
+  }
+}
+</code></pre>
+<p>Builder class:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HtmlBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">rootName, rootText, className, id</span>)</span> {
+    <span class="hljs-keyword">let</span> rootTag = <span class="hljs-keyword">new</span> Tag(rootName);
+    rootTag.setText(rootText);
+    rootTag.setClass(className);
+    rootTag.setId(id);
+
+    <span class="hljs-built_in">this</span>.root = rootTag;
+    <span class="hljs-built_in">this</span>.rootName = rootName;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">addChild</span>(<span class="hljs-params">childName, childText, className, id</span>)</span> {
+    <span class="hljs-keyword">let</span> child = <span class="hljs-keyword">new</span> Tag(childName);
+    child.setText(childText);
+    child.setClass(className);
+    child.setId(id);
+
+    <span class="hljs-built_in">this</span>.root.children.push(child);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">toString</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.root.toString();
+  }
+}
+</code></pre>
+<p>Usage/Client:</p>
+<pre><code><span class="hljs-keyword">let</span> builder = <span class="hljs-keyword">new</span> HtmlBuilder(<span class="hljs-string">&#x27;div&#x27;</span>, <span class="hljs-string">&#x27;parent div&#x27;</span>, <span class="hljs-string">&#x27;parent&#x27;</span>, <span class="hljs-string">&#x27;parent&#x27;</span>);
+
+builder.addChild(<span class="hljs-string">&#x27;div&#x27;</span>, <span class="hljs-string">&#x27;child 1&#x27;</span>, <span class="hljs-string">&#x27;child-1&#x27;</span>, <span class="hljs-string">&#x27;child-1&#x27;</span>);
+builder.addChild(<span class="hljs-string">&#x27;div&#x27;</span>, <span class="hljs-string">&#x27;child 2&#x27;</span>, <span class="hljs-string">&#x27;child-2&#x27;</span>, <span class="hljs-string">&#x27;child-2&#x27;</span>);
+
+<span class="hljs-built_in">console</span>.log(builder);
+<span class="hljs-built_in">console</span>.log(builder.toString());
+</code></pre>
+<h3 id="a-more-evolved-builder-example">A More Evolved builder Example</h3>
+<p>In order to build a house, we may have a <code>HouseBuilder()</code> class that acts as a builder manager. It is the only interface that the client code interacts with. The <code>HouseBuilder()</code> initiates a <code>House</code> object by passing it as the default value of <code>house</code> at constructor.</p>
+<p>There are separate builder classes for building (in our example just setting) <code>location</code>,<code>wall</code>, <code>door</code> &amp; <code>floor</code>;</p>
+<p>The heart of this variation of the pattern is that all the builder classes are working on the same object. </p>
+<p>We return <code>this</code> after every method to make our api chinable (fluent).</p>
+<pre><code><span class="hljs-comment">//Usage:</span>
+
+<span class="hljs-keyword">let</span> castleBuilder = <span class="hljs-keyword">new</span> HouseBuilder();
+<span class="hljs-keyword">let</span> mySmallCastle = castleBuilder
+  .location.at(<span class="hljs-string">&#x27;123 ABCD Road&#x27;</span>).in(<span class="hljs-string">&#x27;Pune City&#x27;</span>)
+  .wall.of(<span class="hljs-string">&#x27;stone&#x27;</span>).color(<span class="hljs-string">&#x27;off white&#x27;</span>)
+  .door.of(<span class="hljs-string">&#x27;wood&#x27;</span>).size(<span class="hljs-string">&#x27;large&#x27;</span>).color(<span class="hljs-string">&#x27;brown&#x27;</span>)
+  .floor.of(<span class="hljs-string">&#x27;marble tiles&#x27;</span>).color(<span class="hljs-string">&#x27;brown&#x27;</span>).pattern(<span class="hljs-string">&#x27;zig-zag&#x27;</span>)
+  .build();
+<span class="hljs-built_in">console</span>.log(mySmallCastle);
+</code></pre>
+<p>Product:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">House</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// location info</span>
+    <span class="hljs-built_in">this</span>.street = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.city = <span class="hljs-string">&#x27;&#x27;</span>;
+
+    <span class="hljs-comment">// Wall info</span>
+    <span class="hljs-built_in">this</span>.wall_material = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.wall_color = <span class="hljs-string">&#x27;&#x27;</span>;
+
+    <span class="hljs-comment">// Door infor</span>
+    <span class="hljs-built_in">this</span>.door_material = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.door_size = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.door_color = <span class="hljs-string">&#x27;&#x27;</span>;
+
+    <span class="hljs-comment">// Floor info</span>
+    <span class="hljs-built_in">this</span>.floor_material = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.floor_color = <span class="hljs-string">&#x27;&#x27;</span>;
+    <span class="hljs-built_in">this</span>.foor_pattern = <span class="hljs-string">&#x27;&#x27;</span>;
+  }
+}
+</code></pre>
+<p>Builder Manager:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HouseBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">house = <span class="hljs-keyword">new</span> House()</span>)</span> {
+    <span class="hljs-built_in">this</span>.house = house;
+  }
+
+  <span class="hljs-keyword">get</span> <span class="hljs-title">location</span>() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> HouseLocationBuilder(<span class="hljs-built_in">this</span>.house);
+  }
+
+  <span class="hljs-keyword">get</span> <span class="hljs-title">wall</span>() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> HouseWallBuilder(<span class="hljs-built_in">this</span>.house);
+  }
+
+  <span class="hljs-keyword">get</span> <span class="hljs-title">door</span>() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> HouseDoorBuilder(<span class="hljs-built_in">this</span>.house);
+  }
+
+  <span class="hljs-keyword">get</span> <span class="hljs-title">floor</span>() {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> HouseFloorBuilder(<span class="hljs-built_in">this</span>.house);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">build</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>.house;
+  }
+}
+</code></pre>
+<p>Builders: </p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HouseLocationBuilder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HouseBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">house</span>)</span> {
+    <span class="hljs-built_in">super</span>(house);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">at</span>(<span class="hljs-params">street</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.street = street;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">in</span>(<span class="hljs-params">city</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.city = city;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HouseWallBuilder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HouseBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">house</span>)</span> {
+    <span class="hljs-built_in">super</span>(house);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">of</span>(<span class="hljs-params">material</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.wall_material = material;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">color</span>(<span class="hljs-params">color</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.wall_color = color;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HouseFloorBuilder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HouseBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">house</span>)</span> {
+    <span class="hljs-built_in">super</span>(house);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">of</span>(<span class="hljs-params">material</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.floor_material = material;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">color</span>(<span class="hljs-params">color</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.floor_color = color;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">pattern</span>(<span class="hljs-params">pattern</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.foor_pattern = pattern;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HouseDoorBuilder</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HouseBuilder</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">house</span>)</span> {
+    <span class="hljs-built_in">super</span>(house);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">of</span>(<span class="hljs-params">material</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.door_material = material;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">size</span>(<span class="hljs-params">size</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.door_size = size;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">color</span>(<span class="hljs-params">color</span>)</span> {
+    <span class="hljs-built_in">this</span>.house.door_color = color;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">this</span>;
+  }
+}
+</code></pre>
+<p>Usage/Client:</p>
+<pre><code><span class="hljs-keyword">let</span> castleBuilder = <span class="hljs-keyword">new</span> HouseBuilder();
+<span class="hljs-keyword">let</span> mySmallCastle = castleBuilder
+  .location.at(<span class="hljs-string">&#x27;123 ABCD Road&#x27;</span>).in(<span class="hljs-string">&#x27;Pune City&#x27;</span>)
+  .wall.of(<span class="hljs-string">&#x27;stone&#x27;</span>).color(<span class="hljs-string">&#x27;off white&#x27;</span>)
+  .door.of(<span class="hljs-string">&#x27;wood&#x27;</span>).size(<span class="hljs-string">&#x27;large&#x27;</span>).color(<span class="hljs-string">&#x27;brown&#x27;</span>)
+  .floor.of(<span class="hljs-string">&#x27;marble tiles&#x27;</span>).color(<span class="hljs-string">&#x27;brown&#x27;</span>).pattern(<span class="hljs-string">&#x27;zig-zag&#x27;</span>)
+  .build();
+<span class="hljs-built_in">console</span>.log(mySmallCastle);
+</code></pre>
 
         <!-- endinject -->
       </div>
