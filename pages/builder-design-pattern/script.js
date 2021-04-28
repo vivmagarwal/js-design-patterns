@@ -285,3 +285,77 @@ let mySmallCastle = castleBuilder
   .floor.of('marble tiles').color('brown').pattern('zig-zag')
   .build();
 console.log(mySmallCastle);
+
+// ===================================================== //
+// Code builder example
+
+// usage:
+// let cb = new CodeBuilder('Person');
+// cb.addField('name').addField('age');
+// console.log(db.toString());
+
+// expected outcome:
+// class Person {
+//   constructor(name, age) {
+//     this.name = name;
+//     this.age = age;
+//   }
+// }
+// ===================================================== //
+
+class Field {
+  constructor(name) {
+    this.name = name;
+  }
+}
+
+class Class {
+  constructor(name) {
+    this.name = name;
+    this.fields = [];
+  }
+
+  toString() {
+    let buffer = [];
+    buffer.push(`class ${this.name} {\n`);
+
+    if (this.fields.length > 0) {
+      buffer.push(`  constructor(`);
+      buffer.push((this.fields.map((field) => field.name)).join(','));
+      buffer.push(`) {\n`);
+      for (let field of this.fields) {
+        buffer.push(`    this.${field.name} = ${field.name};\n`);
+      }
+      buffer.push('  }\n');
+    }
+
+    buffer.push('}');
+    return buffer.join('');
+  }
+}
+
+class CodeBuilder {
+  constructor(className) {
+    this._class = new Class(className);
+  }
+
+  addField(name) {
+    this._class.fields.push(
+      new Field(name)
+    )
+    return this;
+  }
+
+  getClassObject() {
+    return this._class;
+  }
+
+  toString() {
+    return this._class.toString();
+  }
+}
+
+let cb = new CodeBuilder('Employee');
+cb.addField('name').addField('age');
+console.log(cb.getClassObject());
+console.log(cb.toString());
