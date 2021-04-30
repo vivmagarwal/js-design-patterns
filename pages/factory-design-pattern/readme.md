@@ -4,6 +4,8 @@
 
 In our code we use a lot of different **objects**. We have **classes** and we instantiate **objects** from the classes and use them in a bunch of different ways. We have to **instantiate objects** from our classes at some point or the other in the program.
 
+- Wholesale object creation (non-piecewise, unlike builder) that can be outsourced
+
 In this article, we are using very good example from the Oreilly's, [head first design patterns](https://www.oreilly.com/library/view/head-first-design/9781492077992/) book.
 
 ![](img/head-first-design-pattern.png)
