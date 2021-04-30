@@ -29,6 +29,9 @@
     "gulp-sourcemaps": "^2.6.5",
     "highlight.js": "^10.6.0",
     "jquery": "^3.5.0",
+    "lodash-es": "^4.17.21",
+    "lodash.clone": "^4.5.0",
+    "lodash.clonedeep": "^4.5.0",
     "marked": "^2.0.0",
     "normalize.css": "^8.0.1",
     "webpack": "latest"

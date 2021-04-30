@@ -6,7 +6,131 @@ This rarely used pattern is known as function constructor:
   <iframe src="../../vendor/demoit/index.html?state=../../pages/javascript-tricks/function-constructor.json" style="width:100%; height:300px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 </div>
 
-## Cloning/Extending objects
+## Deep/Shallow Cloning in JS
+
+```
+// cjs
+// const clone = require('lodash.clone');
+// const cloneDeep = require('lodash.clonedeep');
+
+// importing default exports from cjs
+import clone from 'lodash.clone';
+import cloneDeep from 'lodash.clonedeep';
+
+// importing from lodash esm
+// import { clone } from 'lodash-es';
+// import { cloneDeep } from 'lodash-es';
+
+// importing default export from v8 cjs
+import v8 from 'v8';
+
+class Address {
+  constructor(flatNumber, buildingName, city, country) {
+    this.flatNumber = flatNumber;
+    this.buildingName = buildingName;
+    this.city = city;
+    this.country = country;
+  }
+
+  toString() {
+    return `${this.flatNumber} ${this.buildingName},${this.city}, ${this.country}`;
+  }
+}
+class Person {
+  constructor(name, address) {
+    this.name = name;
+    this.address = address;
+  }
+
+  greet() {
+    console.log(`Hi, my name is ${this.name} and I live at ${this.address.toString()}`);
+  }
+
+  cloneShallowUsingLodash() {
+    // Works beautifully
+    return clone(this);
+  }
+
+  cloneDeepUsingLodash() {
+    // Works beautifully
+    return cloneDeep(this);
+  }
+
+  cloneUsingObjectAssign() {
+    // TypeError: jane.greet is not a function
+    return Object.assign({}, this);
+  }
+
+  cloneUsingSpread() {
+    // TypeError: jane.greet is not a function
+    return { ...this };
+  }
+
+  cloneUsingJsonStringifyParse() {
+    // TypeError: jane.greet is not a function
+    return JSON.parse(JSON.stringify(this));
+  }
+
+  structuredClone() {
+    // TypeError: jane.greet is not a function
+    return v8.deserialize(v8.serialize(this));
+  }
+
+  cloneDeepUsingRecursion(target = {}, source = this) {
+    // works beautifully - deep clone - separate copies of methods
+    for (let key in source) {
+      // console.log('key in source ::::::::::::', key);
+      // Use getOwnPropertyDescriptor instead of source[key] to prevent from trigering setter/getter.
+      let descriptor = Object.getOwnPropertyDescriptor(source, key);
+      // console.log('descriptior ::::::::::::', descriptor);
+
+      if (descriptor.value instanceof String) {
+        target[key] = new String(descriptor.value);
+      }
+      
+      else if (descriptor.value instanceof Array) {
+        target[key] = this.recursiveClone([], descriptor.value);
+      }
+      
+      else if (descriptor.value instanceof Object) {
+        let prototype = Reflect.getPrototypeOf(descriptor.value);
+        let cloneObject = this.recursiveClone({}, descriptor.value);
+        Reflect.setPrototypeOf(cloneObject, prototype);
+        target[key] = cloneObject;
+      }
+        
+      else {
+        Object.defineProperty(target, key, descriptor);
+      }
+    }
+
+    let prototype = Reflect.getPrototypeOf(source);
+    Reflect.setPrototypeOf(target, prototype);
+    return target;
+  }
+
+
+  cloneShallowUsingObjectCreate() {
+    return Object.create(this);
+  }
+}
+
+let john = new Person('John', new Address('F-22','Parle Appartment', 'Pune', 'INDIA'));
+
+// what if we need to create another user with almost same properties?
+let jane = john.cloneShallowUsingLodash();
+jane.name = 'Jane'
+jane.address.flatNumber = 'A-01';
+jane.sayName = function () {
+  console.log(`my name is ${this.name}!!`);
+}
+
+john.greet();
+jane.greet();
+jane.sayName();
+```
+
+
 
 A naive implementation:
 

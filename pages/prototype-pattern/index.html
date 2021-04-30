@@ -28,8 +28,11 @@
 <h2 id="gof-definition">Gof Definition</h2>
 <p>&quot;Prototype Design Pattern Specify the kind of objects to create using a prototypal instance, and create new objects by copying this prototype&quot;</p>
 <p>To simplify, instead of creating object from scratch, you can make copies of an original instance and modify it as required. Prototype is unique among the other creational patterns as it doesnot require a class but only an end object.</p>
+<p>Complicated objects are typically never designed from scratch. Instead what you do is you look at what people have already done and try to improve over the existing constructs. An existing (partially or fully constructed) desing is a prototype. We usually make a deep copy (clone) of the pototype and customize it as per our requirements and give it to the client to consume. And also to make cloning convenient, we can build a prototype factory wheere we have a few predefiend desings and we ask factory to customize the design giving us a custom item.</p>
+<p><strong>A prototype is a partially or fully initialized object that you copy (clone) and make use of</strong></p>
 <h2 id="note">Note</h2>
-<p>Please dont confuse <code>Prototype design pattern</code> with Javascripts <code>Prototypal inheritance</code>. Even though we are going to use Javascript&#39;s <code>Prototype chain</code> in implementing the <code>Prototype design pattern</code>, remember that they are two different concepts.</p>
+<p>Please dont confuse <code>Prototype design pattern</code> with Javascripts <code>Prototypal inheritance</code>. Even though we are going to use Javascript&#39;s <code>Prototype chain</code> in implementing the <code>Prototype design pattern</code>, remember that they are two different concepts. </p>
+<p>We do use Javascript&#39;s <code>Prototypal inheritance</code> to create shallow copes of objects. But please remember that <code>Prototype desing pattern</code> and Javascript&#39;s <code>__proto__</code> / <code>prototype</code> are different things. </p>
 <h2 id="usecases">Usecases</h2>
 <p>Choose Prototype Design Pattern when:</p>
 <ul>
@@ -44,6 +47,132 @@
 <p>Shallow Copy copies an object&#39;s value type fields into the target object and the object&#39;s reference types are copied as references into the target object. They will point to the same properties &amp; method instead of creating their own individual copies.</p>
 <h3 id="deep-copy">Deep copy</h3>
 <p>Unlike Shallow copy, the deep copy, copes and objects value and refence types into a new copy of the target objects. The properties and methods are not a referenced, but are individual copies.</p>
+<p>One of the most used and hence battle tested way to clone objects in javascript is <code>lodash.clone</code>, <code>lodash.cloneDeep</code>. However, in the following example I have also provided a plain JS way to <code>clone</code> and <code>cloneDeep</code>.</p>
+<h3 id="example---1">Example - 1</h3>
+<pre><code><span class="hljs-keyword">import</span> clone <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash.clone&#x27;</span>;
+<span class="hljs-keyword">import</span> cloneDeep <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash.clonedeep&#x27;</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">flatNumber, buildingName, city, country</span>)</span> {
+    <span class="hljs-built_in">this</span>.flatNumber = flatNumber;
+    <span class="hljs-built_in">this</span>.buildingName = buildingName;
+    <span class="hljs-built_in">this</span>.city = city;
+    <span class="hljs-built_in">this</span>.country = country;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">toString</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">this</span>.flatNumber}</span> <span class="hljs-subst">${<span class="hljs-built_in">this</span>.buildingName}</span>,<span class="hljs-subst">${<span class="hljs-built_in">this</span>.city}</span>, <span class="hljs-subst">${<span class="hljs-built_in">this</span>.country}</span>`</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name, address</span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+    <span class="hljs-built_in">this</span>.address = address;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">greet</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Hi, my name is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span> and I live at <span class="hljs-subst">${<span class="hljs-built_in">this</span>.address.toString()}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneShallowUsingLodash</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> clone(<span class="hljs-built_in">this</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneDeepUsingLodash</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> cloneDeep(<span class="hljs-built_in">this</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneDeepUsingRecursion</span>(<span class="hljs-params">target = {}, source = <span class="hljs-built_in">this</span></span>)</span> {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> source) {
+      <span class="hljs-keyword">let</span> descriptor = <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(source, key);
+
+      <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">String</span>) {
+        target[key] = <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(descriptor.value);
+      }
+      
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
+        target[key] = <span class="hljs-built_in">this</span>.recursiveClone([], descriptor.value);
+      }
+      
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>) {
+        <span class="hljs-keyword">let</span> prototype = <span class="hljs-built_in">Reflect</span>.getPrototypeOf(descriptor.value);
+        <span class="hljs-keyword">let</span> cloneObject = <span class="hljs-built_in">this</span>.recursiveClone({}, descriptor.value);
+        <span class="hljs-built_in">Reflect</span>.setPrototypeOf(cloneObject, prototype);
+        target[key] = cloneObject;
+      }
+        
+      <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">Object</span>.defineProperty(target, key, descriptor);
+      }
+    }
+
+    <span class="hljs-keyword">let</span> prototype = <span class="hljs-built_in">Reflect</span>.getPrototypeOf(source);
+    <span class="hljs-built_in">Reflect</span>.setPrototypeOf(target, prototype);
+    <span class="hljs-keyword">return</span> target;
+  }
+
+
+  <span class="hljs-function"><span class="hljs-title">cloneShallowUsingObjectCreate</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.create(<span class="hljs-built_in">this</span>);
+  }
+}
+
+<span class="hljs-keyword">let</span> john = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">&#x27;John&#x27;</span>, <span class="hljs-keyword">new</span> Address(<span class="hljs-string">&#x27;F-22&#x27;</span>,<span class="hljs-string">&#x27;Parle Appartment&#x27;</span>, <span class="hljs-string">&#x27;Pune&#x27;</span>, <span class="hljs-string">&#x27;INDIA&#x27;</span>));
+
+<span class="hljs-comment">// what if we need to create another user with almost same properties?</span>
+<span class="hljs-keyword">let</span> jane = john.cloneShallowUsingLodash();
+jane.name = <span class="hljs-string">&#x27;Jane&#x27;</span>
+jane.address.flatNumber = <span class="hljs-string">&#x27;A-01&#x27;</span>;
+jane.sayName = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`my name is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>!!`</span>);
+}
+
+john.greet();
+jane.greet();
+jane.sayName();
+</code></pre>
+<h2 id="prototype-factory">Prototype factory</h2>
+<p>The developer experience can be great if Person can be created in the following way:</p>
+<pre><code><span class="hljs-keyword">let</span> john = PersonFactory.parlePointMember(<span class="hljs-string">&#x27;John&#x27;</span>, <span class="hljs-string">&#x27;J-33&#x27;</span>);
+<span class="hljs-keyword">let</span> aman = PersonFactory.parlePointMember(<span class="hljs-string">&#x27;Aman&#x27;</span>, <span class="hljs-string">&#x27;A-34&#x27;</span>);
+<span class="hljs-keyword">let</span> raja = PersonFactory.parlePointMember(<span class="hljs-string">&#x27;Raja&#x27;</span>, <span class="hljs-string">&#x27;B-44&#x27;</span>);
+<span class="hljs-keyword">let</span> hero = PersonFactory.parlePointMember(<span class="hljs-string">&#x27;Hero&#x27;</span>, <span class="hljs-string">&#x27;H-88&#x27;</span>);
+
+<span class="hljs-keyword">let</span> jane = PersonFactory.empireEstateMember(<span class="hljs-string">&#x27;Jane&#x27;</span>, <span class="hljs-string">&#x27;A-01&#x27;</span>);
+
+john.greet();
+aman.greet();
+raja.greet();
+hero.greet();
+
+
+jane.greet();
+</code></pre>
+<p>It can be accomplised using a Prototype factory:</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PersonFactory</span> </span>{
+  <span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-title">parlePointMember</span>(<span class="hljs-params">name, flatNumber</span>)</span> {
+    <span class="hljs-keyword">let</span> proto = PersonFactory.parleAppartmentMemberPrototype;
+    <span class="hljs-keyword">let</span> copy = proto.cloneDeepUsingLodash();
+    copy.name = name;
+    copy.address.flatNumber = flatNumber;
+    <span class="hljs-keyword">return</span> copy
+  }
+
+  <span class="hljs-keyword">static</span> <span class="hljs-function"><span class="hljs-title">empireEstateMember</span>(<span class="hljs-params">name, flatNumber</span>)</span> {
+    <span class="hljs-keyword">let</span> proto = PersonFactory.empireEstateMemberPrototype;
+    <span class="hljs-keyword">let</span> copy = proto.cloneDeepUsingLodash();
+    copy.name = name;
+    copy.address.flatNumber = flatNumber;
+    <span class="hljs-keyword">return</span> copy
+  }
+}
+
+<span class="hljs-comment">// static properties for prototypes</span>
+PersonFactory.parleAppartmentMemberPrototype = <span class="hljs-keyword">new</span> Person(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span> Address(<span class="hljs-literal">null</span>, <span class="hljs-string">&#x27;Parle Appartment&#x27;</span>, <span class="hljs-string">&#x27;Pune&#x27;</span>, <span class="hljs-string">&#x27;INDIA&#x27;</span>));
+PersonFactory.empireEstateMemberPrototype = <span class="hljs-keyword">new</span> Person(<span class="hljs-literal">null</span>, <span class="hljs-keyword">new</span> Address(<span class="hljs-literal">null</span>, <span class="hljs-string">&#x27;Empire Estate&#x27;</span>, <span class="hljs-string">&#x27;New Delhi&#x27;</span>, <span class="hljs-string">&#x27;INDIA&#x27;</span>));
+</code></pre>
+<h3 id="example-3-work-in-progress">Example 3 [work in progress]</h3>
 <h2 id="shallow-copy-example">Shallow copy example</h2>
 <p>Let&#39;s first create an object called phone to play with:</p>
 <pre><code><span class="hljs-keyword">var</span> phone = {

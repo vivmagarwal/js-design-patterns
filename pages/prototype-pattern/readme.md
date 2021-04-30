@@ -6,8 +6,14 @@
 
 To simplify, instead of creating object from scratch, you can make copies of an original instance and modify it as required. Prototype is unique among the other creational patterns as it doesnot require a class but only an end object.
 
+Complicated objects are typically never designed from scratch. Instead what you do is you look at what people have already done and try to improve over the existing constructs. An existing (partially or fully constructed) desing is a prototype. We usually make a deep copy (clone) of the pototype and customize it as per our requirements and give it to the client to consume. And also to make cloning convenient, we can build a prototype factory wheere we have a few predefiend desings and we ask factory to customize the design giving us a custom item.
+
+**A prototype is a partially or fully initialized object that you copy (clone) and make use of**
+
 ## Note
-Please dont confuse `Prototype design pattern` with Javascripts `Prototypal inheritance`. Even though we are going to use Javascript's `Prototype chain` in implementing the `Prototype design pattern`, remember that they are two different concepts.
+Please dont confuse `Prototype design pattern` with Javascripts `Prototypal inheritance`. Even though we are going to use Javascript's `Prototype chain` in implementing the `Prototype design pattern`, remember that they are two different concepts. 
+
+We do use Javascript's `Prototypal inheritance` to create shallow copes of objects. But please remember that `Prototype desing pattern` and Javascript's `__proto__` / `prototype` are different things. 
 ## Usecases
 
 Choose Prototype Design Pattern when:
@@ -25,6 +31,146 @@ Shallow Copy copies an object's value type fields into the target object and the
 
 ### Deep copy
 Unlike Shallow copy, the deep copy, copes and objects value and refence types into a new copy of the target objects. The properties and methods are not a referenced, but are individual copies.
+
+One of the most used and hence battle tested way to clone objects in javascript is `lodash.clone`, `lodash.cloneDeep`. However, in the following example I have also provided a plain JS way to `clone` and `cloneDeep`.
+
+### Example - 1
+
+```
+import clone from 'lodash.clone';
+import cloneDeep from 'lodash.clonedeep';
+
+class Address {
+  constructor(flatNumber, buildingName, city, country) {
+    this.flatNumber = flatNumber;
+    this.buildingName = buildingName;
+    this.city = city;
+    this.country = country;
+  }
+
+  toString() {
+    return `${this.flatNumber} ${this.buildingName},${this.city}, ${this.country}`;
+  }
+}
+
+class Person {
+  constructor(name, address) {
+    this.name = name;
+    this.address = address;
+  }
+
+  greet() {
+    console.log(`Hi, my name is ${this.name} and I live at ${this.address.toString()}`);
+  }
+
+  cloneShallowUsingLodash() {
+    return clone(this);
+  }
+
+  cloneDeepUsingLodash() {
+    return cloneDeep(this);
+  }
+
+  cloneDeepUsingRecursion(target = {}, source = this) {
+    for (let key in source) {
+      let descriptor = Object.getOwnPropertyDescriptor(source, key);
+
+      if (descriptor.value instanceof String) {
+        target[key] = new String(descriptor.value);
+      }
+      
+      else if (descriptor.value instanceof Array) {
+        target[key] = this.recursiveClone([], descriptor.value);
+      }
+      
+      else if (descriptor.value instanceof Object) {
+        let prototype = Reflect.getPrototypeOf(descriptor.value);
+        let cloneObject = this.recursiveClone({}, descriptor.value);
+        Reflect.setPrototypeOf(cloneObject, prototype);
+        target[key] = cloneObject;
+      }
+        
+      else {
+        Object.defineProperty(target, key, descriptor);
+      }
+    }
+
+    let prototype = Reflect.getPrototypeOf(source);
+    Reflect.setPrototypeOf(target, prototype);
+    return target;
+  }
+
+
+  cloneShallowUsingObjectCreate() {
+    return Object.create(this);
+  }
+}
+
+let john = new Person('John', new Address('F-22','Parle Appartment', 'Pune', 'INDIA'));
+
+// what if we need to create another user with almost same properties?
+let jane = john.cloneShallowUsingLodash();
+jane.name = 'Jane'
+jane.address.flatNumber = 'A-01';
+jane.sayName = function () {
+  console.log(`my name is ${this.name}!!`);
+}
+
+john.greet();
+jane.greet();
+jane.sayName();
+
+```
+
+## Prototype factory
+
+The developer experience can be great if Person can be created in the following way:
+
+```
+let john = PersonFactory.parlePointMember('John', 'J-33');
+let aman = PersonFactory.parlePointMember('Aman', 'A-34');
+let raja = PersonFactory.parlePointMember('Raja', 'B-44');
+let hero = PersonFactory.parlePointMember('Hero', 'H-88');
+
+let jane = PersonFactory.empireEstateMember('Jane', 'A-01');
+
+john.greet();
+aman.greet();
+raja.greet();
+hero.greet();
+
+
+jane.greet();
+```
+
+It can be accomplised using a Prototype factory:
+
+```
+class PersonFactory {
+  static parlePointMember(name, flatNumber) {
+    let proto = PersonFactory.parleAppartmentMemberPrototype;
+    let copy = proto.cloneDeepUsingLodash();
+    copy.name = name;
+    copy.address.flatNumber = flatNumber;
+    return copy
+  }
+
+  static empireEstateMember(name, flatNumber) {
+    let proto = PersonFactory.empireEstateMemberPrototype;
+    let copy = proto.cloneDeepUsingLodash();
+    copy.name = name;
+    copy.address.flatNumber = flatNumber;
+    return copy
+  }
+}
+
+// static properties for prototypes
+PersonFactory.parleAppartmentMemberPrototype = new Person(null, new Address(null, 'Parle Appartment', 'Pune', 'INDIA'));
+PersonFactory.empireEstateMemberPrototype = new Person(null, new Address(null, 'Empire Estate', 'New Delhi', 'INDIA'));
+```
+
+### Example 3 [work in progress]
+
 
 ## Shallow copy example
 

@@ -32,7 +32,127 @@
   <iframe src="../../vendor/demoit/index.html?state=../../pages/javascript-tricks/function-constructor.json" style="width:100%; height:300px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 </div>
 
-<h2 id="cloningextending-objects">Cloning/Extending objects</h2>
+<h2 id="deepshallow-cloning-in-js">Deep/Shallow Cloning in JS</h2>
+<pre><code><span class="hljs-comment">// cjs</span>
+<span class="hljs-comment">// const clone = require(&#x27;lodash.clone&#x27;);</span>
+<span class="hljs-comment">// const cloneDeep = require(&#x27;lodash.clonedeep&#x27;);</span>
+
+<span class="hljs-comment">// importing default exports from cjs</span>
+<span class="hljs-keyword">import</span> clone <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash.clone&#x27;</span>;
+<span class="hljs-keyword">import</span> cloneDeep <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;lodash.clonedeep&#x27;</span>;
+
+<span class="hljs-comment">// importing from lodash esm</span>
+<span class="hljs-comment">// import { clone } from &#x27;lodash-es&#x27;;</span>
+<span class="hljs-comment">// import { cloneDeep } from &#x27;lodash-es&#x27;;</span>
+
+<span class="hljs-comment">// importing default export from v8 cjs</span>
+<span class="hljs-keyword">import</span> v8 <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;v8&#x27;</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Address</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">flatNumber, buildingName, city, country</span>)</span> {
+    <span class="hljs-built_in">this</span>.flatNumber = flatNumber;
+    <span class="hljs-built_in">this</span>.buildingName = buildingName;
+    <span class="hljs-built_in">this</span>.city = city;
+    <span class="hljs-built_in">this</span>.country = country;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">toString</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">this</span>.flatNumber}</span> <span class="hljs-subst">${<span class="hljs-built_in">this</span>.buildingName}</span>,<span class="hljs-subst">${<span class="hljs-built_in">this</span>.city}</span>, <span class="hljs-subst">${<span class="hljs-built_in">this</span>.country}</span>`</span>;
+  }
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">name, address</span>)</span> {
+    <span class="hljs-built_in">this</span>.name = name;
+    <span class="hljs-built_in">this</span>.address = address;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">greet</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Hi, my name is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span> and I live at <span class="hljs-subst">${<span class="hljs-built_in">this</span>.address.toString()}</span>`</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneShallowUsingLodash</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// Works beautifully</span>
+    <span class="hljs-keyword">return</span> clone(<span class="hljs-built_in">this</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneDeepUsingLodash</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// Works beautifully</span>
+    <span class="hljs-keyword">return</span> cloneDeep(<span class="hljs-built_in">this</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneUsingObjectAssign</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// TypeError: jane.greet is not a function</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign({}, <span class="hljs-built_in">this</span>);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneUsingSpread</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// TypeError: jane.greet is not a function</span>
+    <span class="hljs-keyword">return</span> { ...this };
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneUsingJsonStringifyParse</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// TypeError: jane.greet is not a function</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.parse(<span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-built_in">this</span>));
+  }
+
+  <span class="hljs-function"><span class="hljs-title">structuredClone</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-comment">// TypeError: jane.greet is not a function</span>
+    <span class="hljs-keyword">return</span> v8.deserialize(v8.serialize(<span class="hljs-built_in">this</span>));
+  }
+
+  <span class="hljs-function"><span class="hljs-title">cloneDeepUsingRecursion</span>(<span class="hljs-params">target = {}, source = <span class="hljs-built_in">this</span></span>)</span> {
+    <span class="hljs-comment">// works beautifully - deep clone - separate copies of methods</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> source) {
+      <span class="hljs-comment">// console.log(&#x27;key in source ::::::::::::&#x27;, key);</span>
+      <span class="hljs-comment">// Use getOwnPropertyDescriptor instead of source[key] to prevent from trigering setter/getter.</span>
+      <span class="hljs-keyword">let</span> descriptor = <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(source, key);
+      <span class="hljs-comment">// console.log(&#x27;descriptior ::::::::::::&#x27;, descriptor);</span>
+
+      <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">String</span>) {
+        target[key] = <span class="hljs-keyword">new</span> <span class="hljs-built_in">String</span>(descriptor.value);
+      }
+      
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Array</span>) {
+        target[key] = <span class="hljs-built_in">this</span>.recursiveClone([], descriptor.value);
+      }
+      
+      <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (descriptor.value <span class="hljs-keyword">instanceof</span> <span class="hljs-built_in">Object</span>) {
+        <span class="hljs-keyword">let</span> prototype = <span class="hljs-built_in">Reflect</span>.getPrototypeOf(descriptor.value);
+        <span class="hljs-keyword">let</span> cloneObject = <span class="hljs-built_in">this</span>.recursiveClone({}, descriptor.value);
+        <span class="hljs-built_in">Reflect</span>.setPrototypeOf(cloneObject, prototype);
+        target[key] = cloneObject;
+      }
+        
+      <span class="hljs-keyword">else</span> {
+        <span class="hljs-built_in">Object</span>.defineProperty(target, key, descriptor);
+      }
+    }
+
+    <span class="hljs-keyword">let</span> prototype = <span class="hljs-built_in">Reflect</span>.getPrototypeOf(source);
+    <span class="hljs-built_in">Reflect</span>.setPrototypeOf(target, prototype);
+    <span class="hljs-keyword">return</span> target;
+  }
+
+
+  <span class="hljs-function"><span class="hljs-title">cloneShallowUsingObjectCreate</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.create(<span class="hljs-built_in">this</span>);
+  }
+}
+
+<span class="hljs-keyword">let</span> john = <span class="hljs-keyword">new</span> Person(<span class="hljs-string">&#x27;John&#x27;</span>, <span class="hljs-keyword">new</span> Address(<span class="hljs-string">&#x27;F-22&#x27;</span>,<span class="hljs-string">&#x27;Parle Appartment&#x27;</span>, <span class="hljs-string">&#x27;Pune&#x27;</span>, <span class="hljs-string">&#x27;INDIA&#x27;</span>));
+
+<span class="hljs-comment">// what if we need to create another user with almost same properties?</span>
+<span class="hljs-keyword">let</span> jane = john.cloneShallowUsingLodash();
+jane.name = <span class="hljs-string">&#x27;Jane&#x27;</span>
+jane.address.flatNumber = <span class="hljs-string">&#x27;A-01&#x27;</span>;
+jane.sayName = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`my name is <span class="hljs-subst">${<span class="hljs-built_in">this</span>.name}</span>!!`</span>);
+}
+
+john.greet();
+jane.greet();
+jane.sayName();
+</code></pre>
 <p>A naive implementation:</p>
 <pre><code><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">clone</span>(<span class="hljs-params">source, destination</span>) </span>{
   <span class="hljs-keyword">for</span>(<span class="hljs-keyword">var</span> attr <span class="hljs-keyword">in</span> source.prototype){ destination.prototype[attr] = source.prototype[attr];}
