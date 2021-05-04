@@ -104,7 +104,7 @@ class Singleton {
 }
 
 // ===================================================== //
-// Monostate singleton
+// Mono-state singleton
 // ===================================================== //
 
 class Person {
@@ -128,7 +128,7 @@ class Person {
     return `${this.age} - ${this.name}`
   }
 }
-// Class level - not object level [monostate]
+// Class level - not object level [mono-state]
 // these properties will be shared across all instances.
 Person._age = null;
 Person._name = null;
