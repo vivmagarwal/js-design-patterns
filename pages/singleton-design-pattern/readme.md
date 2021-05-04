@@ -12,9 +12,16 @@ However, this behaviour is dependent on the filename consistency. Difference in 
 
 When working with classes, instantiating a class before exporting it out of a module will result in a singleton.
 
-## Problem
-- Ensure that a class has just a single instance
-- Provide a global access point to that instance
+## Usecases
+- For some components it only makes sense to have one in the system
+  - Database repostiory
+  - Object factory, we dont want to construct prototypes again and again. We want to instantiate a prototype and use the same to construct new objects.
+- Some constructor calls are expensive
+  - We want the initialization to happen only once
+  - We provide everyone with the same instance
+- When we want to provent anyone to create additional copies
+  - Ensure that a class has just a single instance  
+  - Provide a global access point to that instance
 
 ## Implementation Logic
 

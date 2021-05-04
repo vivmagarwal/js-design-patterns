@@ -88,3 +88,60 @@ var sb1 = console.log(myScoreBoard.getInstance());
 var sb2 = console.log(myScoreBoard.getInstance());
 
 console.log(sb1 === sb2);
+
+// ===================================================== //
+// ES6 way to create a singleton - singleton class-constructor
+// ===================================================== //
+class Singleton {
+  constructor() {
+    const instance = this.constructor.instance;
+    if (instance) {
+      return instance;
+    }
+
+    this.constructor.instace = this;
+  }
+}
+
+// ===================================================== //
+// Monostate singleton
+// ===================================================== //
+
+class Person {
+  get name() {
+    return Person._name;
+  }
+
+  set name(value) {
+    Person._name = value;
+  }
+
+  get age() {
+    return Person._age;
+  }
+
+  set age(value) {
+    Person._age = value;
+  }
+
+  toString() {
+    return `${this.age} - ${this.name}`
+  }
+}
+// Class level - not object level [monostate]
+// these properties will be shared across all instances.
+Person._age = null;
+Person._name = null;
+
+let p1 = new Person();
+p1.name = 'John Deo';
+p1.age = 55;
+
+let p2 = new Person();
+p2.name = 'Adam Smith';
+p2.age = 22;
+
+console.log(p1.toString()); // 22 - Adam Smith 
+console.log(p2.toString()); // 22 - Adam Smith
+
+// ===================================================== //
