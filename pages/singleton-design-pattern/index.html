@@ -34,10 +34,23 @@
 <p>Node&#39;s module system caches the module the moment it is accessed using a require statement for the very first time. Thereafter the same instance is reffered to everywhere. No matter how many times you impoert this module accross your application, it will access the same cached and common instance. So the Node&#39;s module system offers a rudimentary implementation if a singleton.</p>
 <p>However, this behaviour is dependent on the filename consistency. Difference in capitalization in filenames will result in multiple cached instances.</p>
 <p>When working with classes, instantiating a class before exporting it out of a module will result in a singleton.</p>
-<h2 id="problem">Problem</h2>
+<h2 id="usecases">Usecases</h2>
 <ul>
-<li>Ensure that a class has just a single instance</li>
+<li>For some components it only makes sense to have one in the system<ul>
+<li>Database repostiory</li>
+<li>Object factory, we dont want to construct prototypes again and again. We want to instantiate a prototype and use the same to construct new objects.</li>
+</ul>
+</li>
+<li>Some constructor calls are expensive<ul>
+<li>We want the initialization to happen only once</li>
+<li>We provide everyone with the same instance</li>
+</ul>
+</li>
+<li>When we want to provent anyone to create additional copies<ul>
+<li>Ensure that a class has just a single instance  </li>
 <li>Provide a global access point to that instance</li>
+</ul>
+</li>
 </ul>
 <h2 id="implementation-logic">Implementation Logic</h2>
 <p>The Singleton class declares the static method <code>getInstance</code> that returns the same instance of it&#39;s own class. The Singleton&#39;s constructor should be hidden from the client code. Calling the <code>getInstance</code> method should be the only way of getting the Singleton object.</p>

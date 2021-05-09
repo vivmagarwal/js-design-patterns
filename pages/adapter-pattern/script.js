@@ -2,91 +2,95 @@ console.log('adapter-pattern works!!');
 
 // The target class
 // The target defines the domain-specific interface used by the client code.
-class Person {
-  constructor() {}
+class Table {}
 
-  logData() {
-    console.log(`DefaultLogger::: this comes from Person (target).`);
+// Asbtract class or an interface to perform sorting operations on the Table Class.
+class Sort {
+  apply(table) {}
+}
+
+// this concrete sorting class ships with our app
+class SimpleSort extends Sort {
+  apply(image) {
+    console.log('Applying default simple sort.');
   }
 }
 
-// The Adaptee class
-// the adaptee contains some useful behaviour, but its interface is incompatible with the existing client code.
-// the adaptee needs some adaptation before the client code can use it.
-class Employee {
-  logDecent() {
-    console.log(`DecentLogger::: this comes from Employee (adaptee).`);
+// Table can have several views like fullView, compact view, summary view etc.
+// Client need to use of the view.
+class FullTableView {
+  constructor(table) {
+    this.table = table;
+  }
+
+  // apply expects the instance of a class that implements the Sort interface.
+  apply(sort) {
+    // Sort interface expects a method called apply() which expects an instance of Table
+    sort.apply(this.table);
   }
 }
 
-// The Adapter class
-// The adapter makes the adaptees interface compatible with the target's interface.
-// it often extends target class (person)
-// basically client expects an inteface similar to a  person object;
-// when Employee adapter extends Person; it gets all the methods/properties;
-// we can overwrite the logData() method to use Employee's logDecent
-class EmployeeAdapter extends Person {
-  constructor(employee) {
+// third party sorts with a differnt interface.
+// doesnot implement the sort interface.
+// Adaptee
+class BetterSort {
+  // the creators of BetterSort decided to call init() everytime we need to use it.
+  init() {
+
+  }
+
+  // they decided to use render method to sort and render table as that made more sense to them.
+  render(table) {
+    console.log('Applying 3rd partys better sort.');
+  }
+}
+
+// client code or usage
+let tableView = new FullTableView(new Table());
+tableView.apply(new SimpleSort()); // works.
+
+// tableView.apply(new BetterSort()); // TypeError.
+
+/**
+ * We have an existing class, we wanna use it somewhere, BUT
+ * the interface of this class doenot match the form that we expect.
+ * 
+ * So we use the apadter pattern to convert the interface of this class 
+ * to a different form
+ */
+
+// Adaptor - using compostion [favour composition over inheritance]
+// it is composed with adaptee.
+class BetterSortAdapter extends Sort {
+  constructor(betterSort) {
+    super(betterSort);
+    // we need an adptee inside the adapter to forward the client's request
+    this.betterSort = betterSort;
+  }
+
+  // Our adapter has this method called apply() that is compatible with our client.
+  // our adapter's apply takes in table and seamlessly forwards it ot the betterSort.
+  apply(table) {
+    this.betterSort.init();
+    this.betterSort.render(table);
+  }
+}
+
+// Adapter 2 - using inheritance rather than composition
+class BetterSortAdapter2 extends BetterSort {
+  constructor() {
     super();
-    this.employee = employee;
-  };
+  }
 
-  // this log data is what our client expects.
-  logData() {
-    return this.employee.logDecent();
+  apply(table) {
+    this.init();
+    this.render(table);
   }
 }
 
-// client code
-function clientCode(target) {
-  // the client code just understands the logData() method.
-  target.logData();
-}
-
-const p1 = new Person();
-clientCode(p1); //  works fine > DefaultLogger::: this comes from Employee(target).
-
-// adaptee has an interface that client dont understand. the client code just understands to call a logData() mehtod.
-const e1 = new Employee();
-// clientCode(e1); // does not work > TypeError: target.logData is not a function
-
-
-const adapter = new EmployeeAdapter(e1);
-clientCode(adapter); // works > DecentLogger::: this comes from Employee (adaptee).
-
-
-
-
-
-
-// let simpleLogger = function (data){
-//   console.log(`Simple Logger::: ${data.firstName} ${data.lastName} is ${data.age} years old.`);
-// }
-
-// let decentLogger = function (fullName, age) {
-//   console.log(`${fullName} is ${age} years old.`);
-// }
-
-// let betterLogger = function (firstName, lastName, age) {
-//   console.log(`${firstName} ${lastName} is ${age} years old.`);
-// }
-
-// // let john = new Employee('John', 'Doe', '36');
-// // john.logData();
-
-// class simpleLoggerAdapter {
-
-// }
-
-
-
-// let cla = new simpleLoggerAdapter(john);
-// let john = new Employee(cla);
-
-// john.firstName = 'John';
-// john.lastName = 'Doe';
-// john.age = 36;
-
-
+// instead of plugging in an incomatible plug to our client; we plug in an adapter first and then plug in our incompatible plug to the adapter
+// adapter forwards the clients request to our adaptee and return backs the adaptees response to the client.
+tableView.apply(new BetterSortAdapter(new BetterSort()));  // now it works: Applying 3rd partys better sort.
+tableView.apply(new BetterSortAdapter2());  // it works: Applying 3rd partys better sort.
 
 
