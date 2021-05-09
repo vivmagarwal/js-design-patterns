@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>bridge-pattern</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.6.0/styles/stackoverflow-light.min.css" integrity="sha512-cG1IdFxqipi3gqLmksLtuk13C+hBa57a6zpWxMeoY3Q9O6ooFxq50DayCdm0QrDgZjMUn23z/0PMZlgft7Yp5Q==" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../../preview.css">
+    <link rel="shortcut icon" href="../../favicon.ico">
+  </head>
+  <body>
+    <div class="container">
+
+      <div>
+        <ul>
+          <li><a href="../../">Back to HOME</a></li>
+        </ul>
+      </div>
+
+      <div id="app"></div>
+
+      <div class="injected-readme">
+      <!-- inject:readme:md -->
+      <h1 id="bridge-pattern">Bridge Pattern</h1>
+<p>A mechanism that decouples an interface(hierarchy) form the implementation(hierarchy)</p>
+<h2 id="example">Example</h2>
+<p>Dimmable light:
+<img src="img/dimmable-light.png" alt=""></p>
+<p><em>3 Brands (with their own implementations) :</em></p>
+<ul>
+<li>Philips</li>
+<li>GE</li>
+<li>Sony</li>
+</ul>
+<p><em>3 type of Remotes (with additional features):</em></p>
+<ul>
+<li>Simple ON/OFF</li>
+<li>Remote with Flash</li>
+<li>Remote with Dim &amp; Glow</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Simple Remote</th>
+<th>Remote with Flash</th>
+<th>Remote with dim &amp; glow</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><img src="img/remote-1.png" alt=""></td>
+<td><img src="img-remote-2.png" alt=""></td>
+<td><img src="img/remote-3.png" alt=""></td>
+</tr>
+</tbody></table>
+<h3 id="class-hierarchy---complex--unscalable-one">Class Hierarchy - complex &amp; unscalable one</h3>
+<p><img src="img/dirty-hierarchy.png" alt=""> </p>
+<p>This is one way to architect this lesson, We can clearly see a class explosion happening in the above representation. We have this complex hierarchy.</p>
+<ul>
+<li>At the top we have our <code>SimpleRemote</code></li>
+<li>Below that we have <code>RemoteWithDimAndGlow</code>, <code>RemoteWithFlash</code> and also companies specific <code>PhilipsSimpleRemote</code>, <code>GESimpleRemote</code> &amp; <code>SonySimpleRemote</code></li>
+<li>We have similar structures below <code>RemoteWithDimAndGlow</code> &amp; <code>RemoteWithFlash</code></li>
+</ul>
+<p>The problem with this structure is that it is very inflxible. So tomorrow if you want to support a new type of remote control, let&#39;s say a <code>RemoteWithTimer</code> in which we could set time after which the light will turn off, We have to add a new class called <code>RemoteWithTimer</code> and under that we will be required implementation of <code>RemoteWithTimer</code> for every DimmableLight Brand that we support. If tomorrow we want to support a new Light brand, say LG, we should add one class called <code>LGRemote</code>, and add implemention of <code>LGRemote</code> for every type of remote.</p>
+<p>So every time we support a new type of remote cotrol or a new brand of Light, we should add a bunch of new classes to this hierarchy. Overtime, this hierrachy is going to get very complex and unmaintainable. </p>
+<p>The reason we ended up with this structure is because our hierarchy is growing in two different dimensions. On the one side we have this sea green classes, these are all about <strong>features</strong> (abstraction) of the remote control. So, we have different kinds of remotes.</p>
+<p>We have this another dimension which is all about <strong>implementation</strong> or light brands, which are coloured purple in our above representation. To simplify this hierarchy, we need to break this down into half. </p>
+<p>On one side we should have a hierarchy which is all about the features. On the second side we should have a separate hierarchy, which is all about implementation. We should have two completely independent hierarchy. </p>
+<p>A Bridge is the name given to the compositional relationship between the RemoteControl (feature) and the DimmableLight (implementation).</p>
+<p>So, a remote control targets a particular Dimmable light.</p>
+<h3 id="class-hierarchy---much-more-scalable">Class Hierarchy - much more scalable</h3>
+<p><img src="img/easy-hierarchy.png" alt=""></p>
+<p>In the RemoteControl, we are going to have a filed for the DimmableLight and we are going to initialize this field using the constructor of the remote control. So when you want to create a remote control object, you are going to give it a concrete DimmableLight implementation, such as a SonyDimmableLight.  </p>
+<p>At RemoteControl class, we are simply talking to an abstraction (DimmableLight abstract class).</p>
+<h3 id="complete-example">Complete example</h3>
+<p>DimmableLight interface/abstract class</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DimmableLight</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-comment">/* abstract */</span> };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-comment">/* abstract */</span> };
+  <span class="hljs-function"><span class="hljs-title">flashLight</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-comment">/* abstract */</span> };
+  <span class="hljs-function"><span class="hljs-title">dim</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-comment">/* abstract */</span> };
+  <span class="hljs-function"><span class="hljs-title">glow</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-comment">/* abstract */</span> };
+}
+</code></pre>
+<p>Concrete DimmableLight implementations</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">PhilipsDimmableLight</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DimmableLight</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Philips dimmable light: Turn on`</span>); };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Philips dimmable light: Turn off`</span>) };
+  <span class="hljs-function"><span class="hljs-title">flashLight</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Philips dimmable light: Flashing light`</span>) };
+  <span class="hljs-function"><span class="hljs-title">dim</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Philips dimmable light: Dimming light by <span class="hljs-subst">${value}</span>`</span>) };
+  <span class="hljs-function"><span class="hljs-title">glow</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Philips dimmable light: Glowing light by <span class="hljs-subst">${value}</span>`</span>) };
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">GEDimmableLight</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DimmableLight</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`GE Dimmable light: Turn on`</span>); };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`GE Dimmable light: Turn off`</span>) };
+  <span class="hljs-function"><span class="hljs-title">flashLight</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`GE Dimmable light: Flashing light`</span>) };
+  <span class="hljs-function"><span class="hljs-title">dim</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`GE Dimmable light: Dimming light by <span class="hljs-subst">${value}</span>`</span>) };
+  <span class="hljs-function"><span class="hljs-title">glow</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`GE Dimmable light: Glowing light by <span class="hljs-subst">${value}</span>`</span>) };
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SonyDimmableLight</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DimmableLight</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Sony Dimmable light: Turn on`</span>); };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Sony Dimmable light: Turn off`</span>) };
+  <span class="hljs-function"><span class="hljs-title">flashLight</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Sony Dimmable light: Flashing light`</span>) };
+  <span class="hljs-function"><span class="hljs-title">dim</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Sony Dimmable light: Dimming light by <span class="hljs-subst">${value}</span>`</span>) };
+  <span class="hljs-function"><span class="hljs-title">glow</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Sony Dimmable light: Glowing light by <span class="hljs-subst">${value}</span>`</span>) };
+}
+</code></pre>
+<p>Different remote controls with different features. They are composed with a dimmableLight instance.</p>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleRemote</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">dimmableLight</span>)</span> {
+    <span class="hljs-built_in">this</span>.dimmableLight = dimmableLight;
+  }
+
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOn() };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOff() };
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RemoteWithDimAndGlow</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimpleRemote</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">dimmableLight</span>)</span> {
+    <span class="hljs-built_in">super</span>(dimmableLight);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOn() };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOff() };
+  <span class="hljs-function"><span class="hljs-title">dim</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.dim(value) };
+  <span class="hljs-function"><span class="hljs-title">glow</span>(<span class="hljs-params">value</span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.glow(value) };
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RemoteWithFlash</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">SimpleRemote</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">dimmableLight</span>)</span> {
+    <span class="hljs-built_in">super</span>(dimmableLight);
+  }
+
+  <span class="hljs-function"><span class="hljs-title">turnOn</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOn() };
+  <span class="hljs-function"><span class="hljs-title">turnOff</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.turnOff() };
+  <span class="hljs-function"><span class="hljs-title">flashLight</span>(<span class="hljs-params"></span>)</span> { <span class="hljs-built_in">this</span>.dimmableLight.flashLight() };
+}
+</code></pre>
+<p>client/usage:</p>
+<pre><code><span class="hljs-keyword">let</span> remoteControl = <span class="hljs-keyword">new</span> RemoteWithDimAndGlow(<span class="hljs-keyword">new</span> SonyDimmableLight());
+remoteControl.turnOn();
+remoteControl.dim(<span class="hljs-number">10</span>);
+</code></pre>
+
+      <!-- endinject -->
+      </div>
+
+    </div>
+    <script type="module" defer src="script.js"></script>
+  </body>
+</html>

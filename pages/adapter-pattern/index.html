@@ -26,8 +26,108 @@
       <div class="injected-readme">
       <!-- inject:readme:md -->
       <h1 id="adapter-pattern">Adapter Pattern</h1>
-<p>An Adapter is a special construct to give us the interface we require from the interface we have.</p>
+<p>An Adapter works as a bridge between two incompatible interfaces.</p>
 <p><img src="img/adapter.png" alt=""></p>
+<h3 id="example">Example</h3>
+<pre><code><span class="hljs-comment">// Assume that a table objct is a big list of items.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Table</span> </span>{}
+
+<span class="hljs-comment">// Asbtract class or an interface to perform sorting operations on a Table Object.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Sort</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">apply</span>(<span class="hljs-params">table</span>)</span> {}
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// this concrete sorting class ships with our app</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleSort</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Sort</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">apply</span>(<span class="hljs-params">image</span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Applying default simple sort.&#x27;</span>);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Table can have several views like fullView, compact view, summary view etc.</span>
+<span class="hljs-comment">// Client need to use of the view.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">FullTableView</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">table</span>)</span> {
+    <span class="hljs-built_in">this</span>.table = table;
+  }
+
+  <span class="hljs-comment">// apply expects the instance of a class that implements the Sort interface.</span>
+  <span class="hljs-function"><span class="hljs-title">apply</span>(<span class="hljs-params">sort</span>)</span> {
+    <span class="hljs-comment">// Sort interface expects a method called apply() which expects an instance of Table</span>
+    sort.apply(<span class="hljs-built_in">this</span>.table);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// third party sorts with a differnt interface.</span>
+<span class="hljs-comment">// doesnot implement the sort interface.</span>
+<span class="hljs-comment">// Adaptee</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BetterSort</span> </span>{
+  <span class="hljs-comment">// the creators of BetterSort decided to call init() everytime we need to use it.</span>
+  <span class="hljs-function"><span class="hljs-title">init</span>(<span class="hljs-params"></span>)</span> {
+
+  }
+
+  <span class="hljs-comment">// they decided to use render method to sort and render table as that made more sense to them.</span>
+  <span class="hljs-function"><span class="hljs-title">render</span>(<span class="hljs-params">table</span>)</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;Applying 3rd partys better sort.&#x27;</span>);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// client code or usage</span>
+<span class="hljs-keyword">let</span> tableView = <span class="hljs-keyword">new</span> FullTableView(<span class="hljs-keyword">new</span> Table());
+tableView.apply(<span class="hljs-keyword">new</span> SimpleSort()); <span class="hljs-comment">// works.</span>
+
+<span class="hljs-comment">// tableView.apply(new BetterSort()); // TypeError.</span>
+</code></pre>
+<pre><code><span class="hljs-comment">/**
+ * We have an existing class, we wanna use it somewhere, BUT
+ * the interface of this class doenot match the form that we expect.
+ * 
+ * So we use the apadter pattern to convert the interface of this class 
+ * to a different form
+ */</span>
+</code></pre>
+<pre><code><span class="hljs-comment">// Adaptor - using compostion [favour composition over inheritance]</span>
+<span class="hljs-comment">// it is composed with adaptee: we pass betterSort in the consturctor.</span>
+<span class="hljs-comment">// it implements the target interface of `Sort`. So, we have apply() method that our client understnds.</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BetterSortAdapter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Sort</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">betterSort</span>)</span> {
+    <span class="hljs-built_in">super</span>(betterSort);
+    <span class="hljs-comment">// we need an adptee inside the adapter to forward the client&#x27;s request</span>
+    <span class="hljs-built_in">this</span>.betterSort = betterSort;
+  }
+
+  <span class="hljs-comment">// Our adapter has this method called apply() that is compatible with our client.</span>
+  <span class="hljs-comment">// our adapter&#x27;s apply takes in table and seamlessly forwards it ot the betterSort.</span>
+  <span class="hljs-function"><span class="hljs-title">apply</span>(<span class="hljs-params">table</span>)</span> {
+    <span class="hljs-built_in">this</span>.betterSort.init();
+    <span class="hljs-built_in">this</span>.betterSort.render(table);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Adapter 2 - using inheritance rather than composition</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BetterSortAdapter2</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">BetterSort</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params"></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+  }
+
+  <span class="hljs-function"><span class="hljs-title">apply</span>(<span class="hljs-params">table</span>)</span> {
+    <span class="hljs-built_in">this</span>.init();
+    <span class="hljs-built_in">this</span>.render(table);
+  }
+}
+</code></pre>
+<pre><code><span class="hljs-comment">// Client or Usage</span>
+<span class="hljs-comment">// instead of plugging in an incomatible plug to our client; we plug in an adapter first and then plug in our incompatible plug to the adapter</span>
+<span class="hljs-comment">// adapter forwards the clients request to our adaptee and return backs the adaptees response to the client.</span>
+
+tableView.apply(<span class="hljs-keyword">new</span> BetterSortAdapter(<span class="hljs-keyword">new</span> BetterSort()));  <span class="hljs-comment">// now it works: Applying 3rd partys better sort.</span>
+tableView.apply(<span class="hljs-keyword">new</span> BetterSortAdapter2());  <span class="hljs-comment">// it works: Applying 3rd partys better sort.</span>
+</code></pre>
+<pre><code class="language-bash">Applying default simple sort.
+Applying 3rd partys better sort.
+Applying 3rd partys better sort.
+</code></pre>
 
       <!-- endinject -->
       </div>
