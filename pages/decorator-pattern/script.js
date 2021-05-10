@@ -1,3 +1,4 @@
+
 console.log('decorator-pattern works!!');
 
 // Simplistic Example from: https://addyosmani.com/resources/essentialjsdesignpatterns/book/#factorypatternjavascript
@@ -242,3 +243,128 @@ const func = new Function(`
 `);
 
 func();
+
+// ===================================================== //
+// cloud stream example - with problem
+console.log('---------------------------------------');
+// ===================================================== //
+
+// class CloudStream {
+//   write(data) {
+//     console.log('storing ' + data);
+//   }
+// }
+
+// class EncryptedCloudStream extends CloudStream {
+//   write(data) {
+//     let encrypted = this.encrypt(data);
+//     super.write(encrypted);
+//   }
+
+//   encrypt(data) {
+//     return '$!@#$!@#$!@#$';
+//   }
+// }
+
+// /**
+//  * New requirement: We need to compress data before we store it, when we are dealing with large files.
+//  */
+
+//  class CompressedCloudStream extends CloudStream {
+//   write(data) {
+//     let compressedData = this.compress(data);
+//     super.write(compressedData);
+//   }
+
+//   compress(data) {
+//     return data.substring(0,4);
+//   }
+// }
+
+
+// let cloudStream = new CloudStream();
+// cloudStream.write("here's some data");
+
+// let encryptedCloudStream = new EncryptedCloudStream();
+// encryptedCloudStream.write("here's some data");
+
+// let compressedCloudStrem = new CompressedCloudStream();
+// compressedCloudStrem.write("asdfasdfadfadfadsfadfadsfadsfadfadf");
+
+/**
+ * Problem
+ * Tomorrow your manager comes and says, in some situations, we need to encrpt and then compress data. 
+ * Our cuurrnt implementation doesnot solve this problem. we can either encrypt it or compress it.
+ * So we'll have to create a new class which could be a combination of these two..
+ * The problem that we are facing is that for every feature, we're adding various classes that combines these features.
+ * Here we're dealing with only two features. but in a more complex system, we'll need to have so many classes and their combinations.
+ * That is not a maintainable approach. 
+ * 
+ * This is the problem we solve with the decorator pattern.
+ * 
+ * With decorator pattern we can add additional behaviour to an object. 
+ * 
+ * So, at the client side, we can create a plain cloudStream object and then we can add decorators to it.
+ * We can decorate this object with different behavoiurs.
+ */
+  
+class Stream {
+  write(data) { };
+}
+
+class CloudStream extends Stream {
+  write(data) {
+    console.log('storing ' + data);
+  }
+}
+
+// decorators
+class CompressedCloudStream extends Stream {
+  constructor(stream) {
+    super();
+    this.stream = stream;
+  }
+
+  write(data) {
+    console.log('data in compress >>> ', data);
+    let compressedData = this.compress(data);
+    this.stream.write(compressedData);
+  }
+
+  compress(data) {
+    return data.substring(0,4);
+  }
+}
+
+class EncryptedCloudStream extends Stream {
+  constructor(stream) {
+    super();
+    this.stream = stream;
+  }
+
+  write(data) {
+    console.log('data in encrypt >>> ', data);
+    let encrypted = this.encrypt(data);
+    this.stream.write(encrypted);
+  }
+
+  encrypt(data) {
+    return '$!@#$!@#$!@#$';
+  }
+}
+
+// usage
+/**
+ * 
+ */
+storeCreditCard(
+  new EncryptedCloudStream(
+    new CompressedCloudStream(
+      new CloudStream()
+    )
+  )
+);
+
+function storeCreditCard(stream) {
+  stream.write("1234-1234-1234-1234")
+}

@@ -2,6 +2,8 @@
 
 Decorators are a structural design pattern that aim to promote code re-use. Similar to mixins, they can be considered another viable alternative to object sub-classing.
 
+We use decorator pattern to add new behaviour to an object. 
+
 The decorator pattern isn't heavily tied to how objects are created by instead focuses on the problem of extending their functionality. Rather than just relying on prototypal inheritance, we work with a single base object and progressibely add decorator objects which provide the additional capabilites.
 
 Attach Additional Responsibilites to an Object Dynamically. Decorators Provide a Flexible alternative to Sub Classing for extending functionality. - GoF
@@ -168,3 +170,4 @@ alternate way to call - nested decorators
 let esp2 =  new Mocha( new Mocha ( new Mocha( new Espresso())))
 console.log(esp2.getDescription(), esp2.cost())
 ```
+
