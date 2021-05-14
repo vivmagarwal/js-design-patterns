@@ -55,3 +55,5 @@ Client or the Consumer of the Facade dont need to worry about the cross browser 
 // Client
 addMyEvent(document.getElementById("facade-pattern"), "click", () => { console.log("Heading clicked.") });
 ```
+
+So, We use facade pattern to provide a simple interface to a complex sysmtem. 

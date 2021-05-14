@@ -38,6 +38,47 @@ inputStrem = new ZipInputStream(
 - You can wrap a component with any number of decorators.
 
 
+### Stream example - a simplified java.io
+
+```
+class SimpleStream extends Stream {
+  constructor(stream = null) {
+    super();
+    this.stream = stream;
+    this.data = '[simple data]'
+  }
+}
+
+class CompressedStream extends Stream {
+  constructor(stream = null) {
+    super();
+    this.stream = stream;
+    this.data = '[compressed' + stream.data + ']';
+  }
+}
+
+class EncryptedStream extends Stream {
+  constructor(stream = null) {
+    super();
+    this.stream = stream;
+    this.data = '[encrypted' + stream.data + ']';
+  }
+}
+
+// Usage:
+let simpleStream = new SimpleStream();
+console.log('simple stream data : ', simpleStream.data );
+
+let encryptedStream = new EncryptedStream(simpleStream);
+console.log('encrypted stream data : ', encryptedStream.data);
+
+let compressedStream = new CompressedStream(encryptedStream);
+console.log('compress stream data : ', compressedStream.data);
+
+// common usage stye:
+// new CompressedStream(new EncryptedStream(new SimpleStream()))
+```
+
 ## Example from Oreilly's Head First Design Patterns
 
 ### The class that we want to decorate (abstract)

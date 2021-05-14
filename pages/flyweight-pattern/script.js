@@ -96,3 +96,101 @@ for (let i = 0; i < 20; i++) {
   // now that we have our tree ready, we can draw it.
   tree.draw();
 }
+
+// ===================================================== //
+console.log('================= Example 2 ======================');
+
+class Point {
+  constructor(x,y,pointType,icon) {
+    this.x = x;
+    this.y = y;
+    this.pointType = pointType;
+    this.icon = icon;
+  }
+
+  draw() {
+    console.log(`drawing a ${this.pointType} at (${this.x}/${this.y})`);
+  }
+}
+
+class PointService {
+  constructor() {
+
+  }
+
+  getPoints() {
+    let points = [];
+    points.push(new Point(1, 3, "CAFE", "cafe-icon"));
+    return points;
+  }
+
+}
+
+// main
+let service = new PointService();
+let points = service.getPoints();
+
+points.forEach(point => {
+  point.draw();
+});
+
+// Problem for 100 cafe's 100 icons are loaded in the memory
+// icon is dependent on type and not X or Y coordinate
+// it is our flyweitght
+class PointIcon {
+  constructor(pointType,icon) {
+    this.pointType = pointType;
+    this.icon = icon;
+    console.log('PointIcon constructed');
+  }
+
+  getPointType() {
+    return this.pointType;
+  }
+}
+
+// Ensure that identical objects are reused and not re created every time.
+class PointIconFactory {
+  constructor() {
+    this.icons = {};
+  }
+
+  getPointIcon(type) {
+    if (!(type in this.icons)) {
+      let icon = new PointIcon(type, `icon-of-${type}.png`);
+      this.icons[type] = icon;
+    }
+
+    return icons[type];
+  }
+}
+
+class LightPoint {
+  constructor(x,y, pointIcon) {
+    this.x = x;
+    this.y = y;
+    this.pointIcon = pointIcon;
+  }
+
+  draw() {
+    console.log(`drawing a ${this.pointIcon.getPointType()} at (${this.x}/${this.y})`);
+  }
+}
+
+class LightPointService {
+  constructor(pointIconFactory) {
+    this.pointIconFactory = pointIconFactory;
+  }
+
+  getPoints() {
+    let points = [];
+    let point = new LightPoint(1, 2, this.pointIconFactory.getPointIcon("CAFE"));
+  }
+}
+
+let light_service = new LightPointService( new PointIconFactory());
+let light_points = service.getPoints();
+
+points.forEach(point => {
+  point.draw();
+});

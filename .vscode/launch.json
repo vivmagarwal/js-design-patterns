@@ -1,10 +1,19 @@
 {
   "configurations": [
     {
+      "name": "Attach",
+      "port": 9229,
+      "request": "attach",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "pwa-node"
+    },
+    {
       "type": "pwa-chrome",
-      "name": "http://localhost:3000/pages/flyweight-pattern/index.html",
+      "name": "http://localhost:3000/pages/decorator-pattern/index.html",
       "request": "launch",
-      "url": "http://localhost:3000/pages/flyweight-pattern/index.html"
+      "url": "http://localhost:3000/pages/decorator-pattern/index.html"
     }
   ]
 }

@@ -15,7 +15,7 @@ console.log(c1);
 var t1 = new Vehicle("truck");
 console.log(t1);
 
-t1.setModal = function (modelName){
+t1.setModal = function (modelName) {
   this.model = modelName;
 }
 
@@ -245,126 +245,89 @@ const func = new Function(`
 func();
 
 // ===================================================== //
-// cloud stream example - with problem
-console.log('---------------------------------------');
+// stream example - v1 - working fine
+console.log('------------v-1-------------------------');
 // ===================================================== //
 
-// class CloudStream {
-//   write(data) {
-//     console.log('storing ' + data);
+// class SimpleStream extends Stream {
+//   constructor(stream = null) {
+//     super();
+//     this.stream = stream;
+//     this.data = '[simple data]'
+//   }
+// }
+// class CompressedStream extends Stream {
+//   constructor(stream = null) {
+//     super();
+//     this.stream = stream;
+//     this.data = '[compressed' + stream.data + ']';
+//   }
+// }
+// class EncryptedStream extends Stream {
+//   constructor(stream = null) {
+//     super();
+//     this.stream = stream;
+//     this.data = '[encrypted' + stream.data + ']';
 //   }
 // }
 
-// class EncryptedCloudStream extends CloudStream {
-//   write(data) {
-//     let encrypted = this.encrypt(data);
-//     super.write(encrypted);
-//   }
+// let simpleStream = new SimpleStream();
+// console.log('simple stream data : ', simpleStream.data );
 
-//   encrypt(data) {
-//     return '$!@#$!@#$!@#$';
-//   }
-// }
+// let encryptedStream = new EncryptedStream(simpleStream);
+// console.log('encrypted stream data : ', encryptedStream.data);
 
-// /**
-//  * New requirement: We need to compress data before we store it, when we are dealing with large files.
-//  */
-
-//  class CompressedCloudStream extends CloudStream {
-//   write(data) {
-//     let compressedData = this.compress(data);
-//     super.write(compressedData);
-//   }
-
-//   compress(data) {
-//     return data.substring(0,4);
-//   }
-// }
+// let compressedStream = new CompressedStream(encryptedStream);
+// console.log('compress stream data : ', compressedStream.data);
 
 
-// let cloudStream = new CloudStream();
-// cloudStream.write("here's some data");
 
-// let encryptedCloudStream = new EncryptedCloudStream();
-// encryptedCloudStream.write("here's some data");
+// ===================================================== //
+// stream example - v2 - experimenting
+console.log('------------ v-2 Stream example -------------');
+// ===================================================== //
 
-// let compressedCloudStrem = new CompressedCloudStream();
-// compressedCloudStrem.write("asdfasdfadfadfadsfadfadsfadsfadfadf");
-
-/**
- * Problem
- * Tomorrow your manager comes and says, in some situations, we need to encrpt and then compress data. 
- * Our cuurrnt implementation doesnot solve this problem. we can either encrypt it or compress it.
- * So we'll have to create a new class which could be a combination of these two..
- * The problem that we are facing is that for every feature, we're adding various classes that combines these features.
- * Here we're dealing with only two features. but in a more complex system, we'll need to have so many classes and their combinations.
- * That is not a maintainable approach. 
- * 
- * This is the problem we solve with the decorator pattern.
- * 
- * With decorator pattern we can add additional behaviour to an object. 
- * 
- * So, at the client side, we can create a plain cloudStream object and then we can add decorators to it.
- * We can decorate this object with different behavoiurs.
- */
-  
 class Stream {
-  write(data) { };
-}
+  constructor(stream = null) {
+    this.stream = stream;
+    this.data = null;
+  }
 
-class CloudStream extends Stream {
-  write(data) {
-    console.log('storing ' + data);
+  setData(data) {
+    this.data = data;
+  }
+
+  printData() {
+    console.log(this.data);
   }
 }
 
-// decorators
-class CompressedCloudStream extends Stream {
-  constructor(stream) {
+class SimpleStream extends Stream {
+  constructor(stream = null) {
     super();
     this.stream = stream;
-  }
-
-  write(data) {
-    console.log('data in compress >>> ', data);
-    let compressedData = this.compress(data);
-    this.stream.write(compressedData);
-  }
-
-  compress(data) {
-    return data.substring(0,4);
+    this.data = '[simple data]'
   }
 }
-
-class EncryptedCloudStream extends Stream {
-  constructor(stream) {
+class CompressedStream extends Stream {
+  constructor(stream = null) {
     super();
     this.stream = stream;
+    this.data = '[compressed' + stream.data + ']';
   }
-
-  write(data) {
-    console.log('data in encrypt >>> ', data);
-    let encrypted = this.encrypt(data);
-    this.stream.write(encrypted);
-  }
-
-  encrypt(data) {
-    return '$!@#$!@#$!@#$';
+}
+class EncryptedStream extends Stream {
+  constructor(stream = null) {
+    super();
+    this.stream = stream;
+    this.data = '[encrypted' + stream.data + ']';
   }
 }
 
-// usage
-/**
- * 
- */
-storeCreditCard(
-  new EncryptedCloudStream(
-    new CompressedCloudStream(
-      new CloudStream()
-    )
-  )
-);
+let simpleStream = new SimpleStream();
+simpleStream.setData('[New Stream Data]');
 
-function storeCreditCard(stream) {
-  stream.write("1234-1234-1234-1234")
-}
+let encryptedStream = new EncryptedStream(simpleStream);
+
+let compressedStream = new CompressedStream(encryptedStream);
+compressedStream.printData();

@@ -29,6 +29,7 @@
 <p><strong>Flyweight</strong> is a structural design pattern that let&#39;s you fit more objects in to the available amount of RAM by <strong>sharing</strong> common parts of state between multiple objects instead of keeping all of the data in each object.</p>
 <p>The flyweight pattern is a classical structural solution for optimizing code that is repetitive, slow and inefficiently shares data. It aims to minimize the use of memory in an application by sharing as much data as possible with related objects. </p>
 <p>In practice, Flyweight data sharing can involve taking several similar objects or data constructs used by a number of objects and placing this data into a single <strong>external object</strong>. We can <strong>pass through</strong> this object to those depending on this data, rather than <strong>storing</strong> <em>identical data</em> across each one.</p>
+<p>The Flyweight is a space optimization technique that let&#39;s us use less memory by string externally the data associated with similar objects.</p>
 <p>A great example could be a forest (game) app where we need to draw thousands of trees. An example implementation could be something like this:</p>
 <h3 id="a-tree-class">A Tree class</h3>
 <pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Tree</span> </span>{

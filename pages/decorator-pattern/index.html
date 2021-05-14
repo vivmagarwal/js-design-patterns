@@ -52,6 +52,44 @@
 <li>Decorator classes mirror the type of the components they decorate. Infact, they are the same type as the components they decorate, either through inheritance or interface implementation.</li>
 <li>You can wrap a component with any number of decorators.</li>
 </ul>
+<h3 id="stream-example---a-simplified-javaio">Stream example - a simplified java.io</h3>
+<pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SimpleStream</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stream</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">stream = <span class="hljs-literal">null</span></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+    <span class="hljs-built_in">this</span>.stream = stream;
+    <span class="hljs-built_in">this</span>.data = <span class="hljs-string">&#x27;[simple data]&#x27;</span>
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CompressedStream</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stream</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">stream = <span class="hljs-literal">null</span></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+    <span class="hljs-built_in">this</span>.stream = stream;
+    <span class="hljs-built_in">this</span>.data = <span class="hljs-string">&#x27;[compressed&#x27;</span> + stream.data + <span class="hljs-string">&#x27;]&#x27;</span>;
+  }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EncryptedStream</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Stream</span> </span>{
+  <span class="hljs-function"><span class="hljs-title">constructor</span>(<span class="hljs-params">stream = <span class="hljs-literal">null</span></span>)</span> {
+    <span class="hljs-built_in">super</span>();
+    <span class="hljs-built_in">this</span>.stream = stream;
+    <span class="hljs-built_in">this</span>.data = <span class="hljs-string">&#x27;[encrypted&#x27;</span> + stream.data + <span class="hljs-string">&#x27;]&#x27;</span>;
+  }
+}
+
+<span class="hljs-comment">// Usage:</span>
+<span class="hljs-keyword">let</span> simpleStream = <span class="hljs-keyword">new</span> SimpleStream();
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;simple stream data : &#x27;</span>, simpleStream.data );
+
+<span class="hljs-keyword">let</span> encryptedStream = <span class="hljs-keyword">new</span> EncryptedStream(simpleStream);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;encrypted stream data : &#x27;</span>, encryptedStream.data);
+
+<span class="hljs-keyword">let</span> compressedStream = <span class="hljs-keyword">new</span> CompressedStream(encryptedStream);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&#x27;compress stream data : &#x27;</span>, compressedStream.data);
+
+<span class="hljs-comment">// common usage stye:</span>
+<span class="hljs-comment">// new CompressedStream(new EncryptedStream(new SimpleStream()))</span>
+</code></pre>
 <h2 id="example-from-oreillys-head-first-design-patterns">Example from Oreilly&#39;s Head First Design Patterns</h2>
 <h3 id="the-class-that-we-want-to-decorate-abstract">The class that we want to decorate (abstract)</h3>
 <pre><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bevarage</span> </span>{
