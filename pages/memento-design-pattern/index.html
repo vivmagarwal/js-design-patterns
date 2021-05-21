@@ -33,6 +33,14 @@
 <p>The Undo/Redo operation in a text editor</p>
 <h2 id="applicability">Applicability</h2>
 <p>The <strong>Memento</strong> pattern is used in Undo and Redo operations in most of the software.</p>
+<h2 id="explaination">Explaination</h2>
+<p>The Memento patten delegates creating the state snapshots to the actual owner of that state, the originator object. Hence, instead of other objects trying to copy the editor&#39;s state from outside, the editor class itself can make the snapshot since it has full access to its own state.</p>
+<p>In our example, The Editor class itself has <code>createState</code> and <code>resotreState</code> methods.</p>
+<p>The patten suggests storing the copy of object&#39;s state in a special object called memento. The contents of memento are not accessible to any other object except the one that produced it.</p>
+<p>In our example, the Memento is the <code>EditorState</code> class. The Editor&#39;s state is stored in an EditorState object using the editors createState method. </p>
+<p>Other objects must communicate with mementos using a limited interface which may allow fetching the snapshot&#39;s metatdata, but not the original objet&#39;s state contained in the snapshot.</p>
+<p>Such restrictive policy let&#39;s you store mementos inside other objects, usually called caretakers. Since caretaker works with the memento only via the limited interface, it&#39;s not able to tamper with the state stored inside the memento.</p>
+<p>In our example the caretaker is the <code>History</code> class. and History object manages a list of all the <code>EditorState</code> objects created by the <code>Editor</code> class.</p>
 
         <!-- endinject -->
       </div>
