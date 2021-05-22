@@ -32,6 +32,23 @@ Some of the patterns that fall under this category are:
 - Singleton
 - Builder
 
+## Test Codepen embed
+
+<p class="codepen" data-height="265" data-theme-id="light" data-default-tab="css,result" data-user="web-dot-dev" data-slug-hash="XWprGYz" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="Learn CSS - Selectors intro">
+  <span>See the Pen <a href="https://codepen.io/web-dot-dev/pen/XWprGYz">
+  Learn CSS - Selectors intro</a> by web.dev (<a href="https://codepen.io/web-dot-dev">@web-dot-dev</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+## Test codepen embed
+<p class="codepen" data-height="265" data-theme-id="light" data-default-tab="js" data-user="drupalastic" data-slug-hash="ExWZEGJ" style="height: 265px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="Learn CSS - Selectors intro">
+  <span>See the Pen <a href="https://codepen.io/drupalastic/pen/ExWZEGJ">
+  Learn CSS - Selectors intro</a> by Vivek Agarwal (<a href="https://codepen.io/drupalastic">@drupalastic</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
 ## Structural Design Patterns
 
 Structural patterns are concerned with **object composition** and typically identify simple ways to realize **relationships between objects**. They help ensure that when one part of the system changes, the entire structure of the system doesnot need to change.
